@@ -14,10 +14,6 @@
                 <input type="text" name="email" placeholder="Email/Username"
                     class="w-full mb-2 p-3 rounded-full bg-gray-800 text-white border-none">
 
-                @error('email')
-                    <p class="text-red-400 text-sm mb-3 px-2">{{ $message }}</p>
-                @enderror
-
                 <div class="relative mb-2">
                     <input type="password" name="password" id="password" placeholder="Password"
                         class="w-full p-3 rounded-full bg-gray-800 text-white border-none pr-12">
@@ -27,6 +23,9 @@
                     </button>
                 </div>
 
+                @error('email')
+                    <p class="text-red-400 text-sm mb-3 px-2">{{ $message }}</p>
+                @enderror
                 @error('password')
                     <p class="text-red-400 text-sm mb-3 px-2">{{ $message }}</p>
                 @enderror

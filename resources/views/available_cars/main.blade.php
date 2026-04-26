@@ -24,7 +24,11 @@
             
             <div class="flex items-center gap-4 mb-10 text-sm font-bold uppercase tracking-widest text-gray-500">
                 <span class="text-yellow-400 cursor-pointer">All</span>
-                <span class="text-white cursor-pointer">USV</span>
+                <span class="text-white cursor-pointer hover:text-lime-400">USV</span>
+                <span class="text-white cursor-pointer hover:text-lime-400">Sedan</span>
+                <span class="text-white cursor-pointer hover:text-lime-400">Van</span>
+                <span class="text-white cursor-pointer hover:text-lime-400">Pickup</span>
+                <span class="text-white cursor-pointer hover:text-lime-400">AUV</span>
                 <div class="h-[1px] flex-grow bg-white/5 ml-4"></div>
             </div>
 

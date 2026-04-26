@@ -1,5 +1,5 @@
 <x-layout>
-<div class="bg-gray-900 min-h-screen" style="font-family: 'Montserrat', sans-serif;">
+<div class="bg-[#121212] min-h-screen" style="font-family: 'Montserrat', sans-serif;">
 
     {{-- Page Header --}}
     <div class="px-10 pt-10 pb-6">

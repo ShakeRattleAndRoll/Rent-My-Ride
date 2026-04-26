@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CarController;
+use App\Http\Controllers\RentalController;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
@@ -57,3 +58,8 @@ Route::get('/garage/my-rental', function () {
 
 // Logout
 Route::post('/logout', [AuthController::class, 'logout']);
+
+// // Route for my-rental not done
+// Route::post('/rentals', [RentalController::class, 'store'])->name('rentals.store');
+// Route::get('/garage/my-rental', [RentalController::class, 'index'])->name('garage.my-rental');
+

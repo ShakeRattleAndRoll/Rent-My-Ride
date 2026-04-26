@@ -91,7 +91,6 @@
         </div>
     </div>
 
-
     {{-- Configuration for filepond --}}
     <script>
         FilePond.registerPlugin(FilePondPluginImagePreview);
@@ -105,6 +104,5 @@
             labelIdle: 'Drag & Drop your car photo or <span class="filepond--label-action">Browse</span>',
         });
     </script>
-
 
 </x-layout>
