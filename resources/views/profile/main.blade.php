@@ -8,7 +8,7 @@
                 <div class="col-span-1 flex flex-col items-center gap-6">
 
                     {{-- Username --}}
-                    <p class="text-sm text-gray-400 font-semibold">(Username)</p>
+                    <p class="text-sm text-gray-400 font-semibold">{{ auth()->user()?->username ?? '' }}</p>
 
                     {{-- Profile Picture --}}
                     <div class="w-48 h-48 rounded-full bg-[#2a2a2a] border-2 border-white/10 flex items-center justify-center overflow-hidden">
@@ -67,14 +67,14 @@
                         <div class="flex flex-col gap-2">
                             <label class="text-sm text-gray-400 font-semibold">Sex</label>
                             <div class="w-full bg-[#242424] text-gray-500 p-4 rounded-xl border border-white/5">
-                                {{ auth()->user()?->sex ?? '' }}
+                                {{ ucfirst(auth()->user()?->sex ?? '') }}
                             </div>
                         </div>
 
                         <div class="flex flex-col gap-2">
                             <label class="text-sm text-gray-400 font-semibold">Date of Birth</label>
                             <div class="w-full bg-[#242424] text-gray-500 p-4 rounded-xl border border-white/5">
-                                {{ auth()->user()?->date_of_birth ?? '' }}
+                                {{ auth()->user()?->dob ? \Carbon\Carbon::parse(auth()->user()->dob)->format('F d, Y') : '' }}
                             </div>
                         </div>
                     </div>

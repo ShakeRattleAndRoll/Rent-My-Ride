@@ -21,43 +21,57 @@ class AuthController extends Controller
 
     public function authenticate(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $request->validate([
+            'email'    => 'required|string',
+            'password' => 'required|string|min:1',
+        ], [
+            'email.required'    => 'Email or username is required.',
+            'password.required' => 'Password is required.',
+        ]);
+
+        $loginField = filter_var($request->email, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+
+        $credentials = [
+            $loginField => $request->email,
+            'password'  => $request->password,
+        ];
 
         if (Auth::attempt($credentials)) {
-            return redirect('/dashboard');
+            $request->session()->regenerate();
+            return redirect('/');
         }
 
         return back()->withErrors([
-            'email' => 'Invalid credentials'
-        ]);
+            'email' => 'No account found with those credentials. Please register first.',
+        ])->onlyInput('email');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'username' => 'required',
-            'first_name' => 'required',
-            'middle_name' => 'required',
-            'last_name' => 'required',
-            'dob' => 'required|date',
-            'sex' => 'required',
-            'address' => 'required',
-            'email' => 'required|email|unique:users',
+            'username'       => 'required',
+            'first_name'     => 'required',
+            'middle_name'    => 'required',
+            'last_name'      => 'required',
+            'dob'            => 'required|date',
+            'sex'            => 'required',
+            'address'        => 'required',
+            'email'          => 'required|email|unique:users',
             'contact_number' => 'required',
-            'password' => 'required|min:6|confirmed',
+            'password'       => 'required|min:6|confirmed',
         ]);
 
         User::create([
-            'username' => $request->username,
-            'first_name' => $request->first_name,
-            'middle_name' => $request->middle_name,
-            'last_name' => $request->last_name,
-            'dob' => $request->dob,
-            'sex' => $request->sex,
-            'address' => $request->address,
+            'username'       => $request->username,
+            'first_name'     => $request->first_name,
+            'middle_name'    => $request->middle_name,
+            'last_name'      => $request->last_name,
+            'dob'            => $request->dob,
+            'sex'            => $request->sex,
+            'address'        => $request->address,
             'contact_number' => $request->contact_number,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'email'          => $request->email,
+            'password'       => Hash::make($request->password),
         ]);
 
         return redirect('/login');
