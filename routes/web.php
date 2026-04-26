@@ -3,32 +3,28 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CarController;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
+    if (Auth::check()) {
+        return view('home.main');
+    }
     return redirect()->route('login');
 });
 
 // Route for login
-Route::get('/login', [AuthController::class, 'login'])->name('login');
+Route::get('/login', [AuthController::class, 'login'])->name('login')->middleware('guest');
 Route::post('/login', [AuthController::class, 'authenticate']);
 
 // Route for register
-Route::get('/register', [AuthController::class, 'register'])->name('register');
+Route::get('/register', [AuthController::class, 'register'])->name('register')->middleware('guest');
 Route::post('/register', [AuthController::class, 'store']);
 
-// para sa kung pindoton ra login e redirect sa homepage (E remove kung tarong na ang login system)
-Route::get('/', function () {
-    return view('home.main');
-});
-
-// Post a car route  [CONTROLLER NAME: CarController.php
-//                    MODEL: Car.php
-//                    MIGRATION: 2026_04_21_100645_car.php ]
-
+// Post a car route
 Route::get('/post-car', [CarController::class, 'create']);
 Route::post('/cars', [CarController::class, 'store']);
 
-//Route for available cars page
+// Route for available cars page
 Route::get('/available', [CarController::class, 'index']);
 
 // Route for profile page
@@ -36,17 +32,17 @@ Route::get('/profile', function () {
     return view('profile.main');
 });
 
-//Route for edit profile page
+// Route for edit profile page
 Route::get('/profile/edit', function () {
     return view('profile.edit');
 });
 
-//Route for message page
+// Route for message page
 Route::get('/messages', function () {
     return view('message.message');
 });
 
-//Routes for garage page
+// Routes for garage page
 Route::get('/garage', function () {
     return redirect('/garage/my-listing');
 });
@@ -58,3 +54,6 @@ Route::get('/garage/my-listing', function () {
 Route::get('/garage/my-rental', function () {
     return view('garage.my-rental', ['rentals' => []]);
 });
+
+// Logout
+Route::post('/logout', [AuthController::class, 'logout']);

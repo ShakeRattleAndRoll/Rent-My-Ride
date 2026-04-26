@@ -92,4 +92,27 @@
 
     @include('home.how_it_works')
 
+    <section class="py-16 bg-black pt-20">
+    <div class="max-w-3xl mx-auto px-6 text-center" style="font-family: 'Montserrat', sans-serif;">
+
+        <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">
+            Ready to get started?
+        </h2>
+
+        <p class="text-gray-400 text-base md:text-lg mb-10">
+            Join thousands of users already renting and listing cars on Rent My Ride. It only takes a minute to get on the road.
+        </p>
+
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <a href="/available" class="px-10 py-3 bg-yellow-400 text-black rounded-full font-bold hover:bg-yellow-300 transition text-center">
+                <i class="fa-solid fa-car mr-2"></i> Browse Available Cars
+            </a>
+            <a href="/post-car" class="px-10 py-3 bg-yellow-400 text-black rounded-full font-bold hover:bg-yellow-300 transition text-center">
+                <i class="fa-solid fa-plus mr-2"></i> Post Your Car
+            </a>
+        </div>
+
+    </div>
+</section>
+
 </x-layout>

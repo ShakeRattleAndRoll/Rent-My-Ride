@@ -13,7 +13,7 @@
             alt="Rent My Ride Logo"
             class="mx-auto mb-10 w-65">
 
-            <form method="POST" action="/register" class="space-y-4">
+            <form method="POST" action="/register" class="space-y-4" id="registerForm">
                 @csrf
 
                 <input name="username" placeholder="Username" required
@@ -35,11 +35,11 @@
 
                     <div class="bg-[#1f2937] rounded-full px-4 py-2 flex items-center justify-around">
                         <label class="flex items-center gap-1 text-sm">
-                            <input type="radio" name="sex" value="male" required>
+                            <input type="radio" name="sex" value="Male" required>
                             Male
                         </label>
                         <label class="flex items-center gap-1 text-sm">
-                            <input type="radio" name="sex" value="female" required>
+                            <input type="radio" name="sex" value="Female" required>
                             Female
                         </label>
                     </div>
@@ -52,14 +52,43 @@
                 <input name="email" type="email" placeholder="Email" required
                     class="w-full px-4 py-3 rounded-full bg-[#1f2937] text-white outline-none focus:border focus:border-yellow-400">
 
-                <input name="contact_number" placeholder="Contact Number" required
+                <input
+                    name="contact_number"
+                    placeholder="Contact Number (09XXXXXXXXX)"
+                    required
+                    maxlength="11"
+                    pattern="09[0-9]{9}"
+                    title="Must be 11 digits and start with 09"
+                    oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 11)"
                     class="w-full px-4 py-3 rounded-full bg-[#1f2937] text-white outline-none focus:border focus:border-yellow-400">
 
-                <input type="password" name="password" placeholder="Password" required
-                    class="w-full px-4 py-3 rounded-full bg-[#1f2937] text-white outline-none focus:border focus:border-yellow-400">
+                {{-- Password with toggle --}}
+                <div class="relative">
+                    <input type="password" name="password" id="password" placeholder="Password" required
+                        class="w-full px-4 py-3 rounded-full bg-[#1f2937] text-white outline-none focus:border focus:border-yellow-400 pr-12">
+                    <button type="button" onclick="togglePassword('password', 'eyeIcon1')"
+                        class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white">
+                        <i id="eyeIcon1" class="fa fa-eye"></i>
+                    </button>
+                </div>
 
-                <input type="password" name="password_confirmation" placeholder="Confirm Password" required
-                    class="w-full px-4 py-3 rounded-full bg-[#1f2937] text-white outline-none focus:border focus:border-yellow-400">
+                {{-- Confirm Password with toggle --}}
+                <div class="relative">
+                    <input type="password" name="password_confirmation" id="password_confirmation" placeholder="Confirm Password" required
+                        class="w-full px-4 py-3 rounded-full bg-[#1f2937] text-white outline-none focus:border focus:border-yellow-400 pr-12"
+                        oninput="checkPasswordMatch()">
+                    <button type="button" onclick="togglePassword('password_confirmation', 'eyeIcon2')"
+                        class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white">
+                        <i id="eyeIcon2" class="fa fa-eye"></i>
+                    </button>
+                </div>
+
+                {{-- Password match message --}}
+                <p id="passwordMessage" class="text-sm px-2 hidden"></p>
+
+                @error('password')
+                    <p class="text-red-400 text-sm px-2">{{ $message }}</p>
+                @enderror
 
                 <button class="bg-yellow-400 text-black w-full py-3 rounded-full mt-4 font-bold hover:bg-yellow-300 transition">
                     CREATE ACCOUNT
@@ -70,4 +99,7 @@
 
     </div>
 </div>
+
+<script src="{{ asset('js/confirmpassword/checkpassmatch.js') }}"></script>
+
 </x-layout>

@@ -12,14 +12,30 @@
                 @csrf
 
                 <input type="text" name="email" placeholder="Email/Username"
-                    class="w-full mb-4 p-3 rounded-full bg-gray-800 text-white border-none">
+                    class="w-full mb-2 p-3 rounded-full bg-gray-800 text-white border-none">
 
-                <input type="password" name="password" placeholder="Password"
-                    class="w-full mb-6 p-3 rounded-full bg-gray-800 text-white border-none">
+                @error('email')
+                    <p class="text-red-400 text-sm mb-3 px-2">{{ $message }}</p>
+                @enderror
 
-                <a href="/" class="block bg-yellow-400 w-full py-2 rounded-full font-bold text-black cursor-pointer">
+                <div class="relative mb-2">
+                    <input type="password" name="password" id="password" placeholder="Password"
+                        class="w-full p-3 rounded-full bg-gray-800 text-white border-none pr-12">
+                    <button type="button" onclick="togglePassword('password', 'eyeIcon')"
+                        class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white">
+                        <i id="eyeIcon" class="fa fa-eye"></i>
+                    </button>
+                </div>
+
+                @error('password')
+                    <p class="text-red-400 text-sm mb-3 px-2">{{ $message }}</p>
+                @enderror
+
+                <div class="mb-6"></div>
+
+                <button type="submit" class="bg-yellow-400 w-full py-2 rounded-full font-bold text-black cursor-pointer">
                     LOGIN
-                </a>
+                </button>
             </form>
 
             <p class="text-gray-400 mt-4">
@@ -30,4 +46,7 @@
         </div>
     </div>
 </div>
+
+<script src="{{ asset('js/auth/visiblepass.js') }}"></script>
+
 </x-layout>
