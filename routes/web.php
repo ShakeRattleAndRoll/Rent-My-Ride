@@ -38,6 +38,9 @@ Route::get('/profile/edit', function () {
     return view('profile.edit');
 });
 
+// Route for update profile
+Route::patch('/profile/update', [AuthController::class, 'update']);
+
 // Route for message page
 Route::get('/messages', function () {
     return view('message.message');
@@ -62,5 +65,3 @@ Route::post('/logout', [AuthController::class, 'logout']);
 // Route for my-rental
 Route::post('/rent', [RentalController::class, 'store'])->middleware('auth');
 Route::get('/garage/my-rental', [RentalController::class, 'index']);
-
-

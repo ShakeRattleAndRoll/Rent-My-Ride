@@ -1,6 +1,13 @@
 <x-layout>
+
     <div class="bg-[#121212] min-h-screen text-white p-10">
         <div class="max-w-4xl mx-auto bg-[#1a1a1a] p-10 rounded-3xl shadow-2xl border border-white/5">
+
+        @if (session('success'))
+            <div class="bg-green-500/10 border border-green-500/30 text-green-400 px-6 py-3 rounded-xl mb-6 text-sm text-center">
+                {{ session('success') }}
+            </div>
+        @endif
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
 
@@ -119,4 +126,5 @@
 
         </div>
     </div>
+
 </x-layout>

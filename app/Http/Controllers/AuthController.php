@@ -56,8 +56,8 @@ class AuthController extends Controller
             'dob'            => 'required|date',
             'sex'            => 'required',
             'address'        => 'required',
-            'email'          => 'required|email|unique:users',
-            'contact_number' => 'required',
+            'email'          => 'required|email|regex:/^[^@]+@[^@]+\.[a-zA-Z]{2,}$/|unique:users',
+            'contact_number' => 'required|regex:/^09[0-9]{9}$/',
             'password'       => 'required|min:6|confirmed',
         ]);
 
@@ -80,6 +80,42 @@ class AuthController extends Controller
         return redirect('/');
     }
 
+    public function update(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'username'       => 'required|unique:users,username,' . $user->id,
+            'first_name'     => 'required',
+            'middle_name'    => 'required',
+            'last_name'      => 'required',
+            'dob'            => 'required|date',
+            'sex'            => 'required',
+            'address'        => 'required',
+            'contact_number' => 'required|regex:/^09[0-9]{9}$/',
+            'email'          => 'required|email|regex:/^[^@]+@[^@]+\.[a-zA-Z]{2,}$/|unique:users,email,' . $user->id,
+            'password'       => 'nullable|min:6|confirmed',
+        ]);
+
+        $user->username       = $request->username;
+        $user->first_name     = $request->first_name;
+        $user->middle_name    = $request->middle_name;
+        $user->last_name      = $request->last_name;
+        $user->dob            = $request->dob;
+        $user->sex            = $request->sex;
+        $user->address        = $request->address;
+        $user->contact_number = $request->contact_number;
+        $user->email          = $request->email;
+
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
+
+        return redirect('/profile')->with('success', 'Profile updated successfully.');
+    }
+
     public function logout(Request $request)
     {
         Auth::logout();
@@ -88,4 +124,3 @@ class AuthController extends Controller
         return redirect('/');
     }
 }
-

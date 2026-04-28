@@ -49,9 +49,6 @@
                 <input name="address" placeholder="Address" required
                     class="w-full px-4 py-3 rounded-full bg-[#1f2937] text-white outline-none focus:border focus:border-yellow-400">
 
-                <input name="email" type="email" placeholder="Email" required
-                    class="w-full px-4 py-3 rounded-full bg-[#1f2937] text-white outline-none focus:border focus:border-yellow-400">
-
                 <input
                     name="contact_number"
                     placeholder="Contact Number (09XXXXXXXXX)"
@@ -60,6 +57,12 @@
                     pattern="09[0-9]{9}"
                     title="Must be 11 digits and start with 09"
                     oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 11)"
+                    class="w-full px-4 py-3 rounded-full bg-[#1f2937] text-white outline-none focus:border focus:border-yellow-400">
+
+                <input 
+                    name="email" type="email" placeholder="Email" required
+                    pattern="^[^@]+@[^@]+\.[a-zA-Z]{2,}$"
+                    title="Email must be in the format: example@domain.com"
                     class="w-full px-4 py-3 rounded-full bg-[#1f2937] text-white outline-none focus:border focus:border-yellow-400">
 
                 {{-- Password with toggle --}}
@@ -83,7 +86,6 @@
                     </button>
                 </div>
 
-                {{-- Password match message --}}
                 <p id="passwordMessage" class="text-sm px-2 hidden"></p>
 
                 @error('password')
