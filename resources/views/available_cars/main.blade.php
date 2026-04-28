@@ -21,16 +21,6 @@
 
         {{-- Filter (not done)--}}
         <div class="max-w-7xl mx-auto px-6 mt-12">
-            
-            <div class="flex items-center gap-4 mb-10 text-sm font-bold uppercase tracking-widest text-gray-500">
-                <span class="text-yellow-400 cursor-pointer">All</span>
-                <span class="text-white cursor-pointer hover:text-lime-400">USV</span>
-                <span class="text-white cursor-pointer hover:text-lime-400">Sedan</span>
-                <span class="text-white cursor-pointer hover:text-lime-400">Van</span>
-                <span class="text-white cursor-pointer hover:text-lime-400">Pickup</span>
-                <span class="text-white cursor-pointer hover:text-lime-400">AUV</span>
-                <div class="h-[1px] flex-grow bg-white/5 ml-4"></div>
-            </div>
 
             {{-- Card --}}
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">

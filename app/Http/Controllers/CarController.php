@@ -30,7 +30,7 @@ class CarController extends Controller
             'brand'        => ['required', 'string'],
             'model'        => ['required', 'string'],
             'price'        => ['required', 'numeric'],
-            'rent_period'  => ['required', 'integer'],
+            'rent_period'  => ['required', 'string'],
             'transmission' => ['required'],
             'fuel_type'    => ['required'],
             'description'  => ['nullable','string'],

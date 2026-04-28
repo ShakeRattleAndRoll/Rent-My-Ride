@@ -57,7 +57,7 @@
 
                     <div class="flex flex-col gap-2">
                         <label class="text-sm text-gray-400 font-semibold">Rent Period</label>
-                        <input type="text" name="rent_period" placeholder="e.g. Per Day" class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5 outline-none focus:border-yellow-400">
+                        <input type="number" name="rent_period" placeholder="e.g. Per Day" class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5 outline-none focus:border-yellow-400">
                     </div>
 
                     <div class="flex flex-col gap-2">

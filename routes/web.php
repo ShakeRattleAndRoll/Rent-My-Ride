@@ -59,7 +59,8 @@ Route::get('/garage/my-rental', function () {
 // Logout
 Route::post('/logout', [AuthController::class, 'logout']);
 
-// // Route for my-rental not done
-// Route::post('/rentals', [RentalController::class, 'store'])->name('rentals.store');
-// Route::get('/garage/my-rental', [RentalController::class, 'index'])->name('garage.my-rental');
+// Route for my-rental
+Route::post('/rent', [RentalController::class, 'store'])->middleware('auth');
+Route::get('/garage/my-rental', [RentalController::class, 'index']);
+
 

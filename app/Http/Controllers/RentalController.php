@@ -25,9 +25,13 @@ class RentalController extends Controller
 
         return redirect('/garage/my-rental')->with('feedback', 'Car added to your rentals!');
     }
-    
 
+    public function index()
+    {
+        $rentals = Rental::with('car')->where('user_id', Auth::id())->get();
 
+        return view('garage.my-rental', compact('rentals'));
+    }
 }
 
 

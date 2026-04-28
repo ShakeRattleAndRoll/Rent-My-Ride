@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('brand');
             $table->string('model');
             $table->decimal('price', 10, 2); 
-            $table->integer('rent_period');
+            $table->string('rent_period');
             $table->string('transmission');
             $table->string('fuel_type');
             $table->text('description')->nullable();
