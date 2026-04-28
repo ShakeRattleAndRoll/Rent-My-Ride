@@ -16,12 +16,13 @@
 * Login
 * Register
 * Posting a car
+* Logout
+* Sign up -> Homepage
 
 ## PARTIALLY DONE
 
 ### FEATURES
 * Clicking the shop it saves in my rental 
-* Logout
 * Change profile pic
 * Profile pic in navigation
 * Search Filter

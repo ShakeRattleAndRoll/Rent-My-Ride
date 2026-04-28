@@ -61,7 +61,7 @@ class AuthController extends Controller
             'password'       => 'required|min:6|confirmed',
         ]);
 
-        User::create([
+        $user = User::create([
             'username'       => $request->username,
             'first_name'     => $request->first_name,
             'middle_name'    => $request->middle_name,
@@ -74,6 +74,18 @@ class AuthController extends Controller
             'password'       => Hash::make($request->password),
         ]);
 
-        return redirect('/login');
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        return redirect('/');
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/');
     }
 }
+
