@@ -1,26 +1,11 @@
 <x-layout>
 <div class="bg-[#121212] min-h-screen" style="font-family: 'Montserrat', sans-serif;">
 
-    {{-- Page Header --}}
-    <div class="px-10 pt-10 pb-6">
-        <div class="flex items-center justify-between mb-1">
-            <div>
-                <h1 class="text-white text-2xl font-bold tracking-tight">My Rentals</h1>
-                <p class="text-gray-400 text-sm mt-1">Cars you are currently renting or have rented</p>
-            </div>
-
-            <div class="flex items-center bg-[#1a1a1a] rounded-full p-1 gap-1 border border-gray-700">
-                <a href="/garage/my-listing"
-                   class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 text-gray-400 hover:text-white">
-                    My Listing
-                </a>
-                <a href="/garage/my-rental"
-                   class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 bg-lime-400 text-black">
-                    My Rental
-                </a>
-            </div>
-        </div>
-    </div>
+    <x-garage_header
+        active="rental"
+        title="My Rentals"
+        subtitle="Cars you are currently renting or have rented"
+    />
 
     {{-- Rentals List --}}
     <div class="px-10 pb-10 space-y-4">
@@ -91,9 +76,7 @@
         {{-- This shows if $rentals is empty --}}
         <div class="flex flex-col items-center justify-center py-24 text-center">
             <div class="w-16 h-16 rounded-full bg-[#1a1a1a] border border-gray-700 flex items-center justify-center mb-4">
-                <svg class="w-7 h-7 text-gray-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                    <path d="M5 17H3a1 1 0 01-1-1v-5l2.5-6h11L18 11v5a1 1 0 01-1 1h-2M5 17a2 2 0 104 0M5 17a2 2 0 114 0M15 17a2 2 0 104 0M15 17a2 2 0 114 0"/>
-                </svg>
+                <i class="fa-solid fa-car-side text-gray-600 text-2xl"></i>
             </div>
             <p class="text-gray-400 text-sm font-medium">No rentals yet</p>
             <p class="text-gray-600 text-xs mt-1 mb-5">Cars you rent will appear here</p>

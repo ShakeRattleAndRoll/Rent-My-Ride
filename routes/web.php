@@ -59,6 +59,10 @@ Route::get('/garage/my-rental', function () {
     return view('garage.my-rental', ['rentals' => []]);
 });
 
+Route::get('/garage/my-cart', function () {
+    return view('garage.my-cart', ['carts' => []]);
+});
+
 // Logout
 Route::post('/logout', [AuthController::class, 'logout']);
 
