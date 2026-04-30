@@ -53,8 +53,15 @@ Route::get('/messages', function () {
 Route::get('/garage', function () {
     return redirect('/garage/my-listing');
 });
-
 Route::get('/garage/my-listing', [CarController::class, 'my_listings'])->middleware('auth');
+// Edit and update listing routes
+Route::get('/garage/edit/{id}', [CarController::class, 'edit']);
+Route::patch('/garage/update/{id}', [CarController::class, 'update']);
+// route for car details page
+Route::get('/garage/details/{id}', [CarController::class, 'details'])
+    ->middleware('auth');
+// Route for delete listing
+Route::delete('/garage/delete/{id}', [CarController::class, 'destroy']);
 
 // Route for garage pre-order feature
 Route::get('/car/pre-order/{id}', function ($id) {
@@ -82,3 +89,8 @@ Route::post('/cart/checkout/{id}', [CartController::class, 'checkout'])->middlew
 
 // Logout
 Route::post('/logout', [AuthController::class, 'logout']);
+
+
+Route::get('/rental/{id}/manage', [RentalController::class, 'manage']);
+Route::post('/rental/{id}/accept', [RentalController::class, 'accept']);
+Route::post('/rental/{id}/deny', [RentalController::class, 'deny']);

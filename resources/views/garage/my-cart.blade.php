@@ -7,6 +7,20 @@
         subtitle="Cars you have saved for renting"
     />
 
+    @if ($carts->isNotEmpty())
+        <div class="mx-10 mb-6 flex items-center justify-center gap-2 text-gray-500 text-xs font-medium tracking-wide">
+
+            <i class="fa-solid fa-info text-lime-400"></i>
+
+            <span>
+                Before clicking 
+                <span class="text-lime-400 font-black">Rent Now</span>, 
+                contact the owner first.
+            </span>
+
+        </div>
+    @endif
+
     <div class="px-10 pb-10 space-y-4">
 
         @forelse ($carts as $cart)

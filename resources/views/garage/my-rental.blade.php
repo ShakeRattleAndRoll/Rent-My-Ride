@@ -7,6 +7,18 @@
         subtitle="Cars you are currently renting or have rented"
     />
 
+    @if ($rentals->isNotEmpty())
+        <div class="mx-10 mb-6 flex items-center justify-center gap-2 text-gray-500 text-xs font-medium tracking-wide">
+
+            <i class="fa-solid fa-info text-lime-400"></i>
+
+            <span>
+                Approach the car owner to finalize the pending/s.
+            </span>
+
+        </div>
+    @endif
+
     {{-- Rentals List --}}
     <div class="px-10 pb-10 space-y-4">
 
