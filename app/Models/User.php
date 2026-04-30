@@ -41,4 +41,13 @@ class User extends Authenticatable
         return $this->hasMany(Rental::class);
     }
 
+    public function getFullNameAttribute()
+    {
+        return trim(
+            $this->first_name . ' ' .
+            ($this->middle_name ? strtoupper(substr($this->middle_name, 0, 1)) . '.' : '') . ' ' .
+            $this->last_name
+        );
+    }
+
 }

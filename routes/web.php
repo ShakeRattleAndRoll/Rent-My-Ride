@@ -68,6 +68,7 @@ Route::get('/garage/my-rental', [RentalController::class, 'index'])->middleware(
 Route::get('/car/pre-order/{id}', [RentalController::class, 'showPreOrders'])->middleware('auth');
 Route::post('/rental/{id}/accept', [RentalController::class, 'accept'])->middleware('auth');
 Route::post('/rental/{id}/deny', [RentalController::class, 'deny'])->middleware('auth');
+Route::patch('/garage/rental/{id}/cancel', [RentalController::class, 'cancel'])->middleware('auth');
 
 //Route for garage cart
 Route::get('/garage/my-cart', function () {

@@ -45,7 +45,7 @@ class RentalController extends Controller
         return view('garage.pre-order', compact('car', 'preOrders'));
     }
 
-    // If owner accpet
+    // If owner accepts
     public function accept($id)
     {
         $rental = Rental::findOrFail($id);
@@ -70,6 +70,25 @@ class RentalController extends Controller
 
         return view('garage.my-rental', compact('rentals'));
     }
+
+    //Cancel Pre-order
+    public function cancel($id)
+{
+    $rental = Rental::findOrFail($id);
+
+    // Security: make sure user owns the rental
+    if ($rental->user_id !== Auth::id()) {
+        abort(403);
+    }
+
+    // Only allow cancel if still pending
+    if ($rental->status !== 'pending') {
+        return redirect()->back()->with('error', 'Only pending rentals can be cancelled.');
+    }
+
+    $rental->delete();
+    return redirect()->back()->with('success', 'Rental request cancelled.');
+}
 }
 
 

@@ -68,10 +68,10 @@
                                     <span class="text-white font-bold">@</span>{{ $order->user->username }}
                                 </td>
                                 <td class="px-6 py-4 border-y border-transparent group-hover:border-gray-700 uppercase font-semibold">
-                                    {{ $order->user->name }}
+                                    {{ $order->user->full_name }}
                                 </td>
                                 <td class="px-6 py-4 border-y border-transparent group-hover:border-gray-700">
-                                    {{ $order->user->phone ?? 'NO CONTACT' }}
+                                    {{ $order->user->contact_number ?? 'NO CONTACT' }}
                                 </td>
                                 <td class="px-6 py-4 border-y border-transparent group-hover:border-gray-700 underline text-blue-400 decoration-blue-400/30">
                                     {{ $order->user->email }}

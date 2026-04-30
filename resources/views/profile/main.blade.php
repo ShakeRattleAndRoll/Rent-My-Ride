@@ -51,11 +51,7 @@
             <div>
                 <p class="text-sm text-gray-400 font-semibold">Full Name</p>
                 <p class="text-lg text-white font-semibold">
-                    {{ trim(
-                        (auth()->user()?->first_name ?? '') . ' ' .
-                        (!empty(auth()->user()?->middle_name) ? strtoupper(substr(auth()->user()->middle_name, 0, 1)) . '.' : '') . ' ' .
-                        (auth()->user()?->last_name ?? '')
-                    ) }}
+                    {{ auth()->user()?->full_name }}
                 </p>
             </div>
 
