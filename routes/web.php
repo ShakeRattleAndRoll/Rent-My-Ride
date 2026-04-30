@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CarController;
+use App\Models\Car;
 use App\Http\Controllers\RentalController;
 use App\Http\Controllers\CartController;
 use App\Models\Cart;
@@ -55,8 +56,18 @@ Route::get('/garage', function () {
 
 Route::get('/garage/my-listing', [CarController::class, 'my_listings'])->middleware('auth');
 
+// Route for garage pre-order feature
+Route::get('/car/pre-order/{id}', function ($id) {
+    $car = Car::findOrFail($id);
+    return view('garage.pre-order', compact('car'));
+})->middleware('auth');
+
 //Route for garage rental
+Route::post('/rent', [RentalController::class, 'store'])->middleware('auth');
 Route::get('/garage/my-rental', [RentalController::class, 'index'])->middleware('auth');
+Route::get('/car/pre-order/{id}', [RentalController::class, 'showPreOrders'])->middleware('auth');
+Route::post('/rental/{id}/accept', [RentalController::class, 'accept'])->middleware('auth');
+Route::post('/rental/{id}/deny', [RentalController::class, 'deny'])->middleware('auth');
 
 //Route for garage cart
 Route::get('/garage/my-cart', function () {
@@ -65,15 +76,8 @@ Route::get('/garage/my-cart', function () {
 })->middleware('auth');
 
 Route::post('/cart/add', [CartController::class, 'store'])->name('cart.add')->middleware('auth');
-
 Route::delete('/cart/remove/{id}', [CartController::class, 'destroy'])->name('cart.remove')->middleware('auth');
+Route::post('/cart/checkout/{id}', [CartController::class, 'checkout'])->middleware('auth');
 
 // Logout
 Route::post('/logout', [AuthController::class, 'logout']);
-
-// Route for my-rental
-Route::post('/rent', [RentalController::class, 'store'])->middleware('auth');
-Route::get('/garage/my-rental', [RentalController::class, 'index']);
-
-// Route for my cart
-Route::post('/cart/add', [CartController::class, 'store'])->middleware('auth');

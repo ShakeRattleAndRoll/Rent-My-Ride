@@ -60,7 +60,7 @@
         </p>
 
         {{-- Pre Orders with notification dot --}}
-        <a href="/garage/pre-orders/{{ $car->id }}"
+        <a href="/car/pre-order/{{ $car->id }}"
            class="relative bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-bold px-5 py-2 rounded-full transition-all duration-200 w-32 text-center">
             Pre orders
             @if (isset($car->pending_orders_count) && $car->pending_orders_count > 0)

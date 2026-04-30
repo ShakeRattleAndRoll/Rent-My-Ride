@@ -5,8 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Rental;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
-// Not done para ni sa katong e click ang shop it e save sa my-rental
+use App\Models\Car;
 
 class RentalController extends Controller
 {
@@ -25,6 +24,7 @@ class RentalController extends Controller
         Rental::create([
             'user_id' => Auth::id(), 
             'car_id' => $request->car_id,
+            'status' => 'pending',
             'start_date' => now(),        
             'end_date' => now()->addDays(7),
         ]);
@@ -32,6 +32,38 @@ class RentalController extends Controller
         return redirect('/garage/my-rental')->with('Success', 'Car added to your rentals!');
     }
 
+    //Pre-order function
+    public function showPreOrders($id)
+    {
+        $car = \App\Models\Car::findOrFail($id);
+
+        $preOrders = Rental::where('car_id', $id)
+                        ->where('status', 'pending')
+                        ->with('user')
+                        ->get();
+
+        return view('garage.pre-order', compact('car', 'preOrders'));
+    }
+
+    // If owner accpet
+    public function accept($id)
+    {
+        $rental = Rental::findOrFail($id);
+        $rental->update(['status' => 'accepted']);
+
+        return redirect()->back()->with('success', 'You have accepted the rental request!');
+    }
+
+    //if owner denied
+    public function deny($id)
+    {
+        $rental = Rental::findOrFail($id);
+        $rental->update(['status' => 'denied']);
+
+        return redirect()->back()->with('success', 'Rental request denied.');
+    }
+
+    // return sa rental
     public function index()
     {
         $rentals = Rental::with('car')->where('user_id', Auth::id())->get();

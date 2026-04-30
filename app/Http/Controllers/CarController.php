@@ -49,7 +49,7 @@ class CarController extends Controller
 
         Car::create($attributes);
 
-        return redirect()->back()->with( 'Success', 'Car Added Successfully!');
+        return redirect()->back()->with( 'success', 'Car Added Successfully!');
     }
 
     public function my_listings()

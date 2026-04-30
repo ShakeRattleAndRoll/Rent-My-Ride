@@ -9,7 +9,7 @@
 
         <div class="flex items-center bg-[#1a1a1a] rounded-full p-1 gap-1 border border-gray-700">
             <a href="/garage/my-listing"
-               class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 {{ $active === 'listing' ? 'bg-lime-400 text-black' : 'text-gray-400 hover:text-white' }}">
+               class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 {{ $active === 'listing' || Request::is('car/pre-order*') ? 'bg-lime-400 text-black' : 'text-gray-400 hover:text-white' }}">
                 My Listing
             </a>
             <a href="/garage/my-rental"

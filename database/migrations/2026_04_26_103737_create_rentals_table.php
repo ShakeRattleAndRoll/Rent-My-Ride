@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('car_id')->constrained();
+            $table->string('status')->default('pending');
             $table->date('start_date');
             $table->date('end_date');
             $table->timestamps();

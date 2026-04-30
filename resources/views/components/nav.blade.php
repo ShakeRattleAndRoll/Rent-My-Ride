@@ -31,7 +31,7 @@
             Post a Car
         </a>
 
-        <a href="/garage/my-listing" class="px-4 py-2 rounded-full {{ request()->is('garage*') ? 'bg-lime-400 text-black' : 'text-white hover:text-lime-400' }}">
+        <a href="/garage/my-listing" class="px-4 py-2 rounded-full {{ request()->is('garage*') || Request::is('car/pre-order*') ? 'bg-lime-400 text-black' : 'text-white hover:text-lime-400' }}">
             Garage
         </a>
 
