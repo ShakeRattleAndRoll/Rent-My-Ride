@@ -32,3 +32,4 @@
 * The plus sign and car sign in garage not redirect to respective section
 * Message 
 * Profile stats
+* Navigation Responsive

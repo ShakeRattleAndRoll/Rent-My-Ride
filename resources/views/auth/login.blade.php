@@ -8,38 +8,50 @@
                 alt="Rent My Ride Logo"
                 class="mx-auto mb-10 w-65">
 
-            <form method="POST" action="/login">
+            <form method="POST" action="/login" class="space-y-4">
                 @csrf
 
-                <input type="text" name="email" placeholder="Email/Username"
-                    class="w-full mb-2 p-3 rounded-full bg-gray-800 text-white border-none">
+                <!-- Errors -->
+                @if ($errors->any())
+                    <div class="bg-red-500/10 border border-red-500 text-red-400 text-sm px-4 py-3 rounded-md">
+                        
+                        @if ($errors->has('email'))
+                            {{ $errors->first('email') }}
+                        @elseif ($errors->has('password'))
+                            {{ $errors->first('password') }}
+                        @endif
 
-                <div class="relative mb-2">
+                    </div>
+                @endif
+
+                <!-- Email / Username -->
+                <input type="text" name="email" placeholder="Email or Username"
+                    class="w-full p-3 rounded-md bg-gray-800 text-white placeholder-gray-400 
+                        focus:outline-none focus:ring-2 focus:ring-yellow-400 transition">
+
+                <!-- Password -->
+                <div class="relative">
                     <input type="password" name="password" id="password" placeholder="Password"
-                        class="w-full p-3 rounded-full bg-gray-800 text-white border-none pr-12">
+                        class="w-full p-3 rounded-md bg-gray-800 text-white placeholder-gray-400 
+                            pr-12 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition">
+
                     <button type="button" onclick="togglePassword('password', 'eyeIcon')"
-                        class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white">
+                        class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition">
                         <i id="eyeIcon" class="fa fa-eye"></i>
                     </button>
                 </div>
 
-                @error('email')
-                    <p class="text-red-400 text-sm mb-3 px-2">{{ $message }}</p>
-                @enderror
-                @error('password')
-                    <p class="text-red-400 text-sm mb-3 px-2">{{ $message }}</p>
-                @enderror
-
-                <div class="mb-6"></div>
-
-                <button type="submit" class="bg-yellow-400 w-full py-2 rounded-full font-bold text-black cursor-pointer">
+                <!-- Login Button -->
+                <button type="submit"
+                    class="w-full py-3 rounded-md font-bold text-black bg-yellow-400 
+                        hover:bg-yellow-300 active:scale-95 transition duration-200">
                     LOGIN
                 </button>
             </form>
-
+            
             <p class="text-gray-400 mt-4">
                 Don't have account?
-                <a href="/register" class="text-blue-400">Sign Up</a>
+                <a href="/register" class="text-yellow-400 hover:text-yellow-300 font-semibold transition">Sign Up</a>
             </p>
 
         </div>
