@@ -39,15 +39,20 @@
             </span>
         </div>
 
+        @php
+            $ActiveRent = $car->rentals->where('status', 'accepted')->first();
+            $IsOccupied = !is_null($ActiveRent);
+        @endphp
+
         {{-- Status + Details --}}
         <div class="flex items-center gap-2">
-            @if ($car->is_rented)
+            @if ($IsOccupied)
                 <span class="bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full">Occupied</span>
             @else
                 <span class="bg-gray-600 text-white text-xs font-bold px-3 py-1 rounded-full">Unoccupied</span>
             @endif
 
-            <a href="/garage/details/{{ $car->id }}"
+            <a href="/garage/details/{{ $car->id }}" wire:navigate
                class="bg-[#2a2a2a] hover:bg-[#333] border border-gray-700 text-gray-300 text-xs font-bold px-4 py-1 rounded-full transition-all duration-200">
                 Details
             </a>
@@ -63,7 +68,7 @@
         </p>
 
         {{-- Pre Orders --}}
-        <a href="/car/pre-order/{{ $car->id }}"
+        <a href="/car/pre-order/{{ $car->id }}" wire:navigate
            class="relative bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-bold px-5 py-2 rounded-full transition-all duration-200 w-32 text-center">
             Pre orders
 
@@ -75,24 +80,38 @@
         </a>
 
         {{-- Edit --}}
-        <a href="/garage/edit/{{ $car->id }}"
-           class="bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-bold px-5 py-2 rounded-full transition-all duration-200 w-32 text-center">
-            Edit Post
-        </a>
+        @if ($IsOccupied) {{-- Disabled Edit Button if true  --}}
+            
+            <button type="button" 
+                    class="bg-gray-800 text-gray-500 cursor-not-allowed text-xs font-bold px-5 py-2 rounded-full w-32 text-center border border-gray-700">
+                Edit Post
+            </button>
+        @else {{-- Active Edit Button if otherwise not --}}
+            <a href="/garage/edit/{{ $car->id }}" wire:navigate
+            class="bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-bold px-5 py-2 rounded-full transition-all duration-200 w-32 text-center">
+                Edit Post
+            </a>
+        @endif
 
         {{-- DELETE --}}
-        <form method="POST"
-              action="/garage/delete/{{ $car->id }}"
-              onsubmit="return confirm('Are you sure you want to delete this car?');">
-            @csrf
-            @method('DELETE')
-
-            <button type="submit"
-                    class="bg-red-500 hover:bg-red-400 text-white text-xs font-bold px-5 py-2 rounded-full transition-all duration-200 w-32 text-center">
+        @if ($IsOccupied)  {{-- Same as Edit, if true disable --}} 
+            <button type="button" 
+                    class="bg-gray-800 text-gray-500 cursor-not-allowed text-xs font-bold px-5 py-2 rounded-full w-32 text-center border border-gray-700">
                 Delete Post
             </button>
-        </form>
+        @else  {{-- Otherwise allow delete --}}
+            <form method="POST" 
+                action="/garage/delete/{{ $car->id }}"
+                onsubmit="return confirm('Are you sure you want to delete this car?');">
+                @csrf
+                @method('DELETE')
 
+                <button type="submit"
+                        class="bg-red-500 hover:bg-red-400 text-white text-xs font-bold px-5 py-2 rounded-full transition-all duration-200 w-32 text-center">
+                    Delete Post
+                </button>
+            </form>
+        @endif
     </div>
 
 </div>

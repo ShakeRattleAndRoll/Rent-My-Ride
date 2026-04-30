@@ -105,4 +105,15 @@
         });
     </script>
 
+    {{-- Style for filepond --}}
+    <style>
+        .filepond--panel-root {
+            background-color: #242424;
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+        .filepond--drop-label {
+            color: #9ca3af;
+        }
+    </style>
+
 </x-layout>

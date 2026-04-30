@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+
+    @livewireStyles
+    @livewireScripts
+
     <title>{{ $title ?? 'Rent My Ride' }}</title>
     <link rel="icon" type="image/png" href="{{ asset('images/Rent-My-Ride-Logo.png') }}" sizes="100x64">
     <script src="https://cdn.tailwindcss.com"></script>

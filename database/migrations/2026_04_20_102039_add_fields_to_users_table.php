@@ -21,6 +21,7 @@ return new class extends Migration
         $table->string('sex')->nullable()->after('dob');
         $table->text('address')->nullable()->after('sex');
         $table->string('contact_number')->nullable()->after('address');
+        $table->string('profile_picture')->nullable()->after('contact_number');
     });
 }
 
@@ -38,7 +39,8 @@ return new class extends Migration
             'dob',
             'sex',
             'address',
-            'contact_number'
+            'contact_number',
+            'profile_picture'
         ]);
     });
 }

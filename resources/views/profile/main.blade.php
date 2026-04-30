@@ -20,25 +20,32 @@
 
             {{-- Profile Picture --}}
             <div class="w-48 h-48 rounded-full bg-[#2a2a2a] border-2 border-white/10 flex items-center justify-center overflow-hidden">
-                <svg class="w-16 h-16 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                </svg>
+                @if(auth()->user()->profile_picture)
+                    <img src="{{ asset('storage/' . auth()->user()->profile_picture) }}" 
+                        alt="Profile" 
+                        class="w-full h-full object-cover">
+                @else
+                    <svg class="w-16 h-16 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                @endif
             </div>
 
             {{-- Stats --}}
-            <div class="w-full max-w-md bg-[#242424] rounded-2xl p-6 border border-white/5">
-                <p class="text-center text-sm font-semibold text-gray-300 mb-4">Stats</p>
-                <div class="flex justify-around">
-                    <div class="flex flex-col items-center gap-2">
-                        <p class="text-xs text-gray-400">Total Rentals</p>
-                        <span class="text-white font-bold text-lg">0</span>
-                    </div>
+            <div class="flex justify-around">
+                <div class="flex flex-col items-center gap-2">
+                    <p class="text-xs text-gray-400">Total Cars</p>
+                    <span class="text-white font-bold text-lg">
+                        {{ auth()->user()->rentals()->count() }}
+                    </span>
+                </div>
 
-                    <div class="flex flex-col items-center gap-2">
-                        <p class="text-xs text-gray-400">Total Rented</p>
-                        <span class="text-white font-bold text-lg">0</span>
-                    </div>
+                <div class="flex flex-col items-center gap-2">
+                    <p class="text-xs text-gray-400">Active Listings</p>
+                    <span class="text-white font-bold text-lg">
+                        {{ \App\Models\Car::where('user_id', auth()->id())->count() }}
+                    </span>
                 </div>
             </div>
 

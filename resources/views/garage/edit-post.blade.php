@@ -1,4 +1,7 @@
 <x-layout>
+    <link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet">
+    <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet">
+
     <div class="bg-[#121212] min-h-screen text-white p-10">
         <div class="max-w-6xl mx-auto bg-[#1a1a1a] p-10 rounded-3xl shadow-2xl border border-white/5" style="font-family: 'Montserrat', sans-serif;"> 
             
@@ -13,34 +16,21 @@
                 <div class="col-span-1 space-y-6">
                     <label class="block text-sm font-semibold text-gray-300">Car Picture</label>
 
-                    @if($car->car_image)
-                        <img src="{{ asset('storage/' . $car->car_image) }}" class="rounded-xl mb-2">
-                    @endif
-
                     <input type="file" name="car_image" id="car_image" accept="image/*"/>
 
                     <div class="flex flex-col gap-2">
                         <label class="text-sm text-gray-400 font-semibold">Date Bought/Owned</label>
-                        <input type="date" name="date_owned"
-                               value="{{ $car->date_owned }}"
+                        <input type="date" name="date_owned" value="{{ $car->date_owned }}"
                                class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5 outline-none focus:border-yellow-400">
                     </div>
                 </div>
 
-                {{-- Fields --}}
+                {{-- Fields Section --}}
                 <div class="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                    <input type="text" name="brand" value="{{ $car->brand }}"
-                        class="w-full bg-[#242424] text-white p-4 rounded-xl">
-
-                    <input type="text" name="model" value="{{ $car->model }}"
-                        class="w-full bg-[#242424] text-white p-4 rounded-xl">
-
-                    <input type="number" name="price" value="{{ $car->price }}"
-                        class="w-full bg-[#242424] text-white p-4 rounded-xl">
-
-                    <input type="number" name="rent_period" value="{{ $car->rent_period }}"
-                        class="w-full bg-[#242424] text-white p-4 rounded-xl">
+                    <input type="text" name="brand" value="{{ $car->brand }}" class="w-full bg-[#242424] text-white p-4 rounded-xl">
+                    <input type="text" name="model" value="{{ $car->model }}" class="w-full bg-[#242424] text-white p-4 rounded-xl">
+                    <input type="number" name="price" value="{{ $car->price }}" class="w-full bg-[#242424] text-white p-4 rounded-xl">
+                    <input type="number" name="rent_period" value="{{ $car->rent_period }}" class="w-full bg-[#242424] text-white p-4 rounded-xl">
 
                     <select name="transmission" class="w-full bg-[#242424] text-white p-4 rounded-xl">
                         <option {{ $car->transmission == 'Automatic' ? 'selected' : '' }}>Automatic</option>
@@ -53,8 +43,7 @@
                         <option {{ $car->fuel_type == 'Electric' ? 'selected' : '' }}>Electric</option>
                     </select>
 
-                    <textarea name="description" rows="6"
-                        class="md:col-span-2 w-full bg-[#242424] text-white p-4 rounded-xl">{{ $car->description }}</textarea>
+                    <textarea name="description" rows="6" class="md:col-span-2 w-full bg-[#242424] text-white p-4 rounded-xl">{{ $car->description }}</textarea>
 
                     <div class="md:col-span-2 flex justify-end gap-4 mt-4">
                         <a href="/garage/my-listing" class="px-8 py-3 font-bold text-gray-400 flex items-center">Cancel</a>
@@ -62,9 +51,45 @@
                             Update
                         </button>
                     </div>
-
                 </div>
             </form>
         </div>
     </div>
+
+    <script>
+        FilePond.registerPlugin(FilePondPluginImagePreview);
+        const inputElement = document.querySelector('#car_image');
+        const pond = FilePond.create(inputElement, {
+            storeAsFile: true, 
+            labelIdle: `Drag & Drop your picture or <span class="filepond--label-action">Browse</span>`,
+            imagePreviewHeight: 250,
+
+            files: [
+                @if($car->car_image)
+                {
+                    source: '{{ asset("storage/" . $car->car_image) }}',
+                    options: {
+                        type: 'local',
+                    }
+                }
+                @endif
+            ],
+            server: {
+                load: (source, load, error, progress, abort, headers) => {
+                    fetch(source).then(res => res.blob()).then(load);
+                }
+            }
+        });
+    </script>
+
+    {{-- Style for filepond --}}
+    <style>
+        .filepond--panel-root {
+            background-color: #242424;
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+        .filepond--drop-label {
+            color: #9ca3af;
+        }
+    </style>
 </x-layout>

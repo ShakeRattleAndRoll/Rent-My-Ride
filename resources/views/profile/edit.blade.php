@@ -16,16 +16,17 @@
                     </p>
 
                     {{-- Profile Picture --}}
-                    <label class="w-48 h-48 rounded-full bg-[#2a2a2a] border-2 border-dashed border-gray-600 hover:border-yellow-400 transition cursor-pointer flex items-center justify-center overflow-hidden group">
-
-                        <svg class="w-16 h-16 text-gray-600 group-hover:text-yellow-400 transition"
-                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
-
-                        <input type="file" name="profile_picture" class="hidden" />
-                    </label>
+                    <div class="flex flex-col items-center gap-6 mb-10">
+                        <div class="w-44">
+                            <input type="file" 
+                                name="profile_picture" 
+                                id="profile_picture" 
+                                accept="image/*">
+                        </div>
+                        <p class="text-xs text-gray-500 font-['Montserrat'] tracking-widest uppercase">
+                            {{ auth()->user()->username }}
+                        </p>
+                    </div>
 
                 </div>
 
@@ -152,4 +153,35 @@
 
         </div>
     </div>
+
+
+    {{-- Filepond config for profile --}}
+    <script>
+        FilePond.registerPlugin(FilePondPluginImagePreview);
+
+        const inputElement = document.querySelector('#profile_picture');
+        const pond = FilePond.create(inputElement, {
+            labelIdle: `<span class="text-xs font-['Montserrat']">Upload Photo</span>`,
+            imagePreviewHeight: 170,
+            imageCropAspectRatio: '1:1',
+            imageResizeTargetWidth: 200,
+            imageResizeTargetHeight: 200,
+            stylePanelLayout: 'compact circle',
+            styleLoadIndicatorPosition: 'center bottom',
+            styleButtonRemoveItemPosition: 'center bottom',
+            storeAsFile: true, 
+        });
+
+        @if(auth()->user()->profile_picture)
+            pond.addFile("{{ asset('storage/' . auth()->user()->profile_picture) }}");
+        @endif
+    </script>
+
+    {{-- Style for filepond --}}
+    <style>
+        .filepond--panel-root { background-color: #242424; border: 2px dashed #333; }
+        .filepond--drop-label { color: #888; }
+        .filepond--file-action-button { background-color: rgba(0, 0, 0, 0.5); color: white; }
+    </style>
+
 </x-layout>

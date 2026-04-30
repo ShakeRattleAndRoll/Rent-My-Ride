@@ -104,10 +104,10 @@
         </p>
 
         <div class="flex flex-col sm:flex-row justify-center gap-4">
-            <a href="/available" class="px-10 py-3 bg-yellow-400 text-black rounded-full font-bold hover:bg-yellow-300 transition text-center">
+            <a href="/available" wire:navigate class="px-10 py-3 bg-yellow-400 text-black rounded-full font-bold hover:bg-yellow-300 transition text-center">
                 <i class="fa-solid fa-car mr-2"></i> Browse Available Cars
             </a>
-            <a href="/post-car" class="px-10 py-3 bg-yellow-400 text-black rounded-full font-bold hover:bg-yellow-300 transition text-center">
+            <a href="/garage/post-car" wire:navigate class="px-10 py-3 bg-yellow-400 text-black rounded-full font-bold hover:bg-yellow-300 transition text-center">
                 <i class="fa-solid fa-plus mr-2"></i> Post Your Car
             </a>
         </div>

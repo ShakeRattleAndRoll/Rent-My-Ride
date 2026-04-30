@@ -9,6 +9,9 @@ use App\Http\Controllers\CartController;
 use App\Models\Cart;
 use Illuminate\Support\Facades\Auth;
 
+// Download og livewire para walay loading copy ning nasa baba sa terminal [ctrl + `]
+// composer require livewire/livewire
+
 Route::get('/', function () {
     if (Auth::check()) {
         return view('home.main');
@@ -24,25 +27,24 @@ Route::post('/login', [AuthController::class, 'authenticate']);
 Route::get('/register', [AuthController::class, 'register'])->name('register')->middleware('guest');
 Route::post('/register', [AuthController::class, 'store']);
 
+// Logout
+Route::post('/logout', [AuthController::class, 'logout']);
+
 // Post a car route
-Route::get('/post-car', [CarController::class, 'create']);
+Route::get('/garage/post-car', [CarController::class, 'create']);
 Route::post('/cars', [CarController::class, 'store'])->middleware('auth');
 
 // Route for available cars page
-Route::get('/available', [CarController::class, 'index']);
+Route::get('/available', [CarController::class, 'index'])->middleware('auth');
 
 // Route for profile page
-Route::get('/profile', function () {
-    return view('profile.main'); 
-});
+Route::get('/profile', [AuthController::class, 'profile'])->name('profile.main');
 
 // Route for edit profile page
-Route::get('/profile/edit', function () {
-    return view('profile.edit');
-});
+Route::get('/profile/edit', [AuthController::class, 'edit'])->name('profile.edit');
 
 // Route for update profile
-Route::patch('/profile/update', [AuthController::class, 'update']);
+Route::patch('/profile/update', [AuthController::class, 'update'])->name('profile.update');
 
 // Route for message page
 Route::get('/messages', function () {
@@ -54,12 +56,15 @@ Route::get('/garage', function () {
     return redirect('/garage/my-listing');
 });
 Route::get('/garage/my-listing', [CarController::class, 'my_listings'])->middleware('auth');
+
 // Edit and update listing routes
 Route::get('/garage/edit/{id}', [CarController::class, 'edit']);
 Route::patch('/garage/update/{id}', [CarController::class, 'update']);
+
 // route for car details page
 Route::get('/garage/details/{id}', [CarController::class, 'details'])
     ->middleware('auth');
+
 // Route for delete listing
 Route::delete('/garage/delete/{id}', [CarController::class, 'destroy']);
 
@@ -86,9 +91,6 @@ Route::get('/garage/my-cart', function () {
 Route::post('/cart/add', [CartController::class, 'store'])->name('cart.add')->middleware('auth');
 Route::delete('/cart/remove/{id}', [CartController::class, 'destroy'])->name('cart.remove')->middleware('auth');
 Route::post('/cart/checkout/{id}', [CartController::class, 'checkout'])->middleware('auth');
-
-// Logout
-Route::post('/logout', [AuthController::class, 'logout']);
 
 
 Route::get('/rental/{id}/manage', [RentalController::class, 'manage']);

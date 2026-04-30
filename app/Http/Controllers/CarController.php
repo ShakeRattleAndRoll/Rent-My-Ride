@@ -56,7 +56,9 @@ class CarController extends Controller
     // MY LISTINGS
     public function my_listings()
     {
-        $myCars = Car::where('user_id', Auth::id())->get();
+        $myCars = Car::where('user_id', Auth::id())->with('rentals')->withCount(['rentals as pending_orders_count' => function($query) {
+            $query->where('status', 'pending');
+        }])->get();
 
         return view('garage.my-listing', ['listings' => $myCars]);
     }

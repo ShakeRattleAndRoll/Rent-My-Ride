@@ -22,11 +22,11 @@
             {{-- Quick Links --}}
             <div class="flex flex-col gap-3">
                 <h4 class="text-white font-bold text-sm uppercase tracking-widest mb-2">Quick Links</h4>
-                <a href="/" class="text-sm hover:text-white transition">Home</a>
-                <a href="/available" class="text-sm hover:text-white transition">Browse Cars</a>
-                <a href="/post-car" class="text-sm hover:text-white transition">List Your Car</a>
-                <a href="/garage" class="text-sm hover:text-white transition">My Garage</a>
-                <a href="/profile" class="text-sm hover:text-white transition">Profile</a>
+                <a href="/" wire:navigate class="text-sm hover:text-white transition">Home</a>
+                <a href="/available" wire:navigate class="text-sm hover:text-white transition">Browse Cars</a>
+                <a href="/post-car" wire:navigate class="text-sm hover:text-white transition">List Your Car</a>
+                <a href="/garage" wire:navigate class="text-sm hover:text-white transition">My Garage</a>
+                <a href="/profile" wire:navigate class="text-sm hover:text-white transition">Profile</a>
             </div>
 
             {{-- Support --}}

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Rental;
 
 // Post a car part 
 
@@ -33,4 +34,9 @@ class Car extends Model
         'created_at' => 'datetime',
         'is_rented' => 'boolean',
     ];
+
+    public function rentals()
+    {
+        return $this->hasMany(Rental::class);
+    }
 }
