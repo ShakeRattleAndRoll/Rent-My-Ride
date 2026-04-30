@@ -22,12 +22,14 @@
                     <line x1="3" y1="10" x2="21" y2="10"/>
                 </svg>
             </span>
+
             <span class="flex items-center gap-1.5">
                 <svg class="w-3.5 h-3.5 text-gray-500 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                     <path d="M3 22V6a2 2 0 012-2h8a2 2 0 012 2v16M3 22h14M13 8h2a2 2 0 012 2v3a1 1 0 001 1h0a1 1 0 001-1V9l-3-3"/>
                 </svg>
                 {{ $car->fuel_type }}
             </span>
+
             <span class="flex items-center gap-1.5">
                 <svg class="w-3.5 h-3.5 text-gray-500 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                     <circle cx="12" cy="12" r="3"/>
@@ -37,7 +39,7 @@
             </span>
         </div>
 
-        {{-- Status Badge + Details Button --}}
+        {{-- Status + Details --}}
         <div class="flex items-center gap-2">
             @if ($car->is_rented)
                 <span class="bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full">Occupied</span>
@@ -54,15 +56,17 @@
 
     {{-- Price + Actions --}}
     <div class="flex flex-col items-end gap-2 shrink-0">
+
         <p class="text-white font-bold text-base">
             ₱{{ number_format($car->price, 0) }}
             <span class="text-gray-400 font-normal text-sm">/day</span>
         </p>
 
-        {{-- Pre Orders with notification dot --}}
+        {{-- Pre Orders --}}
         <a href="/car/pre-order/{{ $car->id }}"
            class="relative bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-bold px-5 py-2 rounded-full transition-all duration-200 w-32 text-center">
             Pre orders
+
             @if (isset($car->pending_orders_count) && $car->pending_orders_count > 0)
                 <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-white text-[10px] flex items-center justify-center font-bold">
                     {{ $car->pending_orders_count }}
@@ -70,19 +74,25 @@
             @endif
         </a>
 
+        {{-- Edit --}}
         <a href="/garage/edit/{{ $car->id }}"
            class="bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-bold px-5 py-2 rounded-full transition-all duration-200 w-32 text-center">
             Edit Post
         </a>
 
-        <form method="POST" action="/garage/delete/{{ $car->id }}">
+        {{-- DELETE --}}
+        <form method="POST"
+              action="/garage/delete/{{ $car->id }}"
+              onsubmit="return confirm('Are you sure you want to delete this car?');">
             @csrf
             @method('DELETE')
+
             <button type="submit"
-                    class="bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-bold px-5 py-2 rounded-full transition-all duration-200 w-32 text-center">
+                    class="bg-red-500 hover:bg-red-400 text-white text-xs font-bold px-5 py-2 rounded-full transition-all duration-200 w-32 text-center">
                 Delete Post
             </button>
         </form>
+
     </div>
 
 </div>
