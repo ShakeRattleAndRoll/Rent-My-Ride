@@ -12,6 +12,7 @@ class Car extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'car_image',
         'date_owned',
         'brand',
@@ -21,5 +22,15 @@ class Car extends Model
         'transmission',
         'fuel_type',
         'description',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'is_rented' => 'boolean',
     ];
 }

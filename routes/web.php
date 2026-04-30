@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CarController;
 use App\Http\Controllers\RentalController;
+use App\Http\Controllers\CartController;
+use App\Models\Cart;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
@@ -23,14 +25,14 @@ Route::post('/register', [AuthController::class, 'store']);
 
 // Post a car route
 Route::get('/post-car', [CarController::class, 'create']);
-Route::post('/cars', [CarController::class, 'store']);
+Route::post('/cars', [CarController::class, 'store'])->middleware('auth');
 
 // Route for available cars page
 Route::get('/available', [CarController::class, 'index']);
 
 // Route for profile page
 Route::get('/profile', function () {
-    return view('profile.main');
+    return view('profile.main'); 
 });
 
 // Route for edit profile page
@@ -46,22 +48,25 @@ Route::get('/messages', function () {
     return view('message.message');
 });
 
-// Routes for garage page
+// Routes for garage listing
 Route::get('/garage', function () {
     return redirect('/garage/my-listing');
 });
 
-Route::get('/garage/my-listing', function () {
-    return view('garage.my-listing', ['listings' => []]);
-});
+Route::get('/garage/my-listing', [CarController::class, 'my_listings'])->middleware('auth');
 
-Route::get('/garage/my-rental', function () {
-    return view('garage.my-rental', ['rentals' => []]);
-});
+//Route for garage rental
+Route::get('/garage/my-rental', [RentalController::class, 'index'])->middleware('auth');
 
+//Route for garage cart
 Route::get('/garage/my-cart', function () {
-    return view('garage.my-cart', ['carts' => []]);
-});
+    $cartItems = Cart::where('user_id', Auth::id())->with('car')->get();
+    return view('garage.my-cart', ['carts' => $cartItems]);
+})->middleware('auth');
+
+Route::post('/cart/add', [CartController::class, 'store'])->name('cart.add')->middleware('auth');
+
+Route::delete('/cart/remove/{id}', [CartController::class, 'destroy'])->name('cart.remove')->middleware('auth');
 
 // Logout
 Route::post('/logout', [AuthController::class, 'logout']);
@@ -69,3 +74,6 @@ Route::post('/logout', [AuthController::class, 'logout']);
 // Route for my-rental
 Route::post('/rent', [RentalController::class, 'store'])->middleware('auth');
 Route::get('/garage/my-rental', [RentalController::class, 'index']);
+
+// Route for my cart
+Route::post('/cart/add', [CartController::class, 'store'])->middleware('auth');

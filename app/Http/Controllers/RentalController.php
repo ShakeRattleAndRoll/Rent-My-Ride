@@ -16,6 +16,12 @@ class RentalController extends Controller
             'car_id' => 'required|exists:cars,id'
         ]);
 
+        $car = \App\Models\Car::find($request->car_id);
+
+        if ($car->user_id === Auth::id()) { 
+        return redirect()->back()->with('error', 'You cannot rent your own car!');
+        }
+
         Rental::create([
             'user_id' => Auth::id(), 
             'car_id' => $request->car_id,
@@ -23,7 +29,7 @@ class RentalController extends Controller
             'end_date' => now()->addDays(7),
         ]);
 
-        return redirect('/garage/my-rental')->with('feedback', 'Car added to your rentals!');
+        return redirect('/garage/my-rental')->with('Success', 'Car added to your rentals!');
     }
 
     public function index()

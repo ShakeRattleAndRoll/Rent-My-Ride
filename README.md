@@ -19,11 +19,12 @@
 * Logout
 * Sign up -> Homepage
 * Save change in edit profile
+* Clicking the add to cart it saves in garage my cart
 
 ## PARTIALLY DONE
 
 ### FEATURES
-* Clicking the shop it saves in pre orders
+
 * Change profile pic
 * Profile pic in navigation
 * Search Filter

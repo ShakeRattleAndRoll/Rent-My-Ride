@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Car;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CarController extends Controller
 {
@@ -24,6 +25,10 @@ class CarController extends Controller
     public function store(Request $request)
     {
 
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+
         $attributes = $request->validate([
             'car_image'    => ['required', 'image'],
             'date_owned'   => ['required', 'date'],
@@ -40,8 +45,19 @@ class CarController extends Controller
             $attributes['car_image'] = $request->file('car_image')->store('car_photos', 'public');
         }
 
+        $attributes['user_id'] = Auth::id();
+
         Car::create($attributes);
 
-        return redirect()->back()->with( 'feedback', 'Car Added Successfully!');
+        return redirect()->back()->with( 'Success', 'Car Added Successfully!');
     }
+
+    public function my_listings()
+    {
+        $myCars = Car::where('user_id', Auth::id())->get();
+
+        return view('garage.my-listing', ['listings' => $myCars]);
+    }
+
+    
 }

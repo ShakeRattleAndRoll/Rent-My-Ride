@@ -4,7 +4,7 @@
 
     {{-- Car Image --}}
     <div class="w-44 h-28 rounded-xl overflow-hidden shrink-0 bg-gray-800">
-        <img src="{{ asset('storage/' . $car->image) }}"
+        <img src="{{ asset('storage/' . $car->car_image) }}"
              alt="{{ $car->brand }} {{ $car->model }}"
              class="w-full h-full object-cover">
     </div>
@@ -21,7 +21,6 @@
                     <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
                     <line x1="3" y1="10" x2="21" y2="10"/>
                 </svg>
-                {{ \Carbon\Carbon::parse($car->created_at)->format('F j, Y') }}
             </span>
             <span class="flex items-center gap-1.5">
                 <svg class="w-3.5 h-3.5 text-gray-500 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
@@ -56,7 +55,7 @@
     {{-- Price + Actions --}}
     <div class="flex flex-col items-end gap-2 shrink-0">
         <p class="text-white font-bold text-base">
-            ₱{{ number_format($car->price_per_day, 0) }}
+            ₱{{ number_format($car->price, 0) }}
             <span class="text-gray-400 font-normal text-sm">/day</span>
         </p>
 

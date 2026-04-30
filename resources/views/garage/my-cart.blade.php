@@ -14,7 +14,7 @@
 
             {{-- Car Image --}}
             <div class="w-44 h-28 rounded-xl overflow-hidden shrink-0 bg-gray-800">
-                <img src="{{ asset('storage/' . $cart->car->image) }}"
+                <img src="{{ asset('storage/' . $cart->car->car_image) }}"
                      alt="{{ $cart->car->brand }} {{ $cart->car->model }}"
                      class="w-full h-full object-cover">
             </div>
@@ -52,20 +52,30 @@
                 </div>
 
                 {{-- Total Cost --}}
-                @php
+                {{-- Taronga ni diri por dapat naa tay murag button na maka select sila pila ka days ako nay bahala sa calculation basta katong button --}}
+                {{-- @php
                     $days = \Carbon\Carbon::parse($cart->start_date)->diffInDays(\Carbon\Carbon::parse($cart->end_date));
-                    $total = $days * $cart->car->price_per_day;
+                    $total = $days * $cart->car->price
                 @endphp
                 <p class="text-gray-500 text-xs">
                     {{ $days }} day{{ $days > 1 ? 's' : '' }} ·
                     <span class="text-lime-400 font-bold">₱{{ number_format($total, 0) }} total</span>
-                </p>
+                </p> --}}
+                
+                <div class="mt-2 flex items-center gap-2">
+                    <span class="px-2 py-0.5 bg-lime-400/10 text-lime-400 text-[10px] font-bold uppercase rounded-md border border-lime-400/20">
+                        Daily Rate
+                    </span>
+                    <p class="text-gray-500 text-xs">
+                        Select dates at checkout to see total
+                    </p>
+                </div>
             </div>
 
             {{-- Price + Actions --}}
             <div class="flex flex-col items-end gap-2 shrink-0">
                 <p class="text-white font-bold text-base">
-                    ₱{{ number_format($cart->car->price_per_day, 0) }}
+                    ₱{{ number_format($cart->car->price, 0) }}
                     <span class="text-gray-400 font-normal text-sm">/day</span>
                 </p>
 
