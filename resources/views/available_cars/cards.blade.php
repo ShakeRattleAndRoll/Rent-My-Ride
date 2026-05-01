@@ -1,4 +1,28 @@
-<div class="relative car-card bg-[#1e1e1e] rounded-2xl overflow-hidden border border-white/5 hover:border-yellow-400/40 transition-all shadow-lg">
+<div x-data="{ open: false }" class="relative car-card bg-[#1e1e1e] rounded-2xl overflow-hidden border border-white/5 hover:border-yellow-400/40 transition-all shadow-lg">
+
+    {{-- Three dot for details of a car --}}
+    {{-- Sumpayi ni por ilisda lng ang href kung mana na ang details na blade--}}
+    <div class="absolute top-3 right-3 z-20">
+        <button @click="open = !open" @click.away="open = false" class="p-2 bg-black/50 backdrop-blur-md rounded-full text-white hover:bg-black/80 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
+            </svg>
+        </button>
+
+        <div x-show="open" 
+            x-transition:enter="transition ease-out duration-100"
+            x-transition:enter-start="transform opacity-0 scale-95"
+            x-transition:enter-end="transform opacity-100 scale-100"
+            class="absolute right-0 mt-2 w-40 bg-[#2a2a2a] border border-white/10 rounded-xl shadow-xl overflow-hidden z-30">
+            <a href="/garage/details/{{ $car->id }}" wire:navigate class="block px-4 py-3 text-sm text-gray-300 hover:bg-yellow-400 hover:text-black font-semibold transition-colors">View Details</a>
+            
+            @if(Auth::check() && $car->user_id === Auth::id())
+                <a href="/garage/edit/{{ $car->id }}" wire:navigate class="block px-4 py-3 text-sm text-gray-300 hover:bg-blue-500 hover:text-white font-semibold transition-colors">Edit Post</a>
+            @else
+                <button class="w-full text-left px-4 py-3 text-sm text-gray-300 hover:bg-white/10 font-semibold transition-colors">Report Ad</button>
+            @endif
+        </div>
+    </div>
 
     {{-- Car Image --}}
     <div class="w-full h-48 bg-[#2a2a2a] overflow-hidden">

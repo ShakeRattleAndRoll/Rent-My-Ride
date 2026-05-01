@@ -20,12 +20,14 @@ class CartController extends Controller
 
         $exists = Cart::where('user_id', Auth::id())->where('car_id', $car->id)->exists();
         
-        if (!$exists) {
-            Cart::create([
-                'user_id' => Auth::id(),
-                'car_id' => $car->id
-            ]);
+        if ($exists) {
+            return redirect()->back()->with('error', 'This car is already in your cart!');
         }
+
+        Cart::create([
+            'user_id' => Auth::id(),
+            'car_id' => $car->id
+        ]);
 
         return redirect()->back()->with('success', 'Car added to your cart!');
     }

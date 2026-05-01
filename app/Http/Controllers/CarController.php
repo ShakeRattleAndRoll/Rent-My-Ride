@@ -74,7 +74,7 @@ class CarController extends Controller
     // DETAILS PAGE
     public function details($id)
     {
-        $car = Car::findOrFail($id);
+        $car = Car::with('user')->findOrFail($id);
 
         $rentals = Rental::where('car_id', $id)
             ->with('user', 'car')
@@ -84,11 +84,11 @@ class CarController extends Controller
         return view('garage.details', compact('car', 'rentals'));
     }
 
-    // DELETE CAR
+    // DELETE CAR Only owner can delete
     public function destroy($id)
     {
         $car = Car::where('id', $id)
-                  ->where('user_id', Auth::id()) // safety: only owner can delete
+                  ->where('user_id', Auth::id()) 
                   ->firstOrFail();
 
         $car->delete();
