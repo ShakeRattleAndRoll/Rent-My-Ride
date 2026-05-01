@@ -2,10 +2,137 @@
 
     <div class="relative w-full h-[600px] flex items-center justify-center overflow-hidden">
         
-        <img src="{{ asset('images/test-bg-picture.jpg') }}" 
-             class="absolute inset-0 w-full h-full object-cover object-center"
-             alt="Rent My Ride Hero">
+        <div 
+            x-data="{
+                frame: 1,
+                total: 240,
+                direction: 1,
 
+                dragging: false,
+                lastX: 0,
+                accumulated: 0,
+                step: 6,
+
+                idleDelay: 2000,
+                idleTimer: null,
+                interval: null,
+
+                baseSpeed: 40, // normal speed
+                slowSpeed: 90, // slow at edges
+
+                start(e) {
+                    this.dragging = true
+                    this.lastX = e.clientX
+                    this.stopAuto()
+                },
+
+                stop() {
+                    this.dragging = false
+                    this.startIdleTimer()
+                },
+
+                move(e) {
+                    if (!this.dragging) return
+
+                    let delta = e.clientX - this.lastX
+                    this.lastX = e.clientX
+
+                    this.accumulated += delta
+
+                    while (this.accumulated >= this.step) {
+                        this.frame++
+                        this.accumulated -= this.step
+                    }
+
+                    while (this.accumulated <= -this.step) {
+                        this.frame--
+                        this.accumulated += this.step
+                    }
+
+                    if (this.frame > this.total) this.frame = this.total
+                    if (this.frame < 1) this.frame = 1
+                },
+
+                startAuto() {
+                    this.runAuto(this.baseSpeed)
+                },
+
+                runAuto(speed) {
+                    clearInterval(this.interval)
+
+                    this.interval = setInterval(() => {
+                        this.frame += this.direction
+
+                        // slow zone near edges
+                        if (this.frame >= this.total - 5 || this.frame <= 5) {
+                            this.runAuto(this.slowSpeed)
+                        } else {
+                            this.runAuto(this.baseSpeed)
+                        }
+
+                        // reverse at ends
+                        if (this.frame >= this.total) {
+                            this.frame = this.total
+                            this.direction = -1
+                        }
+
+                        if (this.frame <= 1) {
+                            this.frame = 1
+                            this.direction = 1
+                        }
+
+                    }, speed)
+                },
+
+                stopAuto() {
+                    clearInterval(this.interval)
+                    clearTimeout(this.idleTimer)
+                },
+
+                startIdleTimer() {
+                    this.idleTimer = setTimeout(() => {
+                        this.startAuto()
+                    }, this.idleDelay)
+                }
+            }"
+
+            x-init="startAuto()"
+
+            @mousedown.window="start($event)"
+            @mouseup.window="stop()"
+            @mouseleave.window="stop()"
+            @mousemove.window="move($event)"
+
+            @touchstart.window="dragging = true; lastX = $event.touches[0].clientX; stopAuto()"
+            @touchend.window="dragging = false; startIdleTimer()"
+            @touchmove.window="
+                if (!dragging) return;
+                let delta = $event.touches[0].clientX - lastX;
+                lastX = $event.touches[0].clientX;
+                accumulated += delta;
+
+                while (accumulated >= step) {
+                    frame++;
+                    accumulated -= step;
+                }
+                while (accumulated <= -step) {
+                    frame--;
+                    accumulated += step;
+                }
+
+                if (frame > total) frame = total;
+                if (frame < 1) frame = 1;
+            "
+
+            class="absolute inset-0 flex items-center justify-center select-none"
+        >
+            <img 
+                :src="'/images/frames/ezgif-frame-' + String(frame).padStart(3, '0') + '.jpg'"
+                class="absolute inset-0 w-full h-full object-cover object-center blur-sm"
+                draggable="false"
+                alt="360 Car View"
+            >
+        </div>
         <div class="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-black/10"></div>
 
         <div class="relative z-10 w-full max-w-4xl px-6 text-center" style="font-family: 'Montserrat', sans-serif;">
@@ -114,5 +241,13 @@
 
     </div>
 </section>
+
+<script>
+    const total = 240;
+    for (let i = 1; i <= total; i++) {
+        const img = new Image();
+        img.src = `/images/frames2/ezgif-frame_${String(i).padStart(3, '0')}.jpg`;
+    }
+</script>
 
 </x-layout>
