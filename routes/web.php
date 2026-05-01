@@ -36,6 +36,8 @@ Route::post('/cars', [CarController::class, 'store'])->middleware('auth');
 
 // Route for available cars page
 Route::get('/available', [CarController::class, 'index'])->middleware('auth');
+Route::get('/cars/{car}', [CarController::class, 'show'])->name('cars.show');
+Route::get('/available-cars', [CarController::class, 'index'])->name('cars.index');
 
 // Route for profile page
 Route::get('/profile', [AuthController::class, 'profile'])->name('profile.main');
