@@ -45,18 +45,7 @@ class RentalController extends Controller
             ->with('user')
             ->get();
 
-        return view('garage.pre-order', compact('car', 'preOrders'));
-    }
-
-    public function manage($id)
-    {
-        $order = Rental::with('user', 'car')->findOrFail($id);
-
-        if ($order->car->user_id !== Auth::id()) {
-            abort(403);
-        }
-
-        return view('garage.manage', compact('order')); 
+        return view('garage.my_listings.pre-order', compact('car', 'preOrders'));
     }
 
     // ACCEPT RENTAL
@@ -101,7 +90,7 @@ class RentalController extends Controller
             ->latest()
             ->get();
 
-        return view('garage.my-rental', compact('rentals'));
+        return view('garage.my_rentals.my-rental', compact('rentals'));
     }
 
     // CANCEL RENTAL

@@ -81,11 +81,13 @@
                                 </td>
                                 <td class="px-6 py-4 last:rounded-r-2xl border-y border-r border-transparent group-hover:border-gray-700 text-center">
                                     <div class="flex justify-center gap-2">
-                                        {{-- Manage Button --}}
-                                        <a href="/rental/{{ $order->id }}/manage"
-                                        class="bg-yellow-400 hover:bg-yellow-300 text-black px-5 py-1.5 rounded-full font-black text-[9px] uppercase tracking-tighter transition-all active:scale-95 shadow-lg">
-                                            Manage
-                                        </a>
+                                        {{-- Accept Button --}}
+                                         <form action="/rental/{{ $order->id }}/accept" method="POST" class="inline">
+                                            @csrf
+                                            <button class="bg-lime-500 hover:bg-lime-400 text-black px-5 py-1.5 rounded-full font-black text-[9px] uppercase tracking-tighter transition-all active:scale-95 shadow-lg shadow-lime-500/20">
+                                                Accept
+                                            </button>
+                                        </form>
 
                                         {{-- Deny Button --}}
                                         <form action="/rental/{{ $order->id }}/deny" method="POST" class="inline">

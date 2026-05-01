@@ -32,6 +32,7 @@
 * The emoji when no result like listing or rental can now be clickable
 * Profile stats now work
 * Slight change in available cars UI
+* Navigation Responsive
 
 
 ## PARTIALLY DONE
@@ -41,4 +42,3 @@
 * Search Filter
 * Filter for car type in Available cars section
 * Message 
-* Navigation Responsive
