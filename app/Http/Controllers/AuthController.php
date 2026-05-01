@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -49,7 +50,7 @@ class AuthController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'username'       => 'required',
+            'username'       => 'required|unique:users',
             'first_name'     => 'required',
             'middle_name'    => 'required',
             'last_name'      => 'required',
@@ -96,7 +97,17 @@ class AuthController extends Controller
             'contact_number' => 'required|regex:/^09[0-9]{9}$/',
             'email'          => 'required|email|regex:/^[^@]+@[^@]+\.[a-zA-Z]{2,}$/|unique:users,email,' . $user->id,
             'password'       => 'nullable|min:6|confirmed',
+            'profile_picture'=> 'nullable|image|max:2048',
         ]);
+
+        if ($request->hasFile('profile_picture')) {
+            if ($user->profile_picture && Storage::disk('public')->exists($user->profile_picture)) {
+                Storage::disk('public')->delete($user->profile_picture);
+            }
+            
+            $path = $request->file('profile_picture')->store('profiles', 'public');
+            $user->profile_picture = $path;
+        }
 
         $user->username       = $request->username;
         $user->first_name     = $request->first_name;
@@ -123,5 +134,15 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect('/');
+    }
+
+    public function profile() 
+    {
+        return view('profile.main'); 
+    }
+
+    public function edit() 
+    {
+        return view('profile.edit'); 
     }
 }

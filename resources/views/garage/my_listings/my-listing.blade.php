@@ -14,12 +14,14 @@
             <x-listing_cards :car="$car" />
         @empty
         <div class="flex flex-col items-center justify-center py-24 text-center">
-            <div class="w-16 h-16 rounded-full bg-[#1a1a1a] border border-gray-700 flex items-center justify-center mb-4">
-                <i class="fa-solid fa-plus text-gray-600 text-2xl"></i>
-            </div>
+            <a href='/garage/post-car' wire:navigate>
+                <div class="w-16 h-16 rounded-full bg-[#1a1a1a] border border-gray-700 flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-plus text-gray-600 text-2xl"></i>
+                </div>
+            </a>
             <p class="text-gray-400 text-sm font-medium">No listings yet</p>
             <p class="text-gray-600 text-xs mt-1 mb-5">Cars you post for rent will appear here</p>
-            <a href="/post-car"
+            <a href="/garage/post-car" wire:navigate
                class="px-10 py-3 bg-yellow-400 text-black rounded-full font-bold hover:bg-yellow-300 transition text-center">
                 Post a Car
             </a>

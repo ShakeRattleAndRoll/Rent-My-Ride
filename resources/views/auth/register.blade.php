@@ -67,37 +67,44 @@
             @csrf
 
             <!-- Username -->
-            <input name="username" placeholder="Username" required
+            <div class="space-y-1">
+                <input name="username" placeholder="Username" required
+                    value="{{ old('username') }}"
+                    class="w-full p-3 rounded-md bg-gray-800 text-white placeholder-gray-400 
+                        focus:outline-none focus:ring-2 {{ $errors->has('username') ? 'focus:ring-red-500 border border-red-500' : 'focus:ring-yellow-400' }} transition">
+                
+                @error('username')
+                    <p class="text-red-400 text-xs px-2 italic">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Name Fields --> 
+            <input name="first_name" placeholder="First name" required value="{{ old('first_name') }}"
                 class="w-full p-3 rounded-md bg-gray-800 text-white placeholder-gray-400 
                     focus:outline-none focus:ring-2 focus:ring-yellow-400 transition">
 
-            <!-- Name Fields -->
-            <input name="first_name" placeholder="First name" required
+            <input name="middle_name" placeholder="Middle name" required value="{{ old('middle_name') }}"
                 class="w-full p-3 rounded-md bg-gray-800 text-white placeholder-gray-400 
                     focus:outline-none focus:ring-2 focus:ring-yellow-400 transition">
 
-            <input name="middle_name" placeholder="Middle name" required
-                class="w-full p-3 rounded-md bg-gray-800 text-white placeholder-gray-400 
-                    focus:outline-none focus:ring-2 focus:ring-yellow-400 transition">
-
-            <input name="last_name" placeholder="Last name" required
+            <input name="last_name" placeholder="Last name" required value="{{ old('last_name') }}"
                 class="w-full p-3 rounded-md bg-gray-800 text-white placeholder-gray-400 
                     focus:outline-none focus:ring-2 focus:ring-yellow-400 transition">
 
             <!-- DOB + Sex -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 
-                <input name="dob" type="date" required
+                <input name="dob" type="date" required value="{{ old('dob') }}"
                     class="w-full p-3 rounded-md bg-gray-800 text-white 
                         focus:outline-none focus:ring-2 focus:ring-yellow-400 transition">
 
                 <div class="bg-gray-800 rounded-md px-4 py-3 flex items-center justify-around">
                     <label class="flex items-center gap-2 text-sm">
-                        <input type="radio" name="sex" value="Male" required>
+                        <input type="radio" name="sex" value="Male" {{ old('sex') == 'Male' ? 'checked' : '' }} required>
                         Male
                     </label>
                     <label class="flex items-center gap-2 text-sm">
-                        <input type="radio" name="sex" value="Female" required>
+                        <input type="radio" name="sex" value="Female" {{ old('sex') == 'Female' ? 'checked' : '' }} required>
                         Female
                     </label>
                 </div>
@@ -105,13 +112,13 @@
             </div>
 
             <!-- Address -->
-            <input name="address" placeholder="Address" required
+            <input name="address" placeholder="Address" required value="{{ old('address') }}"
                 class="w-full p-3 rounded-md bg-gray-800 text-white placeholder-gray-400 
                     focus:outline-none focus:ring-2 focus:ring-yellow-400 transition">
 
             <!-- Contact -->
             <input
-                name="contact_number"
+                name="contact_number" value="{{ old('contact_number') }}"
                 placeholder="Contact Number (09XXXXXXXXX)"
                 required
                 maxlength="11"
@@ -123,7 +130,7 @@
 
             <!-- Email -->
             <input 
-                name="email" type="email" placeholder="Email" required
+                name="email" type="email" placeholder="Email" required value="{{ old('email') }}"
                 pattern="^[^@]+@[^@]+\.[a-zA-Z]{2,}$"
                 title="Email must be in the format: example@domain.com"
                 class="w-full p-3 rounded-md bg-gray-800 text-white placeholder-gray-400 
