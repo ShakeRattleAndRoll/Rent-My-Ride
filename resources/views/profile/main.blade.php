@@ -33,7 +33,7 @@
             </div>
 
             {{-- Stats --}}
-            <div class="flex justify-around">
+            <div class="flex justify-center gap-10">
                 <div class="flex flex-col items-center gap-2">
                     <p class="text-xs text-gray-400">Total Cars</p>
                     <span class="text-white font-bold text-lg">

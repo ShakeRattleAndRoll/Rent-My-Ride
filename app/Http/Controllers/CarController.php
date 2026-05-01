@@ -12,7 +12,7 @@ class CarController extends Controller
 
     public function create()
     {
-        return view('post.main'); 
+        return view('garage.post_a_car.post-a-car'); 
     }
 
     // GET ALL CARS
@@ -50,7 +50,7 @@ class CarController extends Controller
 
         Car::create($attributes);
 
-        return redirect()->back()->with('success', 'Car Added Successfully!');
+        return redirect('/garage/my-listing')->with('success', 'Car Added Successfully!');
     }
 
     // MY LISTINGS
@@ -60,7 +60,7 @@ class CarController extends Controller
             $query->where('status', 'pending');
         }])->get();
 
-        return view('garage.my-listing', ['listings' => $myCars]);
+        return view('garage.my_listings.my-listing', ['listings' => $myCars]);
     }
 
     // EDIT POST
@@ -68,7 +68,7 @@ class CarController extends Controller
     {
         $car = Car::findOrFail($id);
 
-        return view('garage.edit-post', compact('car'));
+        return view('garage.my_listings.edit-post', compact('car'));
     }
 
     // DETAILS PAGE
@@ -81,7 +81,7 @@ class CarController extends Controller
             ->latest()
             ->get();
 
-        return view('garage.details', compact('car', 'rentals'));
+        return view('garage.my_listings.details', compact('car', 'rentals'));
     }
 
     // DELETE CAR Only owner can delete
@@ -94,5 +94,34 @@ class CarController extends Controller
         $car->delete();
 
         return redirect()->back()->with('success', 'Car deleted successfully!');
+    }
+
+    // UPDATE CAR
+    public function update(Request $request, $id)
+    {
+        $car = Car::where('id', $id)
+                ->where('user_id', Auth::id())
+                ->firstOrFail();
+
+        $attributes = $request->validate([
+            'car_image'    => ['nullable', 'image'],
+            'date_owned'   => ['required', 'date'],
+            'brand'        => ['required', 'string'],
+            'model'        => ['required', 'string'],
+            'price'        => ['required', 'numeric'],
+            'rent_period'  => ['required', 'string'],
+            'transmission' => ['required'],
+            'fuel_type'    => ['required'],
+            'description'  => ['nullable', 'string'],
+        ]);
+
+        // If new image uploaded
+        if ($request->hasFile('car_image')) {
+            $attributes['car_image'] = $request->file('car_image')->store('car_photos', 'public');
+        }
+
+        $car->update($attributes);
+
+        return redirect('/garage/my-listing')->with('feedback', 'Car updated successfully!');
     }
 }

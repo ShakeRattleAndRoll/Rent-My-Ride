@@ -71,7 +71,7 @@ Route::delete('/garage/delete/{id}', [CarController::class, 'destroy']);
 // Route for garage pre-order feature
 Route::get('/car/pre-order/{id}', function ($id) {
     $car = Car::findOrFail($id);
-    return view('garage.pre-order', compact('car'));
+    return view('garage.my_listings.pre-order', compact('car')); 
 })->middleware('auth');
 
 //Route for garage rental
@@ -85,14 +85,13 @@ Route::patch('/garage/rental/{id}/cancel', [RentalController::class, 'cancel'])-
 //Route for garage cart
 Route::get('/garage/my-cart', function () {
     $cartItems = Cart::where('user_id', Auth::id())->with('car')->get();
-    return view('garage.my-cart', ['carts' => $cartItems]);
+    return view('garage.my_cart.my-cart', ['carts' => $cartItems]);  
 })->middleware('auth');
 
 Route::post('/cart/add', [CartController::class, 'store'])->name('cart.add')->middleware('auth');
 Route::delete('/cart/remove/{id}', [CartController::class, 'destroy'])->name('cart.remove')->middleware('auth');
 Route::post('/cart/checkout/{id}', [CartController::class, 'checkout'])->middleware('auth');
 
-
-Route::get('/rental/{id}/manage', [RentalController::class, 'manage']);
-Route::post('/rental/{id}/accept', [RentalController::class, 'accept']);
-Route::post('/rental/{id}/deny', [RentalController::class, 'deny']);
+Route::post('/rental/{id}/request', [RentalController::class, 'requestRental'])->middleware('auth');
+Route::post('/rental/{id}/accept', [RentalController::class, 'accept'])->middleware('auth');
+Route::post('/rental/{id}/deny', [RentalController::class, 'deny'])->middleware('auth');
