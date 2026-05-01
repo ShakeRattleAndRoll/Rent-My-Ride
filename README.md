@@ -42,3 +42,5 @@
 * Search Filter
 * Filter for car type in Available cars section
 * Message 
+* Available Cars details not modal yet
+* My Cart "Rent Now" form not final

@@ -25,9 +25,7 @@ class Car extends Model
     ];
 
     /*
-    |--------------------------------------
-    | Relationships
-    |--------------------------------------
+    Relationships
     */
 
     public function user()
@@ -41,9 +39,7 @@ class Car extends Model
     }
 
     /*
-    |--------------------------------------
-    | Casts (IMPORTANT FIX)
-    |--------------------------------------
+     Casts (IMPORTANT FIX)
     */
 
     protected $casts = [
@@ -51,11 +47,7 @@ class Car extends Model
         'date_owned' => 'date',
     ];
 
-    /*
-    |--------------------------------------
-    | Helper: Occupied Status
-    |--------------------------------------
-    */
+    /* Helper: Occupied Status*/
 
     public function isOccupied()
     {

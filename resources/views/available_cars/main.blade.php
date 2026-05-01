@@ -39,8 +39,10 @@
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                @forelse($cars as $car) 
-                    @include('available_cars.cards', ['car' => $car]) 
+                @forelse($cars as $car)
+                    <a href="{{ route('cars.show', $car) }}" class="block group">
+                        @include('available_cars.cards', ['car' => $car])
+                    </a>
                 @empty
                     <div class="col-span-full text-center py-24 bg-[#1a1a1a] rounded-3xl border border-white/5">
                         <p class="text-gray-500 font-medium">No vehicles found.</p>

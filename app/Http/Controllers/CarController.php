@@ -124,4 +124,9 @@ class CarController extends Controller
 
         return redirect('/garage/my-listing')->with('feedback', 'Car updated successfully!');
     }
+    
+    public function show(Car $car)
+    {
+        return view('available_cars.cars_details', compact('car'));
+    }
 }

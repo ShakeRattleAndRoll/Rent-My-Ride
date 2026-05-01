@@ -121,18 +121,44 @@
                     {{-- Password --}}
                     <div class="flex flex-col gap-2">
                         <label class="text-sm text-gray-400 font-semibold">Change Password</label>
-                        <input type="password" name="password"
-                            placeholder="Enter new password"
-                            class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5 outline-none focus:border-yellow-400">
+
+                        <div class="relative">
+                            <input type="password" 
+                                name="password"
+                                id="password"
+                                placeholder="Enter new password"
+                                class="w-full bg-[#242424] text-white p-4 pr-12 rounded-xl border border-white/5 outline-none focus:border-yellow-400">
+
+                            <button type="button" 
+                                    onclick="togglePassword('password', 'eyeIconPassword')"
+                                    class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition">
+                                <i id="eyeIconPassword" class="fa fa-eye"></i>
+                            </button>
+                        </div>
                     </div>
 
                     {{-- Confirm Password --}}
                     <div class="flex flex-col gap-2">
                         <label class="text-sm text-gray-400 font-semibold">Confirm Password</label>
-                        <input type="password" name="password_confirmation"
-                            placeholder="Confirm new password"
-                            class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5 outline-none focus:border-yellow-400">
+
+                        <div class="relative">
+                            <input type="password" 
+                                name="password_confirmation"
+                                id="confirm_password"
+                                placeholder="Confirm new password"
+                                class="w-full bg-[#242424] text-white p-4 pr-12 rounded-xl border border-white/5 outline-none focus:border-yellow-400">
+
+                            <button type="button" 
+                                    onclick="togglePassword('confirm_password', 'eyeIconConfirm')"
+                                    class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition">
+                                <i id="eyeIconConfirm" class="fa fa-eye"></i>
+                            </button>
+                        </div>
                     </div>
+
+                    @error('password')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
 
                 </div>
 
@@ -154,7 +180,9 @@
         </div>
     </div>
 
+    <script src="{{ asset('js/auth/visiblepass.js') }}"></script>
 
+    {{-- Preload profile picture --}}
     {{-- Filepond config for profile --}}
     <script>
         FilePond.registerPlugin(FilePondPluginImagePreview);
