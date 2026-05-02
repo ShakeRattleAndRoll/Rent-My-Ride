@@ -41,7 +41,9 @@ Route::get('/cars/{car}', [CarController::class, 'show'])->name('cars.show');
 
 // Route for profile page
 Route::get('/profile', [AuthController::class, 'profile'])->name('profile.main');
-Route::get('/profile/edit', [AuthController::class, 'edit'])->name('profile.edit');
+
+// Route for edit profile page
+Route::get('/profile/edit', [AuthController::class, 'edit'])->name('profile.edit')->middleware('auth');
 Route::get('/profile/{id}', [AuthController::class, 'show'])->name('user.profile');
 
 // Route for update profile
