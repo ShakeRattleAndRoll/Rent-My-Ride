@@ -54,13 +54,6 @@
         {{-- Personal Details --}}
         <div class="flex-1">
             <div class="bg-[#1a1a1a] p-8 md:p-10 rounded-3xl border border-white/5 shadow-2xl h-full">
-                
-                @if (session('success'))
-                    <div class="bg-lime-400/10 border border-lime-400/30 text-lime-400 px-6 py-4 rounded-2xl mb-8 text-sm flex items-center gap-3">
-                        <i class="fa-solid fa-circle-check"></i>
-                        {{ session('success') }}
-                    </div>
-                @endif
 
                 <div class="flex justify-between items-center mb-10">
                     <h3 class="text-xl font-black uppercase tracking-tighter">Account Information</h3>

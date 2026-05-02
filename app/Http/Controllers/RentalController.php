@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Rental;
+use App\Models\Cart;
 use App\Models\Car;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,26 +14,34 @@ class RentalController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'car_id' => 'required|exists:cars,id'
+            'cart_id'        => ['required', 'exists:carts,id'],
+            'days'           => ['required', 'integer', 'min:1'],
+            'start_date'     => ['required'],
+            'end_date'       => ['required'],
+            'rent_unit'      => ['required', 'string'],
+            'price_per_unit' => ['required', 'numeric'],
         ]);
 
-        $car = Car::findOrFail($request->car_id);
+        $cart = Cart::with('car')->findOrFail($request->cart_id);
+        $car  = $cart->car;
 
-        // prevent self-renting
         if ($car->user_id === Auth::id()) {
             return redirect()->back()->with('error', 'You cannot rent your own car!');
         }
 
         Rental::create([
-            'user_id' => Auth::id(),
-            'car_id' => $request->car_id,
-            'status' => 'pending',
-            'start_date' => now(),
-            'end_date' => now()->addDays(7),
+            'user_id'     => Auth::id(),
+            'car_id'      => $car->id,
+            'status'      => 'pending',
+            'start_date'  => $request->start_date,
+            'end_date'    => $request->end_date,
+            'days'        => $request->days,
+            'rent_unit'   => $request->rent_unit,
+            'total_price' => $request->days * $request->price_per_unit,
         ]);
 
         return redirect('/garage/my-rental')
-            ->with('success', 'Car added to your rentals!');
+            ->with('success', 'Rental request sent!');
     }
 
     // SHOW PRE-ORDERS (OWNER VIEW)
@@ -53,16 +62,26 @@ class RentalController extends Controller
     {
         $rental = Rental::with('car')->findOrFail($id);
 
-        // security check
         if ($rental->car->user_id !== Auth::id()) {
             abort(403);
         }
 
+        $unitToSeconds = [
+            'Hour'  => 3600,
+            'Day'   => 86400,
+            'Week'  => 604800,
+            'Month' => 2592000,
+        ];
+
+        $seconds = ($unitToSeconds[$rental->rent_unit] ?? 86400) * $rental->days;
+
         $rental->update([
-            'status' => 'accepted'
+            'status'     => 'accepted',
+            'start_date' => now(),
+            'end_date'   => now()->addSeconds($seconds),
         ]);
 
-        return redirect()->back()->with('success', 'Rental request accepted!');
+        return redirect()->route('garage.my-listing')->with('success', 'Rental accepted successfully.');
     }
 
     // DENY RENTAL
@@ -70,14 +89,11 @@ class RentalController extends Controller
     {
         $rental = Rental::with('car')->findOrFail($id);
 
-        // security check
         if ($rental->car->user_id !== Auth::id()) {
             abort(403);
         }
 
-        $rental->update([
-            'status' => 'denied'
-        ]);
+        $rental->update(['status' => 'denied']);
 
         return redirect()->back()->with('success', 'Rental request denied.');
     }
@@ -93,12 +109,10 @@ class RentalController extends Controller
         return view('garage.my_rentals.my-rental', compact('rentals'));
     }
 
-    // CANCEL RENTAL
     public function cancel($id)
     {
         $rental = Rental::findOrFail($id);
 
-        // security: only owner
         if ($rental->user_id !== Auth::id()) {
             abort(403);
         }
@@ -111,4 +125,6 @@ class RentalController extends Controller
 
         return redirect()->back()->with('success', 'Rental request cancelled.');
     }
+
+    
 }

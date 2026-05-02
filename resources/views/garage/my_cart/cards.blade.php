@@ -1,4 +1,9 @@
-<div class="bg-[#1a1a1a] border border-gray-800 rounded-2xl overflow-hidden flex items-center gap-5 p-4 hover:border-gray-600 transition-all duration-200">
+<div
+    x-data="{ open: false }"
+    class="relative bg-[#1a1a1a] border border-gray-800 rounded-2xl overflow-hidden flex items-center gap-5 p-4 hover:border-gray-600 transition-all duration-200"
+>
+    {{-- Clickable overlay to open modal --}}
+    <div @click="open = true" class="absolute inset-0 z-10 block cursor-pointer" aria-label="View Details"></div>
 
     {{-- Car Image --}}
     <div class="w-44 h-28 rounded-xl overflow-hidden shrink-0 bg-gray-800">
@@ -20,19 +25,16 @@
                     <line x1="8" y1="2" x2="8" y2="6"/>
                     <line x1="3" y1="10" x2="21" y2="10"/>
                 </svg>
-
-                <span>
-                    {{ \Carbon\Carbon::parse($cart->car->date_owned)->format('M d, Y') }}
-                </span>
+                <span>{{ \Carbon\Carbon::parse($cart->car->date_owned)->format('M d, Y') }}</span>
             </span>
-            {{-- Fuel --}}
+
             <span class="flex items-center gap-1.5">
                 <svg class="w-3.5 h-3.5 text-gray-500 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                     <path d="M3 22V6a2 2 0 012-2h8a2 2 0 012 2v16M3 22h14M13 8h2a2 2 0 012 2v3a1 1 0 001 1h0a1 1 0 001-1V9l-3-3"/>
                 </svg>
                 {{ $cart->car->fuel_type }}
             </span>
-            {{-- Transmission --}}
+
             <span class="flex items-center gap-1.5">
                 <svg class="w-3.5 h-3.5 text-gray-500 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                     <circle cx="12" cy="12" r="3"/>
@@ -41,16 +43,6 @@
                 {{ $cart->car->transmission }}
             </span>
         </div>
-
-        {{-- Total Cost --}}
-        {{-- @php
-            $days = \Carbon\Carbon::parse($cart->start_date)->diffInDays(\Carbon\Carbon::parse($cart->end_date));
-            $total = $days * $cart->car->price
-        @endphp
-        <p class="text-gray-500 text-xs">
-            {{ $days }} day{{ $days > 1 ? 's' : '' }} ·
-            <span class="text-lime-400 font-bold">₱{{ number_format($total, 0) }} total</span>
-        </p> --}}
 
         <div class="mt-2 flex items-center gap-2">
             <span class="px-2 py-0.5 bg-lime-400/10 text-lime-400 text-[10px] font-bold uppercase rounded-md border border-lime-400/20">
@@ -61,17 +53,17 @@
             </p>
         </div>
     </div>
-    
+
     {{-- Price + Actions --}}
-    <div class="flex flex-col items-end gap-2 shrink-0">
+    <div class="flex flex-col items-end gap-2 shrink-0 relative z-20">
         <p class="text-white font-bold text-base">
             ₱{{ number_format($cart->car->price, 0) }}
-            <span class="text-gray-400 font-normal text-sm">/day</span>
+            <span class="text-gray-400 font-normal text-sm">/ {{ $cart->car->rent_unit }}</span>
         </p>
 
         {{-- Checkout --}}
         <button type="button"
-                onclick="openRentModal({{ $cart->id }})"
+                onclick="openRentModal({{ $cart->id }}, '{{ $cart->car->rent_unit }}', {{ $cart->car->price }})"
                 class="bg-lime-400 hover:bg-lime-300 text-black text-xs font-bold px-5 py-2 rounded-full transition-all duration-200 w-32 text-center">
             Rent Now
         </button>
@@ -80,12 +72,14 @@
         <form method="POST" action="{{ route('cart.remove', $cart->id) }}">
             @csrf
             @method('DELETE')
-
             <button type="submit"
                     class="bg-[#2a2a2a] hover:bg-red-500 border border-gray-700 hover:border-red-500 text-gray-400 hover:text-white text-xs font-bold px-5 py-2 rounded-full w-32">
                 Remove
             </button>
         </form>
     </div>
+
+    {{-- Modal --}}
+    <x-car_modal :car="$cart->car"/>
 
 </div>

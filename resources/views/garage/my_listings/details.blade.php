@@ -25,23 +25,23 @@
                 <p class="text-gray-400">{{ $car->model }}</p>
 
                 <div class="flex items-center gap-6 mt-4 text-gray-400 text-xs">
-                    <span>{{ \Carbon\Carbon::parse($car->created_at)->format('F j, Y') }}</span>
-                    <span>{{ $car->fuel_type }}</span>
-                    <span>{{ $car->transmission }}</span>
+                    <span><i class="fa-regular fa-calendar mr-1"></i>{{ \Carbon\Carbon::parse($car->created_at)->format('F j, Y') }}</span>
+                    <span><i class="fa-solid fa-gas-pump mr-1"></i>{{ $car->fuel_type }}</span>
+                    <span><i class="fa-solid fa-gears mr-1"></i>{{ $car->transmission }}</span>
                 </div>
             </div>
 
             {{-- Price --}}
             <div class="text-right">
                 <p class="text-2xl font-bold">₱{{ number_format($car->price, 0) }}</p>
-                <p class="text-gray-400 text-xs">/ day</p>
+                <p class="text-gray-400 text-xs">/ {{ $car->rent_unit }}</p>
             </div>
         </div>
 
         {{-- RENTAL LIST --}}
         <div class="mt-10 space-y-6">
 
-            @forelse ($rentals as $rental)
+            @forelse ($rentals->where('status', '!=', 'pending') as $rental)
 
             @php
                 $user = $rental->user;
@@ -53,8 +53,16 @@
                 <div class="flex items-center gap-5">
 
                     {{-- Avatar --}}
-                    <div class="w-20 h-20 rounded-full bg-gray-700 flex items-center justify-center text-black text-xl font-bold">
-                        {{ strtoupper(substr($user->name, 0, 1)) }}
+                    <div class="w-20 h-20 rounded-full overflow-hidden bg-gray-700 flex items-center justify-center text-black text-xl font-bold">
+                        @if($user->profile_picture)
+                            <img 
+                                src="{{ asset('storage/' . $user->profile_picture) }}" 
+                                alt="{{ $user->name }}"
+                                class="w-full h-full object-cover"
+                            >
+                        @else
+                            {{ strtoupper(substr($user->name, 0, 1)) }}
+                        @endif
                     </div>
 
                     {{-- Details --}}
@@ -71,24 +79,24 @@
                 <div class="text-right text-sm space-y-1">
 
                     <p><span class="text-gray-400">Date Rented:</span>
-                        {{ \Carbon\Carbon::parse($rental->start_date)->format('F j, Y') }}
+                        {{ $rental->start_date ? \Carbon\Carbon::parse($rental->start_date)->timezone('Asia/Manila')->format('F j, Y g:i A') : 'TBD' }}
                     </p>
 
                     <p><span class="text-gray-400">Return Date:</span>
-                        {{ \Carbon\Carbon::parse($rental->end_date)->format('F j, Y') }}
+                        {{ $rental->end_date ? \Carbon\Carbon::parse($rental->end_date)->timezone('Asia/Manila')->format('F j, Y g:i A') : 'TBD' }}
                     </p>
 
-                    <p><span class="text-gray-400">Total Price:</span> ₱{{ number_format($rental->car->price) }}</p>
+                    <p><span class="text-gray-400">Duration:</span>
+                        {{ $rental->days ?? 'N/A' }} {{ $rental->rent_unit }}/s
+                    </p>
+
+                    <p><span class="text-gray-400">Total Price:</span> ₱{{ number_format($rental->total_price) }}</p>
 
                     {{-- STATUS --}}
                     <div class="mt-3">
                         @if($rental->status === 'accepted')
                             <span class="bg-green-500 text-black px-4 py-1 rounded-full text-xs font-bold">
                                 Active
-                            </span>
-                        @elseif($rental->status === 'pending')
-                            <span class="bg-yellow-400 text-black px-4 py-1 rounded-full text-xs font-bold">
-                                Pending
                             </span>
                         @else
                             <span class="bg-gray-600 text-white px-4 py-1 rounded-full text-xs font-bold">

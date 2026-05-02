@@ -32,7 +32,7 @@
     </div>
 
     <div class="flex flex-col gap-2">
-        <label class="text-sm text-gray-400 font-semibold">Price (Per Day)</label>
+        <label class="text-sm text-gray-400 font-semibold">Price</label>
         <input type="number" name="price"
                value="{{ old('price', $car->price ?? '') }}"
                placeholder="₱ Enter Amount"
@@ -41,20 +41,13 @@
 
     <div class="flex flex-col gap-2">
         <label class="text-sm text-gray-400 font-semibold">Rent Duration</label>
-        <div class="flex items-center gap-2">
-            <input type="number" name="rent_value"
-                value="{{ old('rent_value', $car->rent_value ?? '1') }}"
-                placeholder="e.g. 5"
-                class="w-1/3 bg-[#242424] text-white p-4 rounded-xl border border-white/5 outline-none focus:border-yellow-400">
-            
-            <select name="rent_unit" 
-                    class="w-2/3 bg-[#242424] text-white p-4 rounded-xl border border-white/5 outline-none focus:border-yellow-400">
-                <option value="Hour" {{ old('rent_unit', $car->rent_unit ?? '') == 'Hour' ? 'selected' : '' }}>Per Hour</option>
-                <option value="Day" {{ old('rent_unit', $car->rent_unit ?? '') == 'Day' ? 'selected' : '' }}>Per Day</option>
-                <option value="Week" {{ old('rent_unit', $car->rent_unit ?? '') == 'Week' ? 'selected' : '' }}>Per Week</option>
-                <option value="Month" {{ old('rent_unit', $car->rent_unit ?? '') == 'Month' ? 'selected' : '' }}>Per Month</option>
-            </select>
-        </div>
+        <select name="rent_unit"
+                class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5 outline-none focus:border-yellow-400">
+            <option value="Hour" {{ old('rent_unit', $car->rent_unit ?? '') == 'Hour' ? 'selected' : '' }}>Per Hour</option>
+            <option value="Day"  {{ old('rent_unit', $car->rent_unit ?? '') == 'Day'  ? 'selected' : '' }}>Per Day</option>
+            <option value="Week" {{ old('rent_unit', $car->rent_unit ?? '') == 'Week' ? 'selected' : '' }}>Per Week</option>
+            <option value="Month" {{ old('rent_unit', $car->rent_unit ?? '') == 'Month' ? 'selected' : '' }}>Per Month</option>
+        </select>
     </div>
 
     <div class="flex flex-col gap-2">

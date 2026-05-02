@@ -18,8 +18,7 @@ class CarController extends Controller
     // GET ALL CARS
     public function index()
     {
-        $cars = Car::all(); 
-
+        $cars = Car::latest()->get();
         return view('available_cars.main', ['cars' => $cars]);
     }
 
@@ -57,7 +56,6 @@ class CarController extends Controller
             'model'        => ['required', 'string'],
             'price'        => ['required', 'numeric'],
             'rent_unit'    => ['required', 'string'],
-            'rent_value'   => ['required', 'numeric'],
             'transmission' => ['required'],
             'fuel_type'    => ['required'],
             'description'  => ['nullable', 'string'],
@@ -77,9 +75,13 @@ class CarController extends Controller
     // MY LISTINGS
     public function my_listings()
     {
-        $myCars = Car::where('user_id', Auth::id())->with('rentals')->withCount(['rentals as pending_orders_count' => function($query) {
-            $query->where('status', 'pending');
-        }])->get();
+        $myCars = Car::where('user_id', Auth::id())
+            ->with('rentals')
+            ->withCount(['rentals as pending_orders_count' => function($query) {
+                $query->where('status', 'pending');
+            }])
+            ->latest()
+            ->get();
 
         return view('garage.my_listings.my-listing', ['listings' => $myCars]);
     }
@@ -130,8 +132,7 @@ class CarController extends Controller
             'brand'        => ['required', 'string'],
             'model'        => ['required', 'string'],
             'price'        => ['required', 'numeric'],
-            'rent_value'   => ['required', 'string'],
-            'rent_unit'    => ['required', 'numeric'],
+            'rent_unit'    => ['required', 'string'],
             'transmission' => ['required'],
             'fuel_type'    => ['required'],
             'description'  => ['nullable', 'string'],

@@ -1,60 +1,6 @@
 <x-layout>
 <div class="bg-gray-900 min-h-screen">
 
-    <div 
-        x-data="{
-            frame: 1,
-            total: 240,
-            direction: 1,
-
-            interval: null,
-            baseSpeed: 40,
-            slowSpeed: 90,
-
-            startAuto() {
-                this.runAuto(this.baseSpeed)
-            },
-
-            runAuto(speed) {
-                clearInterval(this.interval)
-
-                this.interval = setInterval(() => {
-                    this.frame += this.direction
-
-                    // Slow down near edges
-                    if (this.frame >= this.total - 5 || this.frame <= 5) {
-                        this.runAuto(this.slowSpeed)
-                    } else {
-                        this.runAuto(this.baseSpeed)
-                    }
-
-                    // Reverse direction (ping-pong)
-                    if (this.frame >= this.total) {
-                        this.frame = this.total
-                        this.direction = -1
-                    }
-
-                    if (this.frame <= 1) {
-                        this.frame = 1
-                        this.direction = 1
-                    }
-
-                }, speed)
-            }
-        }"
-
-        x-init="startAuto()"
-
-        class="absolute inset-0 flex items-center justify-center select-none pointer-events-none"
-    >
-        <img 
-            :src="'/images/frames2/ezgif-frame-' + String(frame).padStart(3, '0') + '.jpg'"
-            class="absolute inset-0 w-full h-[1200px] object-cover object-center blur-sm"
-            draggable="false"
-            alt="360 Car View"
-        >
-    </div>
-
     <div class="relative min-h-screen flex items-center justify-center py-10 px-4">
 
         <div class="bg-[#111] p-6 sm:p-8 md:p-10 rounded-2xl w-full max-w-lg text-white">

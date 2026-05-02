@@ -57,7 +57,9 @@ Route::post('/messages', [MessageController::class, 'store'])->name('messages.st
 Route::get('/garage', function () {
     return redirect('/garage/my-listing');
 });
-Route::get('/garage/my-listing', [CarController::class, 'my_listings'])->middleware('auth');
+Route::get('/garage/my-listing', [CarController::class, 'my_listings'])
+    ->name('garage.my-listing')
+    ->middleware('auth');
 
 // Edit and update listing routes
 Route::get('/garage/edit/{id}', [CarController::class, 'edit']);
@@ -95,5 +97,3 @@ Route::delete('/cart/remove/{id}', [CartController::class, 'destroy'])->name('ca
 Route::post('/cart/checkout/{id}', [CartController::class, 'checkout'])->middleware('auth');
 
 Route::post('/rental/{id}/request', [RentalController::class, 'requestRental'])->middleware('auth');
-Route::post('/rental/{id}/accept', [RentalController::class, 'accept'])->middleware('auth');
-Route::post('/rental/{id}/deny', [RentalController::class, 'deny'])->middleware('auth');

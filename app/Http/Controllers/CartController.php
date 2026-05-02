@@ -32,22 +32,25 @@ class CartController extends Controller
         return redirect('/garage/my-cart')->with('success', 'Car added to your cart!');
     }
     
-    public function checkout($id)
-{
-    $cartItem = Cart::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+    public function checkout(Request $request, $id)
+    {
+        $cartItem = Cart::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
 
-    Rental::create([
-        'user_id'    => Auth::id(),
-        'car_id'     => $cartItem->car_id,
-        'status'     => 'pending',
-        'start_date' => now(),
-        'end_date'   => now()->addDays(7),
-    ]);
+        Rental::create([
+            'user_id'        => Auth::id(),
+            'car_id'         => $cartItem->car_id,
+            'status'         => 'pending',
+            'days'           => $request->days,
+            'rent_unit'      => $request->rent_unit,
+            'total_price'    => $request->price_per_unit * $request->days,
+            'start_date'     => null,
+            'end_date'       => null,
+        ]);
 
-    $cartItem->delete();
+        $cartItem->delete();
 
-    return redirect('/garage/my-rental')->with('success', 'Request sent! Wait for owner approval.');
-}
+        return redirect('/garage/my-rental')->with('success', 'Request sent! Wait for owner approval.');
+    }
 
     public function destroy($id)
     {

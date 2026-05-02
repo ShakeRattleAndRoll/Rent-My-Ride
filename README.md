@@ -37,7 +37,8 @@
 #### UI Revamp and Fix Bug Features 5/2/2026
 * Message now works
 * Profile and edit profile UI Changes
-* 
+* Available Cars details 
+* My Cart "Rent Now" Done
 
 
 ## PARTIALLY DONE
@@ -47,5 +48,8 @@
 * Search Filter
 * Filter for car type in Available cars section
 * Message 
-* Available Cars details not modal yet
-* My Cart "Rent Now" form not final
+* Edit post
+* Stalking Profile
+* Email Verification
+* View Details in My Rentals
+
