@@ -21,24 +21,41 @@ class CarController extends Controller
     {
         $query = Car::query();
 
-        if ($request->has('search') && $request->search != '') {
+        if ($request->filled('search')) {
             $searchTerm = $request->search;
-            $query->where(function($q) use ($searchTerm) {
+
+            $query->where(function ($q) use ($searchTerm) {
                 $q->where('brand', 'LIKE', "%{$searchTerm}%")
                 ->orWhere('model', 'LIKE', "%{$searchTerm}%");
             });
         }
 
+        if ($request->filled('min_price')) {
+            $query->where('price', '>=', $request->min_price);
+        }
+
+        if ($request->filled('max_price')) {
+            $query->where('price', '<=', $request->max_price);
+        }
+
+        if ($request->filled('fuel_type')) {
+            $query->where('fuel_type', $request->fuel_type);
+        }
+
+        if ($request->filled('transmission')) {
+            $query->where('transmission', $request->transmission);
+        }
+
         $cars = $query->orderBy('created_at', 'desc')->get();
-        
+
         $carts = Auth::check() ? Auth::user()->carts : collect();
-        
-        $pendingRequests = Auth::check() 
+
+        $pendingRequests = Auth::check()
             ? DB::table('rentals')
                 ->where('user_id', Auth::id())
                 ->where('status', 'pending')
                 ->pluck('car_id')
-                ->toArray() 
+                ->toArray()
             : [];
 
         return view('available_cars.main', [

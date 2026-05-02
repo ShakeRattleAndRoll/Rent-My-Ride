@@ -95,3 +95,5 @@ Route::delete('/cart/remove/{id}', [CartController::class, 'destroy'])->name('ca
 Route::post('/cart/checkout/{id}', [CartController::class, 'checkout'])->middleware('auth');
 
 Route::post('/rental/{id}/request', [RentalController::class, 'requestRental'])->middleware('auth');
+
+Route::get('/available-cars', [CarController::class, 'index'])->name('cars.index');

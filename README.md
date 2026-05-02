@@ -48,6 +48,7 @@
 * You can click profile of owner in the car details
 * Search filter now works 
 * result counter is now accurate
+* Added Search Filter for Price, Transmission, and FuelType
 
 ## PARTIALLY DONE
 
