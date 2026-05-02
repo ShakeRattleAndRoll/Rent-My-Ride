@@ -1,0 +1,98 @@
+<div class="bg-[#1a1a1a] border border-gray-800 rounded-2xl overflow-hidden flex items-center gap-5 p-4 hover:border-gray-600 transition-all duration-200">
+
+    {{-- Car Image --}}
+    <div class="w-44 h-28 rounded-xl overflow-hidden shrink-0 bg-gray-800">
+        <img src="{{ asset('storage/' . $rental->car->car_image) }}"
+             alt="{{ $rental->car->brand }}"
+             class="w-full h-full object-cover">
+    </div>
+
+    {{-- Rental Info --}}
+    <div class="flex-1 min-w-0">
+        <h2 class="text-white text-lg font-bold leading-tight">{{ $rental->car->brand }}</h2>
+        <p class="text-gray-400 text-sm mb-3">{{ $rental->car->model }}</p>
+
+        {{-- Car Specs --}}
+        <div class="flex flex-wrap gap-x-5 gap-y-1 text-gray-400 text-xs mb-3">
+            <span class="flex items-center gap-1.5">
+                <i class="fa-regular fa-calendar text-gray-500"></i>
+                {{ \Carbon\Carbon::parse($rental->car->date_owned)->format('M j, Y') }}
+            </span>
+            <span class="flex items-center gap-1.5">
+                <i class="fa-solid fa-gas-pump text-gray-500"></i>
+                {{ $rental->car->fuel_type }}
+            </span>
+            <span class="flex items-center gap-1.5">
+                <i class="fa-solid fa-gear text-gray-500"></i>
+                {{ $rental->car->transmission }}
+            </span>
+        </div>
+
+        {{-- Duration + Total --}}
+        <div class="flex flex-wrap gap-2 mt-1">
+            <span class="flex items-center gap-1.5 bg-[#242424] border border-white/5 rounded-lg px-2.5 py-1 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                <i class="fa-regular fa-clock text-gray-500"></i>
+                {{ $rental->days }} {{ $rental->car->rent_unit }}(s)
+            </span>
+            <span class="flex items-center gap-1.5 bg-lime-400/10 border border-lime-400/20 rounded-lg px-2.5 py-1 text-[10px] font-bold text-lime-400 uppercase tracking-widest">
+                <i class="fa-solid fa-peso-sign text-[9px]"></i>
+                Total: ₱{{ number_format($rental->total_price, 0) }}
+            </span>
+        </div>
+    </div>
+
+    {{-- Price + Status --}}
+    <div class="flex flex-col items-end gap-2 shrink-0">
+
+        <p class="text-white font-bold text-base">
+            ₱{{ number_format($rental->car->price, 0) }}
+            <span class="text-gray-400 text-sm">/ {{ $rental->car->rent_unit }}</span>
+        </p>
+
+        @php
+            $now        = now();
+            $start      = \Carbon\Carbon::parse($rental->start_date);
+            $end        = \Carbon\Carbon::parse($rental->end_date);
+            $isPending  = $rental->status === 'pending';
+            $isActive   = $rental->status === 'accepted' && $now->between($start, $end);
+            $isFinished = $rental->status === 'accepted' && $now->gt($end);
+            $isDeclined = $rental->status === 'denied';
+        @endphp
+
+        @if ($isPending)
+            <span class="bg-yellow-500/20 text-yellow-500 border border-yellow-500/50 text-[10px] font-bold px-4 py-1.5 rounded-full uppercase tracking-wider">
+                Pending Approval
+            </span>
+        @elseif ($isActive)
+            <span class="bg-lime-400 text-black text-[10px] font-bold px-4 py-1.5 rounded-full uppercase tracking-wider">
+                Active
+            </span>
+        @elseif ($isFinished)
+            <span class="bg-gray-700 text-gray-300 text-[10px] font-bold px-4 py-1.5 rounded-full uppercase tracking-wider">
+                Completed
+            </span>
+        @elseif ($isDeclined)
+            <span class="bg-red-600/20 text-red-500 border border-red-600/50 text-[10px] font-bold px-4 py-1.5 rounded-full uppercase tracking-wider">
+                Declined
+            </span>
+        @endif
+
+        @if ($isPending)
+            <form action="/garage/rental/{{ $rental->id }}/cancel" method="POST" class="w-full">
+                @csrf
+                @method('PATCH')
+                <button type="submit"
+                    onclick="return confirm('Cancel this rental request?')"
+                    class="w-full text-center border border-red-600/50 text-red-500 hover:bg-red-600 hover:text-white text-[10px] font-bold px-5 py-2 rounded-full transition-all duration-200 uppercase tracking-widest mt-1">
+                    Cancel
+                </button>
+            </form>
+        @else
+            <a href="/garage/rental/{{ $rental->id }}"
+               class="border border-gray-600 hover:border-gray-400 text-gray-300 hover:text-white text-[10px] font-bold px-5 py-2 rounded-full transition-all duration-200 w-32 text-center uppercase tracking-widest mt-1">
+                View Details
+            </a>
+        @endif
+
+    </div>
+</div>

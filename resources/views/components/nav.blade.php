@@ -42,7 +42,7 @@
         </a>
 
        <div class="relative group">
-            <button class="flex items-center gap-1 px-4 py-2 rounded-full uppercase tracking-wider font-bold transition-all {{ request()->is('garage*') || request()->is('garage/post-car') ? 'bg-lime-400 text-black' : 'text-white hover:text-lime-400' }}"
+            <button class="flex items-center gap-1 px-4 py-2 rounded-full uppercase tracking-wider font-bold transition-all {{ request()->is('garage*') || request()->is('car/pre-order*') ? 'bg-lime-400 text-black' : 'text-white hover:text-lime-400' }}"
                     style="font-family: inherit; letter-spacing: inherit;">
                 Garage
                 <svg class="w-3 h-3 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -94,14 +94,14 @@
 
         {{-- Garage Dropdown --}}
         <div>
-            <button onclick="toggleGarageDropdown()" class="w-full flex items-center justify-between px-2 py-1 rounded-lg {{ request()->is('garage*') ? 'bg-lime-400 text-black' : 'hover:text-lime-400' }} transition-colors">
+            <button onclick="toggleGarageDropdown()" class="w-full flex items-center justify-between px-2 py-1 rounded-lg {{ request()->is('garage*') || request()->is('car/pre-order*') ? 'bg-lime-400 text-black' : 'hover:text-lime-400' }} transition-colors">
                 Garage
-                <svg id="garageArrow" class="w-3 h-3 transition-transform duration-200 {{ request()->is('garage*') ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg id="garageArrow" class="w-3 h-3 transition-transform duration-200 {{ request()->is('garage*') || request()->is('car/pre-order*') ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path>
                 </svg>
             </button>
 
-            <div id="garageDropdown" class="{{ request()->is('garage*') ? 'flex' : 'hidden' }} flex-col gap-1 mt-2 pl-4 border-l border-white/10">
+            <div id="garageDropdown" class="{{ request()->is('garage*') || request()->is('car/pre-order*') ? 'flex' : 'hidden' }} flex-col gap-1 mt-2 pl-4 border-l border-white/10">
                 <a href="/garage/post-car" class="px-2 py-1 rounded-lg {{ request()->is('garage/post-car') ? 'bg-lime-400 text-black' : 'text-gray-400 hover:text-lime-400' }} transition-colors">Post a Car</a>
                 <a href="/garage/my-listing" class="px-2 py-1 rounded-lg {{ request()->is('garage/my-listing') ? 'bg-lime-400 text-black' : 'text-gray-400 hover:text-lime-400' }} transition-colors">My Listings</a>
                 <a href="/garage/my-rental" class="px-2 py-1 rounded-lg {{ request()->is('garage/my-rental') ? 'bg-lime-400 text-black' : 'text-gray-400 hover:text-lime-400' }} transition-colors">My Rental</a>

@@ -56,7 +56,7 @@
                                     <p class="text-sm leading-relaxed">{{ $message->body }}</p>
                                 </div>
                                 <span class="text-[9px] text-gray-600 font-bold mt-2 uppercase tracking-widest">
-                                    {{ $message->created_at->format('g:i A') }}
+                                    {{ $message->created_at->timezone('Asia/Manila')->format('g:i A') }}
                                 </span>
                             </div>
                         @empty

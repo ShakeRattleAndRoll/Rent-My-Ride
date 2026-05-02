@@ -1,6 +1,9 @@
-<div class="relative car-card bg-[#1e1e1e] rounded-2xl overflow-hidden border border-white/5 hover:border-yellow-400/40 transition-all shadow-lg flex flex-col h-full">
-
-    <a href="{{ route('cars.show', $car) }}" wire:navigate class="absolute inset-0 z-10 block" aria-label="View Details"></a>
+<div
+    x-data="{ open: false }"
+    class="relative car-card bg-[#1e1e1e] rounded-2xl overflow-hidden border border-white/5 hover:border-yellow-400/40 transition-all shadow-lg flex flex-col h-full"
+>
+    {{-- Clickable overlay --}}
+    <div @click="open = true" class="absolute inset-0 z-10 block cursor-pointer" aria-label="View Details"></div>
 
     {{-- Car Image --}}
     <div class="w-full h-48 bg-[#2a2a2a] overflow-hidden">
@@ -26,7 +29,7 @@
             </div>
             <p class="text-white font-bold text-sm text-right">
                 ₱{{ number_format($car->price) }}
-                <span class="text-gray-400 font-normal block text-[10px]">/per {{ $car->rent_value }} {{ $car->rent_unit }}</span>
+                <span class="text-gray-400 font-normal block text-[10px]">/per {{ $car->rent_unit }}</span>
             </p>
         </div>
 
@@ -50,7 +53,7 @@
 
     <div class="mt-auto p-4 pt-0 relative z-20" style="font-family: 'Montserrat', sans-serif;">
         @if(Auth::check() && $car->user_id === Auth::id())
-            <a href="/garage/my-listing" 
+            <a href="/garage/my-listing"
                class="w-full block py-3 bg-gray-800 border border-white/5 text-gray-400 text-[10px] font-bold uppercase tracking-widest rounded-xl text-center">
                 You Own This
             </a>
@@ -58,7 +61,7 @@
             <form action="/cart/add" method="POST">
                 @csrf
                 <input type="hidden" name="car_id" value="{{ $car->id }}">
-                <button type="submit" 
+                <button type="submit"
                         class="w-full py-3 bg-yellow-400 hover:bg-yellow-300 text-black text-[10px] font-bold uppercase tracking-widest rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2">
                     <i class="fa-solid fa-cart-plus"></i>
                     Add to Cart
@@ -66,4 +69,7 @@
             </form>
         @endif
     </div>
+
+    <x-car_modal :car="$car" />
+
 </div>

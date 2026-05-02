@@ -69,20 +69,27 @@
 
         <p class="text-white font-bold text-base">
             ₱{{ number_format($car->price, 0) }}
-            <span class="text-gray-400 font-normal text-sm">/ per {{ $car->rent_value }} {{ $car->rent_unit }}</span>
+            <span class="text-gray-400 font-normal text-sm">/ per {{ $car->rent_unit }}</span>
         </p>
 
         {{-- Pre Orders --}}
-        <a href="/car/pre-order/{{ $car->id }}" wire:navigate
-           class="relative bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-bold px-5 py-2 rounded-full transition-all duration-200 w-32 text-center">
-            Pre orders
+        @if ($IsOccupied)
+            <button type="button"
+                    class="relative bg-gray-800 text-gray-500 cursor-not-allowed text-xs font-bold px-5 py-2 rounded-full w-32 text-center border border-gray-700">
+                Pre Orders
+            </button>
+        @else
+            <a href="/car/pre-order/{{ $car->id }}" wire:navigate
+            class="relative bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-bold px-5 py-2 rounded-full transition-all duration-200 w-32 text-center">
+                Pre orders
 
-            @if (isset($car->pending_orders_count) && $car->pending_orders_count > 0)
-                <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-white text-[10px] flex items-center justify-center font-bold">
-                    {{ $car->pending_orders_count }}
-                </span>
-            @endif
-        </a>
+                @if (isset($car->pending_orders_count) && $car->pending_orders_count > 0)
+                    <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-white text-[10px] flex items-center justify-center font-bold">
+                        {{ $car->pending_orders_count }}
+                    </span>
+                @endif
+            </a>
+        @endif
 
         {{-- Edit --}}
         @if ($IsOccupied) {{-- Disabled Edit Button if true  --}}

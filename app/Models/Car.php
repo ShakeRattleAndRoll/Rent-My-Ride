@@ -18,7 +18,6 @@ class Car extends Model
         'brand',
         'model',
         'price',
-        'rent_value',
         'rent_unit',
         'transmission',
         'fuel_type',
