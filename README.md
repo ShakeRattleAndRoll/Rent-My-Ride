@@ -34,6 +34,11 @@
 * Slight change in available cars UI
 * Navigation Responsive
 
+#### UI Revamp and Fix Bug Features 5/2/2026
+* Message now works
+* Profile and edit profile UI Changes
+* 
+
 
 ## PARTIALLY DONE
 
