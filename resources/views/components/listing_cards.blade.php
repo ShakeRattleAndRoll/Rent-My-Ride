@@ -69,7 +69,7 @@
 
         <p class="text-white font-bold text-base">
             ₱{{ number_format($car->price, 0) }}
-            <span class="text-gray-400 font-normal text-sm">/day</span>
+            <span class="text-gray-400 font-normal text-sm">/ per {{ $car->rent_value }} {{ $car->rent_unit }}</span>
         </p>
 
         {{-- Pre Orders --}}

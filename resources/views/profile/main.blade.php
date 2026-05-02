@@ -1,132 +1,129 @@
 <x-layout>
+<div class="bg-[#121212] min-h-screen text-white p-6 md:p-12" style="font-family: 'Montserrat', sans-serif;">
 
-<div class="bg-[#121212] min-h-screen text-white p-10">
+    <div class="max-w-5xl mx-auto flex flex-col md:flex-row gap-8">
+        
+        <div class="w-full md:w-1/3 flex flex-col gap-6">
+            <div class="bg-[#1a1a1a] p-8 rounded-3xl border border-white/5 shadow-2xl flex flex-col items-center text-center">
+                
+                {{-- Profile Picture --}}
+                <div class="relative group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-white to-white rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+                    <div class="relative w-40 h-40 rounded-full bg-[#2a2a2a] border-4 border-[#1a1a1a] overflow-hidden">
+                        @if(auth()->user()->profile_picture)
+                            <img src="{{ asset('storage/' . auth()->user()->profile_picture) }}" 
+                                 alt="Profile" 
+                                 class="w-full h-full object-cover">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center bg-gray-800">
+                                <span class="text-4xl font-black text-gray-600">{{ substr(auth()->user()->username, 0, 1) }}</span>
+                            </div>
+                        @endif
+                    </div>
+                </div>
 
-    <div class="max-w-4xl mx-auto bg-[#1a1a1a] p-10 rounded-3xl shadow-2xl border border-white/5">
+                <h2 class="mt-6 text-2xl font-black text-white tracking-tight uppercase">
+                    {{ auth()->user()->username }}
+                </h2>
+                <p class="text-yellow-400 text-xs font-bold uppercase tracking-widest mt-1">Verified Member</p>
 
-        {{-- Edit Success Message --}}
-        @if (session('success'))
-            <div class="bg-green-500/10 border border-green-500/30 text-green-400 px-6 py-3 rounded-xl mb-6 text-sm text-center">
-                {{ session('success') }}
+                <hr class="w-full border-white/5 my-6">
+
+                {{-- Stats --}}
+                <div class="grid grid-cols-2 w-full gap-4">
+                    <div class="bg-[#242424] p-4 rounded-2xl border border-white/5">
+                        <p class="text-[10px] text-gray-500 font-bold uppercase">Total Cars</p>
+                        <span class="text-xl font-black text-white">{{ auth()->user()->rentals()->count() }}</span>
+                    </div>
+                    <div class="bg-[#242424] p-4 rounded-2xl border border-white/5">
+                        <p class="text-[10px] text-gray-500 font-bold uppercase">Listings</p>
+                        <span class="text-xl font-black text-white">{{ \App\Models\Car::where('user_id', auth()->id())->count() }}</span>
+                    </div>
+                </div>
+
+                {{-- Logout Button --}}
+                <form action="/logout" method="POST" class="w-full mt-6">
+                    @csrf
+                    <button type="submit" class="w-full py-3 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-xl font-bold text-xs transition uppercase tracking-widest">
+                        Log Out Account
+                    </button>
+                </form>
             </div>
-        @endif
+        </div>
 
-        <div class="flex flex-col items-center gap-6">
-
-            {{-- Username --}}
-            <p class="text-sm text-gray-400 font-semibold">
-                {{ auth()->user()?->username ?? '' }}
-            </p>
-
-            {{-- Profile Picture --}}
-            <div class="w-48 h-48 rounded-full bg-[#2a2a2a] border-2 border-white/10 flex items-center justify-center overflow-hidden">
-                @if(auth()->user()->profile_picture)
-                    <img src="{{ asset('storage/' . auth()->user()->profile_picture) }}" 
-                        alt="Profile" 
-                        class="w-full h-full object-cover">
-                @else
-                    <svg class="w-16 h-16 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                    </svg>
+        {{-- Personal Details --}}
+        <div class="flex-1">
+            <div class="bg-[#1a1a1a] p-8 md:p-10 rounded-3xl border border-white/5 shadow-2xl h-full">
+                
+                @if (session('success'))
+                    <div class="bg-lime-400/10 border border-lime-400/30 text-lime-400 px-6 py-4 rounded-2xl mb-8 text-sm flex items-center gap-3">
+                        <i class="fa-solid fa-circle-check"></i>
+                        {{ session('success') }}
+                    </div>
                 @endif
-            </div>
 
-            {{-- Stats --}}
-            <div class="flex justify-center gap-10">
-                <div class="flex flex-col items-center gap-2">
-                    <p class="text-xs text-gray-400">Total Cars</p>
-                    <span class="text-white font-bold text-lg">
-                        {{ auth()->user()->rentals()->count() }}
-                    </span>
+                <div class="flex justify-between items-center mb-10">
+                    <h3 class="text-xl font-black uppercase tracking-tighter">Account Information</h3>
+                    <a href="/profile/edit" wire:navigate class="px-6 py-2 bg-yellow-400 text-black rounded-full font-bold text-xs hover:bg-yellow-300 transition shadow-lg shadow-yellow-400/20">
+                        Edit Profile
+                    </a>
                 </div>
 
-                <div class="flex flex-col items-center gap-2">
-                    <p class="text-xs text-gray-400">Active Listings</p>
-                    <span class="text-white font-bold text-lg">
-                        {{ \App\Models\Car::where('user_id', auth()->id())->count() }}
-                    </span>
-                </div>
-            </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-12">
+                    
+                    {{-- Full Name --}}
+                    <div class="group">
+                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1 group-hover:text-yellow-400 transition">Full Name</p>
+                        <p class="text-white font-semibold text-lg border-b border-white/5 pb-2">{{ auth()->user()?->full_name }}</p>
+                    </div>
 
+                    {{-- Email --}}
+                    <div class="group">
+                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1 group-hover:text-yellow-400 transition">Email Address</p>
+                        <p class="text-white font-semibold text-lg border-b border-white/5 pb-2">{{ auth()->user()?->email }}</p>
+                    </div>
+
+                    {{-- Sex --}}
+                    <div class="group">
+                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1 group-hover:text-yellow-400 transition">Gender</p>
+                        <p class="text-white font-semibold text-lg border-b border-white/5 pb-2">{{ ucfirst(auth()->user()?->sex ?? 'N/A') }}</p>
+                    </div>
+
+                    {{-- DOB --}}
+                    <div class="group">
+                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1 group-hover:text-yellow-400 transition">Birthdate</p>
+                        <p class="text-white font-semibold text-lg border-b border-white/5 pb-2">
+                            {{ auth()->user()?->dob ? \Carbon\Carbon::parse(auth()->user()->dob)->format('F d, Y') : 'Not Set' }}
+                        </p>
+                    </div>
+
+                    {{-- Contact --}}
+                    <div class="group">
+                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1 group-hover:text-yellow-400 transition">Phone Number</p>
+                        <p class="text-white font-semibold text-lg border-b border-white/5 pb-2">{{ auth()->user()?->contact_number ?? 'No contact added' }}</p>
+                    </div>
+
+                    {{-- Address --}}
+                    <div class="group md:col-span-2">
+                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1 group-hover:text-yellow-400 transition">Current Address</p>
+                        <p class="text-white font-semibold text-lg border-b border-white/5 pb-2">{{ auth()->user()?->address ?? 'No address listed' }}</p>
+                    </div>
+
+                </div>
+
+                {{-- Security Note --}}
+                <div class="mt-12 p-6 bg-[#242424] rounded-2xl border border-white/5 flex items-start gap-4">
+                    <div class="p-3 bg-yellow-400/10 rounded-xl text-yellow-400">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-white uppercase tracking-wide">Data Protection</p>
+                        <p class="text-xs text-gray-500 mt-1">Your personal information is only shared with verified car owners during a rental transaction.</p>
+                    </div>
+                </div>
+
+            </div>
         </div>
-
-        {{-- Details --}}
-        <div class="mt-10 max-w-3xl mx-auto flex flex-col gap-6">
-
-            {{-- Full Name --}}
-            <div>
-                <p class="text-sm text-gray-400 font-semibold">Full Name</p>
-                <p class="text-lg text-white font-semibold">
-                    {{ auth()->user()?->full_name }}
-                </p>
-            </div>
-
-            {{-- Sex + DOB --}}
-            <div class="grid grid-cols-2 gap-6">
-
-                <div>
-                    <p class="text-sm text-gray-400 font-semibold">Sex</p>
-                    <p class="text-white">
-                        {{ ucfirst(auth()->user()?->sex ?? '') }}
-                    </p>
-                </div>
-
-                <div>
-                    <p class="text-sm text-gray-400 font-semibold">Date of Birth</p>
-                    <p class="text-white">
-                        {{ auth()->user()?->dob ? \Carbon\Carbon::parse(auth()->user()->dob)->format('F d, Y') : '' }}
-                    </p>
-                </div>
-
-            </div>
-
-            {{-- Address --}}
-            <div>
-                <p class="text-sm text-gray-400 font-semibold">Address</p>
-                <p class="text-white">
-                    {{ auth()->user()?->address ?? '' }}
-                </p>
-            </div>
-
-            {{-- Contact --}}
-            <div>
-                <p class="text-sm text-gray-400 font-semibold">Contact Number</p>
-                <p class="text-white">
-                    {{ auth()->user()?->contact_number ?? '' }}
-                </p>
-            </div>
-
-            {{-- Email --}}
-            <div>
-                <p class="text-sm text-gray-400 font-semibold">Email</p>
-                <p class="text-white">
-                    {{ auth()->user()?->email ?? '' }}
-                </p>
-            </div>
-
-        </div>
-
-        {{-- Buttons --}}
-        <div class="flex justify-center gap-6 mt-10">
-
-            <a href="/profile/edit"
-                class="px-10 py-3 bg-yellow-400 text-black rounded-full font-bold hover:bg-yellow-300 transition text-center">
-                Edit Account Info
-            </a>
-
-            <form action="/logout" method="POST">
-                @csrf
-                <button type="submit"
-                    class="px-10 py-3 bg-yellow-400 text-black rounded-full font-bold hover:bg-yellow-300 transition">
-                    Log Out
-                </button>
-            </form>
-
-        </div>
-
     </div>
-
 </div>
-
 </x-layout>

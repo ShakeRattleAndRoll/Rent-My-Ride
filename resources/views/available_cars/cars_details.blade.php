@@ -4,15 +4,14 @@
 
         <div class="bg-[#1e1e1e] rounded-2xl w-full max-w-xl p-6 relative border border-white/10">
 
-            {{-- CLOSE BUTTON (TOP RIGHT OF CARD) --}}
-            <a href="{{ url()->previous() }}"
+            <a href="{{ url()->previous() }}"  wire:navigate
             class="absolute -top-3 -right-3 bg-[#1e1e1e] border border-white/10 
                     w-8 h-8 flex items-center justify-center rounded-full
                     text-white hover:text-red-400 transition text-lg z-50">
                 <i class="fa-solid fa-xmark"></i>
             </a>
 
-            {{-- TOP SECTION --}}
+            {{-- Top Section --}}
             <div class="flex gap-6 mb-6">
 
                 {{-- Car Image --}}
@@ -22,22 +21,31 @@
                         class="w-full h-full object-cover">
                 </div>
 
-                {{-- RIGHT CONTENT --}}
+                {{-- Left Content --}}
                 <div class="flex-1 flex flex-col justify-between">
 
                     {{-- BRAND + PRICE --}}
-                    <div class="flex justify-between items-start">
-                        <h2 class="text-white text-xl font-black leading-tight">
-                            {{ $car->brand }}
-                            <span class="block text-gray-400 text-sm font-medium">
-                                {{ $car->model }}
-                            </span>
-                        </h2>
+                    <div class="flex justify-between items-start gap-x-6 mb-6">
 
-                        <p class="text-white font-bold text-sm">
-                            ₱{{ number_format($car->price, 0) }}
-                            <span class="text-gray-400 font-normal">/day</span>
-                        </p>
+                        <div class="flex-1 min-w-0">
+                            <h2 class="text-white text-2xl font-black leading-tight uppercase tracking-tight break-words">
+                                {{ $car->brand }}
+                            </h2>
+                            <p class="text-gray-400 text-sm font-semibold uppercase tracking-widest mt-1">
+                                {{ $car->model }}
+                            </p>
+                        </div>
+
+                        {{-- Right Content --}}
+                        {{-- Price + Unit Container --}}
+                        <div class="shrink-0 flex flex-col items-end justify-start pt-1">
+                            <div class="text-lime-400 font-black text-2xl leading-none">
+                                ₱{{ number_format($car->price, 0) }}
+                            </div>
+                            <div class="text-gray-500 text-[10px] font-bold uppercase tracking-widest mt-1 border-t border-white/10 pt-1 w-full text-right">
+                                {{ $car->rent_value }} {{ $car->rent_unit }}
+                            </div>
+                        </div>
                     </div>
 
                     {{-- SPECS --}}
@@ -64,12 +72,17 @@
                     <div class="mt-5 flex gap-3">
 
                         {{-- MESSAGE BUTTON --}}
-                        <a href="/messages" wire:navigate
+                        @if(auth()->id() !== $car->user_id)
+                            <a href="{{ route('messages.index', $car->user->id) }}" wire:navigate
                             class="flex-1 flex items-center justify-center gap-2 py-2.5 bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-bold rounded-full transition">
-
-                            <i class="fa-solid fa-message"></i>
-                            Message
-                        </a>
+                                <i class="fa-solid fa-message"></i>
+                                Message Owner
+                            </a>
+                        @else
+                            <div class="flex-1 flex items-center justify-center py-2.5 bg-gray-700 text-gray-400 text-xs font-bold rounded-full cursor-not-allowed">
+                                Your Listing
+                            </div>
+                        @endif
 
                         {{-- ADD TO CART --}}
                         <form method="POST" action="/cart/add" class="flex-1">
@@ -89,7 +102,6 @@
                 </div>
             </div>
 
-            {{-- DIVIDER --}}
             <div class="border-t border-white/5 mb-5"></div>
 
             {{-- OWNER INFO --}}

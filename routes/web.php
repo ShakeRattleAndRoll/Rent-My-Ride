@@ -8,6 +8,7 @@ use App\Http\Controllers\RentalController;
 use App\Http\Controllers\CartController;
 use App\Models\Cart;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\MessageController;
 
 // Download og livewire para walay loading copy ning nasa baba sa terminal [ctrl + `]
 // composer require livewire/livewire
@@ -49,9 +50,8 @@ Route::get('/profile/edit', [AuthController::class, 'edit'])->name('profile.edit
 Route::patch('/profile/update', [AuthController::class, 'update'])->name('profile.update');
 
 // Route for message page
-Route::get('/messages', function () {
-    return view('message.message');
-});
+Route::get('/messages/{receiverId?}', [MessageController::class, 'index'])->name('messages.index');
+Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
 
 // Routes for garage listing
 Route::get('/garage', function () {

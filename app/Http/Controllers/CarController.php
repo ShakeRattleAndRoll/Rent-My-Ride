@@ -23,6 +23,26 @@ class CarController extends Controller
         return view('available_cars.main', ['cars' => $cars]);
     }
 
+    // Connected sa available cars na search filter wala pani na human 
+    // public function index(Request $request)
+    // {
+    //     $query = Car::query();
+
+    //     if ($request->filled('search')) {
+    //         $searchTerm = $request->search;
+            
+    //         $query->where(function($q) use ($searchTerm) {
+    //             $q->where('brand', 'like', '%' . $searchTerm . '%')
+    //             ->orWhere('model', 'like', '%' . $searchTerm . '%')
+    //             ->orWhere('category', 'like', '%' . $searchTerm . '%');
+    //         });
+    //     }
+
+    //     $cars = $query->latest()->get();
+
+    //     return view('cars.index', compact('cars'));
+    // }
+
     // STORE CAR
     public function store(Request $request)
     {
@@ -36,7 +56,8 @@ class CarController extends Controller
             'brand'        => ['required', 'string'],
             'model'        => ['required', 'string'],
             'price'        => ['required', 'numeric'],
-            'rent_period'  => ['required', 'string'],
+            'rent_unit'    => ['required', 'string'],
+            'rent_value'   => ['required', 'numeric'],
             'transmission' => ['required'],
             'fuel_type'    => ['required'],
             'description'  => ['nullable', 'string'],
@@ -109,7 +130,8 @@ class CarController extends Controller
             'brand'        => ['required', 'string'],
             'model'        => ['required', 'string'],
             'price'        => ['required', 'numeric'],
-            'rent_period'  => ['required', 'string'],
+            'rent_value'   => ['required', 'string'],
+            'rent_unit'    => ['required', 'numeric'],
             'transmission' => ['required'],
             'fuel_type'    => ['required'],
             'description'  => ['nullable', 'string'],
