@@ -65,14 +65,18 @@
                         @forelse($preOrders as $order)
                             <tr class="bg-[#1a1a1a] border border-gray-800 text-gray-300 text-[11px] hover:bg-[#222] transition-all group">
                                 <td class="px-6 py-4 first:rounded-l-2xl border-y border-l border-transparent group-hover:border-gray-700">
-                                    <div class="flex items-center gap-3">
+                                    <a href="{{ route('user.profile', $order->user->id) }}"
+                                       class="inline-flex items-center gap-3
+                                              border border-transparent hover:border-white/30
+                                              rounded-xl px-2 py-1 -mx-2
+                                              transition-all duration-300">
                                         <img 
                                             src="{{ $order->user->profile_picture ? asset('storage/' . $order->user->profile_picture) : asset('images/default-avatar.png') }}"
                                             alt="{{ $order->user->username }}"
                                             class="w-8 h-8 rounded-full object-cover border border-gray-700"
                                         >
                                         <span>{{ $order->user->username }}</span>
-                                    </div>
+                                    </a>
                                 </td>
                                 <td class="px-6 py-4 border-y border-transparent group-hover:border-gray-700 uppercase font-semibold">
                                     {{ $order->user->full_name }}

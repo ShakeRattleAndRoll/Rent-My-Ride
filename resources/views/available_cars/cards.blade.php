@@ -1,5 +1,5 @@
 <div
-    x-data="{ open: false }"
+    x-data="{ open: false, profileOpen: false}"
     class="relative car-card bg-[#1e1e1e] rounded-2xl overflow-hidden border border-white/5 hover:border-yellow-400/40 transition-all shadow-lg flex flex-col h-full"
 >
     {{-- Clickable overlay --}}
@@ -83,6 +83,6 @@
         @endif
     </div>
 
-    <x-car_modal :car="$car" />
+    <x-modals.car_modal :car="$car" />
 
 </div>

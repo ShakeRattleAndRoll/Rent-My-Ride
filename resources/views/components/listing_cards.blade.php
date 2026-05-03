@@ -46,7 +46,7 @@
 
         @php
             $ActiveRent = $car->rentals->where('status', 'accepted')->first();
-            $IsOccupied = !is_null($ActiveRent);
+            $IsOccupied = !is_null($ActiveRent) && \Carbon\Carbon::parse($ActiveRent->end_date)->timezone('Asia/Manila')->isFuture();
         @endphp
 
         {{-- Status + Details --}}

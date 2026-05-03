@@ -18,7 +18,7 @@
                     {{-- User Details --}}
                     <div class="flex-1 text-center md:text-left">
                         <h1 class="text-white text-4xl font-black uppercase tracking-tight">{{ $user->full_name }}</h1>
-                        <p class="text-yellow-400 font-bold tracking-widest text-sm mb-4">@#{{ $user->username }}</p>
+                        <p class="text-yellow-400 font-bold tracking-widest text-sm mb-4">{{ $user->username }}</p>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-gray-400 text-sm">
                             
