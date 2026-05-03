@@ -6,6 +6,9 @@
     @livewireScripts
 
     <title>{{ $title ?? 'Rent My Ride' }}</title>
+
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    
     <link rel="icon" type="image/png" href="{{ asset('images/Rent-My-Ride-Logo.png') }}" sizes="100x64">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet">
