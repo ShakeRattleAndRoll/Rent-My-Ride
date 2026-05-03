@@ -114,18 +114,27 @@
         <div class="grid grid-cols-2 gap-y-5 mb-6 text-sm">
             <div>
                 <p class="text-white font-bold mb-1">Car Owner</p>
-                <a href="{{ route('user.profile', $car->user->id) }}">
-                <div class="flex items-center gap-3 text-gray-400">
+                <a href="{{ route('user.profile', $car->user->id) }}"
+                class="inline-flex items-center gap-3
+                        border border-transparent hover:border-white/30
+                        rounded-xl px-3 py-2 -mx-3
+                        transition-all duration-300">
+
                     <img src="{{ $car->user->profile_picture
                         ? asset('storage/' . $car->user->profile_picture)
                         : 'https://ui-avatars.com/api/?name=' . urlencode($car->user->username) }}"
                         class="w-12 h-12 rounded-full object-cover border border-white/10"
                         alt="Owner">
+
                     <div class="flex flex-col leading-tight">
-                        <p class="text-xs text-gray-500 font-semibold">{{ $car->user->username }}</p>
-                        <p class="text-white font-semibold">{{ $car->user->full_name }}</p>
+                        <p class="text-xs text-gray-500 font-semibold">
+                            {{ $car->user->username }}
+                        </p>
+                        <p class="text-white font-semibold">
+                            {{ $car->user->full_name }}
+                        </p>
                     </div>
-                </div>
+
                 </a>
             </div>
 

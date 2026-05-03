@@ -98,6 +98,6 @@
     </div>
 
     {{-- Modal --}}
-    <x-car_modal :car="$cart->car"/>
+    <x-modals.car_modal :car="$cart->car"/>
 
 </div>

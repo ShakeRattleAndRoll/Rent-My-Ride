@@ -3,7 +3,7 @@
         <div class="max-w-6xl mx-auto flex gap-6 h-[85vh]">
 
             <div class="w-1/3 md:w-80 bg-[#1a1a1a] rounded-3xl border border-white/5 flex flex-col shadow-2xl overflow-hidden">
-                <div class="p-6 bg-[#242424]/50 border-b border-white/5 flex items-center justify-between">
+                <div class="p-8 bg-[#242424]/50 border-b border-white/5 flex items-center justify-between">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-yellow-400 to-lime-400 p-[2px]">
                             <a href='/profile'>
@@ -11,7 +11,10 @@
                                  class="w-full h-full rounded-full object-cover border-2 border-[#1a1a1a]">
                             </a>
                         </div>
-                        <span class="font-black uppercase text-xs tracking-tighter">{{ auth()->user()->username }}</span>
+                        <div class="flex-1 min-w-0">
+                            <span class="font-black uppercase text-xs tracking-tighter">{{ auth()->user()->username }}</span>
+                            <span class="text-xs text-gray-1000 truncate block">{{ auth()->user()->full_name }}</span>
+                        </div>
                     </div>
                 </div>
 
@@ -19,13 +22,14 @@
                     @forelse($contacts as $contact)
                         <a href="{{ route('messages.index', $contact->id) }}" wire:navigate
                            class="flex items-center gap-3 p-4 rounded-2xl transition group {{ isset($activeContact) && $activeContact->id == $contact->id ? 'bg-yellow-400 text-black' : 'hover:bg-[#242424]' }}">
-                            <div class="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden border border-white/10">
+                        <div class="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden border border-white/10">
                             <img src="{{ $contact->profile_picture ? asset('storage/' . $contact->profile_picture) : 'https://ui-avatars.com/api/?name=' . urlencode($contact->username) . '&background=random' }}" 
                                 class="w-full h-full object-cover">
                         </div> 
-                            <div class="flex-1 min-w-0">
-                                <span class="font-bold text-xs uppercase truncate block">{{ $contact->username }}</span>
-                            </div>
+                        <div class="flex-1 min-w-0">
+                            <span class="font-bold text-xs uppercase truncate block">{{ $contact->username }}</span>
+                            <span class="text-xs text-gray-1000 truncate block">{{ $contact->full_name }}</span>
+                        </div>
                         </a>
                     @empty
                         <p class="text-gray-500 text-center text-xs mt-10 uppercase tracking-widest font-bold">No contacts yet</p>
@@ -37,16 +41,26 @@
                 
                 @if($activeContact)
                     <div class="p-6 border-b border-white/5 bg-[#1a1a1a]/80 backdrop-blur-md flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="w-11 h-11 bg-gray-800 rounded-full border border-white/10 overflow-hidden">
-                                <img src="{{ $activeContact->profile_picture ? asset('storage/' . $activeContact->profile_picture) : 'https://ui-avatars.com/api/?name=' . urlencode($activeContact->username) }}" 
+                        <a href="{{ route('user.profile', $activeContact->id) }}"
+                        class="inline-flex items-center gap-4
+                                border border-transparent hover:border-white/30
+                                rounded-xl px-3 py-2 -mx-3
+                                transition-all duration-300">
+
+                            <div class="w-11 h-11 bg-gray-800 rounded-full border border-white/10 overflow-hidden shrink-0">
+                                <img src="{{ $activeContact->profile_picture
+                                    ? asset('storage/' . $activeContact->profile_picture)
+                                    : 'https://ui-avatars.com/api/?name=' . urlencode($activeContact->username) }}"
                                     class="w-full h-full object-cover">
                             </div>
+
                             <div>
                                 <h2 class="text-sm font-black uppercase tracking-tighter text-white">{{ $activeContact->username }}</h2>
-                                <p class="text-[10px] text-lime-400 font-bold uppercase tracking-widest">● Active Conversation</p>  
+                                <h3 class="text-xs font-semibold text-gray-400 tracking-tight">{{ $activeContact->full_name }}</h3>
                             </div>
-                        </div>
+
+                        </a>
+                        <p class="text-[10px] text-lime-400 font-bold uppercase tracking-widest">● Active Conversation</p>
                     </div>
 
                     <div id="chat-container" class="flex-1 overflow-y-auto p-8 space-y-6 custom-scrollbar bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')]">
@@ -71,8 +85,8 @@
                             @csrf
                             <input type="hidden" id="receiver_id" value="{{ $activeContact->id }}">
                             
-                            <input type="text" id="message_body" required placeholder="Write your message..." 
-                                class="flex-1 bg-[#242424] text-white px-6 py-3.5 rounded-2xl border border-white/5 outline-none focus:border-yellow-400 transition-all font-medium text-sm">
+                            <input type="text" id="message_body" placeholder="Write your message..." 
+    class="flex-1 bg-[#242424] text-white px-6 py-3.5 rounded-2xl border border-white/5 outline-none focus:border-yellow-400 transition-all font-medium text-sm">
                             
                             <button type="submit" class="w-11 h-11 bg-yellow-400 text-black rounded-2xl flex items-center justify-center shadow-lg shadow-yellow-400/20 hover:bg-yellow-300 transition">
                                 <i class="fa-solid fa-paper-plane"></i>
@@ -92,44 +106,6 @@
         </div>
     </div>
 
-    <script>
-        const chatForm = document.getElementById('chat-form');
-        const chatContainer = document.getElementById("chat-container");
+    <script src="{{ asset('js/messages.js') }}"></script>
 
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-
-        chatForm.addEventListener('submit', function(e) {
-            e.preventDefault(); 
-
-            const body = document.getElementById('message_body').value;
-            const receiverId = document.getElementById('receiver_id').value;
-
-            const newMessage = `
-                <div class="flex flex-col items-end ml-auto max-w-[70%]">
-                    <div class="p-4 rounded-2xl shadow-md bg-yellow-400 text-black rounded-tr-none">
-                        <p class="text-sm leading-relaxed">${body}</p>
-                    </div>
-                    <span class="text-[9px] text-gray-600 font-bold mt-2 uppercase tracking-widest">Just now</span>
-                </div>
-            `;
-            
-            chatContainer.insertAdjacentHTML('beforeend', newMessage);
-            chatContainer.scrollTop = chatContainer.scrollHeight; 
-            document.getElementById('message_body').value = ''; 
-
-            fetch("{{ route('messages.store') }}", {
-                method: "POST",
-                headers: {
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}",
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
-                },
-                body: JSON.stringify({
-                    receiver_id: receiverId,
-                    body: body
-                })
-            });
-        });
-    </script>
-    
 </x-layout>

@@ -41,34 +41,37 @@
         {{-- RENTAL LIST --}}
         <div class="mt-10 space-y-6">
 
-            @forelse ($rentals->where('status', '!=', 'pending') as $rental)
+            @forelse ($rentals->where('status', 'accepted') as $rental)
 
             @php
                 $user = $rental->user;
             @endphp
 
-            <div class="bg-[#2a2a2a] rounded-3xl p-6 flex items-center justify-between">
+            <div class="rental-card bg-[#2a2a2a] rounded-3xl p-6 flex items-center justify-between"
+                 data-rental-card="{{ $rental->id }}">
 
                 {{-- LEFT USER INFO --}}
                 <div class="flex items-center gap-5">
 
                     {{-- Avatar --}}
-                    <div class="w-20 h-20 rounded-full overflow-hidden bg-gray-700 flex items-center justify-center text-black text-xl font-bold">
+                    <a href="{{ route('user.profile', $user->id) }}"
+                       class="block w-20 h-20 rounded-full overflow-hidden bg-gray-700 flex items-center justify-center text-black text-xl font-bold
+                              border-2 border-transparent hover:border-white/30 transition-all duration-300">
                         @if($user->profile_picture)
-                            <img 
-                                src="{{ asset('storage/' . $user->profile_picture) }}" 
+                            <img
+                                src="{{ asset('storage/' . $user->profile_picture) }}"
                                 alt="{{ $user->name }}"
                                 class="w-full h-full object-cover"
                             >
                         @else
                             {{ strtoupper(substr($user->name, 0, 1)) }}
                         @endif
-                    </div>
+                    </a>
 
                     {{-- Details --}}
                     <div class="text-sm space-y-1 text-gray-300">
                         <p><span class="text-gray-400">Username:</span> {{ $user->username ?? 'N/A' }}</p>
-                        <p><span class="text-gray-400">Fullname:</span> {{ $user->full_name  }}</p>
+                        <p><span class="text-gray-400">Fullname:</span> {{ $user->full_name }}</p>
                         <p><span class="text-gray-400">Contact Number:</span> {{ $user->contact_number ?? 'N/A' }}</p>
                         <p><span class="text-gray-400">Email:</span> {{ $user->email }}</p>
                         <p><span class="text-gray-400">Address:</span> {{ $user->address ?? 'N/A' }}</p>
@@ -93,12 +96,16 @@
                     <p><span class="text-gray-400">Total Price:</span> ₱{{ number_format($rental->total_price) }}</p>
 
                     {{-- STATUS --}}
-                    <div class="mt-3">
-                        @if($rental->status === 'accepted')
+                    <div class="mt-3 flex items-center justify-end gap-2">
+                        @if($rental->status === 'accepted' && \Carbon\Carbon::parse($rental->end_date)->timezone('Asia/Manila')->isFuture())
                             <span class="bg-green-500 text-black px-4 py-1 rounded-full text-xs font-bold">
                                 Active
                             </span>
                         @else
+                            <button onclick="document.getElementById('delete-modal-{{ $rental->id }}').classList.remove('hidden')"
+                                class="w-8 h-8 flex items-center justify-center rounded-full border border-red-600/40 text-red-500 hover:bg-red-600 hover:text-white transition-all duration-200">
+                                <i class="fa-solid fa-trash text-[11px]"></i>
+                            </button>
                             <span class="bg-gray-600 text-white px-4 py-1 rounded-full text-xs font-bold">
                                 Done
                             </span>
@@ -106,6 +113,8 @@
                     </div>
                 </div>
             </div>
+
+            <x-modals.delete_confirmation :rentalId="$rental->id" />
 
             @empty
                 <p class="text-gray-500 text-center py-10">No renters yet.</p>

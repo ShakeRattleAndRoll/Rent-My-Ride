@@ -57,7 +57,7 @@
                     @endif
                     @empty
                         <div class="col-span-full text-center py-24 bg-[#1a1a1a] rounded-3xl border border-white/5">
-                            <p class="text-gray-500 font-medium">No vehicles found. "{{ request('search') }}"</p>
+                            <p class="text-gray-500 font-medium">No vehicles found. {{ request('search') }}</p>
                         </div>
                 @endforelse
             </div>
