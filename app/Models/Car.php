@@ -52,7 +52,7 @@ class Car extends Model
     public function isOccupied()
     {
         return $this->rentals()
-            ->where('status', 'accepted')
+            ->where('status', 'accepted')->where('start_date', '<=', now())->where('end_date', '>=', now())
             ->exists();
     }
 }

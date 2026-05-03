@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Car;
+
 
 class AuthController extends Controller
 {
@@ -144,5 +146,30 @@ class AuthController extends Controller
     public function edit() 
     {
         return view('profile.edit'); 
+    }
+
+    public function show($id)
+    {
+        $user = User::findOrFail($id);
+        $cars = Car::where('user_id', $id)->get();
+    
+        $currentUser = Auth::user();
+        
+        $carts = $currentUser ? $currentUser->carts : collect();
+        
+        $pendingRequests = $currentUser 
+            ? \Illuminate\Support\Facades\DB::table('rentals')
+                ->where('user_id', $currentUser->id)
+                ->where('status', 'pending')
+                ->pluck('car_id')
+                ->toArray() 
+            : [];
+
+        return view('profile.show', [
+            'user' => $user,
+            'cars' => $cars,
+            'carts' => $carts,
+            'pendingRequests' => $pendingRequests
+        ]);
     }
 }

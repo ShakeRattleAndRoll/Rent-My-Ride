@@ -26,7 +26,7 @@
                 @endif
 
                 <!-- Email / Username -->
-                <input type="text" name="email" placeholder="Email or Username"
+                <input type="text" name="email" value="{{ old('email') }}" placeholder="Email or Username"
                     class="w-full p-3 rounded-md bg-gray-800 text-white placeholder-gray-400 
                         focus:outline-none focus:ring-2 focus:ring-yellow-400 transition">
 

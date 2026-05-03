@@ -14,36 +14,29 @@
                     Available <span class="text-lime-400">Inventory</span>
                 </h1>
 
-                {{-- Wala pa na human search filter ni --}}
-                {{-- <form action="{{ route('cars.index') }}" method="GET"> 
-                    <div class="relative w-full max-w-2xl mx-auto group">
-                        <div class="absolute inset-y-0 left-6 flex items-center pointer-events-none">
-                            <svg class="w-6 h-6 text-gray-400 group-focus-within:text-lime-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                            </svg>
-                        </div>
-
-                        <input type="text" 
+                <div class="mb-8">
+                    <form action="{{ route('cars.index') }}" method="GET" class="relative max-w-xl mx-auto">
+                        <input 
+                            type="text" 
                             name="search" 
-                            value="{{ request('search') }}" 
-                            placeholder="Search by brand, model, or category..." 
-                            class="w-full pl-14 pr-6 py-4 rounded-full bg-[#1a1a1a] text-white border border-white/10 outline-none focus:border-yellow-400 transition-all shadow-lg placeholder:text-gray-600">
-                    </div>
-                </form> --}}
+                            value="{{ request('search') }}"
+                            placeholder="Search by brand or model (e.g. Toyota, Civic)..."
+                            class="w-full bg-[#1a1a1a] border border-gray-800 text-white text-sm rounded-2xl py-4 px-6 focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none transition-all"
+                        >
+                        <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 bg-yellow-400 p-2 rounded-xl text-black hover:bg-yellow-300 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </button>
+                    </form>
 
-                <div class="relative w-full max-w-2xl mx-auto group">
-
-                    <div class="absolute inset-y-0 left-6 flex items-center pointer-events-none">
-                        <svg class="w-6 h-6 text-gray-400 group-focus-within:text-lime-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                        </svg>
-                    </div>
-
-                    <input type="text" 
-                        wire:model.live="search"
-                        placeholder="Search by brand, model, or category..." 
-                        class="w-full pl-14 pr-6 py-4 rounded-full bg-[#1a1a1a] text-white border border-white/10 outline-none focus:border-yellow-400 transition-all shadow-lg placeholder:text-gray-600">
-                    
+                    @if(request('search'))
+                        <div class="text-center mt-3">
+                            <a href="{{ route('cars.index') }}" class="text-gray-500 hover:text-yellow-400 text-xs uppercase font-bold tracking-widest">
+                                × Clear Search
+                            </a>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -51,17 +44,21 @@
         <div class="max-w-7xl mx-auto px-6 py-20">
             
             <div class="flex items-center justify-between mb-10">
-                <h2 class="text-white font-bold uppercase tracking-widest text-sm">Results ({{ $cars->count() }})</h2>
+                <h2 class="text-white font-bold uppercase tracking-widest text-sm">
+                    Results ({{ $cars->filter(fn($car) => !$car->isOccupied())->count() }})
+                </h2>
                 <div class="h-px flex-grow mx-6 bg-white/5"></div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                @forelse($cars as $car)
-                    @include('available_cars.cards', ['car' => $car])
-                @empty
-                    <div class="col-span-full text-center py-24 bg-[#1a1a1a] rounded-3xl border border-white/5">
-                        <p class="text-gray-500 font-medium">No vehicles found.</p>
-                    </div>
+                @forelse ($cars as $car)
+                    @if(!$car->isOccupied())
+                        @include('available_cars.cards', ['car' => $car, 'carts' => $carts])
+                    @endif
+                    @empty
+                        <div class="col-span-full text-center py-24 bg-[#1a1a1a] rounded-3xl border border-white/5">
+                            <p class="text-gray-500 font-medium">No vehicles found. "{{ request('search') }}"</p>
+                        </div>
                 @endforelse
             </div>
         </div>

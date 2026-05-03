@@ -54,10 +54,23 @@
     <div class="mt-auto p-4 pt-0 relative z-20" style="font-family: 'Montserrat', sans-serif;">
         @if(Auth::check() && $car->user_id === Auth::id())
             <a href="/garage/my-listing"
-               class="w-full block py-3 bg-gray-800 border border-white/5 text-gray-400 text-[10px] font-bold uppercase tracking-widest rounded-xl text-center">
+            class="w-full block py-3 bg-gray-800 border border-white/5 text-gray-400 text-[10px] font-bold uppercase tracking-widest rounded-xl text-center">
                 You Own This
             </a>
-        @else
+
+        @elseif(Auth::check() && in_array($car->id, $pendingRequests))
+            <div class="w-full py-3 bg-orange-500/10 border border-orange-500/20 text-orange-400 text-[10px] font-bold uppercase rounded-xl text-center flex items-center justify-center gap-2">
+                <i class="fa-solid fa-spinner animate-spin"></i>
+                Pending Approval
+            </div>
+
+        @elseif(Auth::check() && $carts->contains('car_id', $car->id))
+            <div class="w-full py-3 bg-[#242424] border border-yellow-400/20 text-yellow-400 text-[10px] font-bold uppercase tracking-widest rounded-xl text-center flex items-center justify-center gap-2">
+                <i class="fa-solid fa-check"></i>
+                Already in Cart
+            </div>
+
+        @else 
             <form action="/cart/add" method="POST">
                 @csrf
                 <input type="hidden" name="car_id" value="{{ $car->id }}">

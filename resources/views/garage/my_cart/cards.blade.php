@@ -45,12 +45,23 @@
         </div>
 
         <div class="mt-2 flex items-center gap-2">
-            <span class="px-2 py-0.5 bg-lime-400/10 text-lime-400 text-[10px] font-bold uppercase rounded-md border border-lime-400/20">
-                Daily Rate
-            </span>
-            <p class="text-gray-500 text-xs">
-                Select dates at checkout to see total
-            </p>
+            @if ($cart->car->isOccupied())
+                <div class="flex items-center gap-2">
+                    <span class="px-2 py-0.5 bg-red-500 text-black text-[10px] font-black uppercase rounded-md shadow-[0_0_10px_rgba(239,68,68,0.3)]">
+                        Occupied
+                    </span>
+                    <p class="text-red-500/70 text-[10px] font-medium italic">
+                        Currently in use by another renter
+                    </p>
+                </div>
+            @else
+                <span class="px-2 py-0.5 bg-lime-400/10 text-lime-400 text-[10px] font-bold uppercase rounded-md border border-lime-400/20">
+                    Daily Rate
+                </span>
+                <p class="text-gray-500 text-xs">
+                    Select dates at checkout to see total
+                </p>
+            @endif
         </div>
     </div>
 
@@ -62,11 +73,18 @@
         </p>
 
         {{-- Checkout --}}
-        <button type="button"
-                onclick="openRentModal({{ $cart->id }}, '{{ $cart->car->rent_unit }}', {{ $cart->car->price }})"
-                class="bg-lime-400 hover:bg-lime-300 text-black text-xs font-bold px-5 py-2 rounded-full transition-all duration-200 w-32 text-center">
-            Rent Now
-        </button>
+        @if($cart->car->isOccupied())
+            <button type="button" disabled
+                    class="bg-gray-800 text-gray-500 text-xs font-bold px-5 py-2 rounded-full w-32 cursor-not-allowed">
+                Occupied
+            </button>
+        @else
+            <button type="button"
+                    onclick="openRentModal({{ $cart->id }}, '{{ $cart->car->rent_unit }}', {{ $cart->car->price }})"
+                    class="bg-lime-400 hover:bg-lime-300 text-black text-xs font-bold px-5 py-2 rounded-full transition-all duration-200 w-32 text-center">
+                Rent Now
+            </button>
+        @endif
 
         {{-- Remove --}}
         <form method="POST" action="{{ route('cart.remove', $cart->id) }}">

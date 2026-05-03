@@ -114,6 +114,7 @@
         <div class="grid grid-cols-2 gap-y-5 mb-6 text-sm">
             <div>
                 <p class="text-white font-bold mb-1">Car Owner</p>
+                <a href="{{ route('user.profile', $car->user->id) }}">
                 <div class="flex items-center gap-3 text-gray-400">
                     <img src="{{ $car->user->profile_picture
                         ? asset('storage/' . $car->user->profile_picture)
@@ -125,6 +126,7 @@
                         <p class="text-white font-semibold">{{ $car->user->full_name }}</p>
                     </div>
                 </div>
+                </a>
             </div>
 
             <div>

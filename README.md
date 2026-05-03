@@ -40,16 +40,21 @@
 * Available Cars details 
 * My Cart "Rent Now" Done
 
+#### Added QOL Features and Bug Fixes 5/3/2026
+* Car wont show in available cars if its occupied
+* if car is in cart and its occupied it have visual presentation that its occupied
+* Added you cannot add to cart if you already pending a request
+* Fix that you can add to cart even you already have it in cart (cause duplication)
+* You can click profile of owner in the car details
+* Search filter now works 
+* result counter is now accurate
 
 ## PARTIALLY DONE
 
 ### FEATURES
 
-* Search Filter
 * Filter for car type in Available cars section
-* Message 
 * Edit post
-* Stalking Profile
 * Email Verification
 * View Details in My Rentals
 

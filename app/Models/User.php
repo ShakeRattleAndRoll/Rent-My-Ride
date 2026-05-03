@@ -42,6 +42,11 @@ class User extends Authenticatable
         return $this->hasMany(Rental::class);
     }
 
+    public function carts()
+    {
+        return $this->hasMany(Cart::class);
+    }
+
     public function getFullNameAttribute()
     {
         return trim(

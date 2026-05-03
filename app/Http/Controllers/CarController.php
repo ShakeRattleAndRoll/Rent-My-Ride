@@ -6,6 +6,7 @@ use App\Models\Car;
 use App\Models\Rental;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CarController extends Controller
 {
@@ -15,32 +16,37 @@ class CarController extends Controller
         return view('garage.post_a_car.post-a-car'); 
     }
 
-    // GET ALL CARS
-    public function index()
+    // GET ALL CARS and search fileter
+    public function index(Request $request)
     {
-        $cars = Car::latest()->get();
-        return view('available_cars.main', ['cars' => $cars]);
+        $query = Car::query();
+
+        if ($request->has('search') && $request->search != '') {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('brand', 'LIKE', "%{$searchTerm}%")
+                ->orWhere('model', 'LIKE', "%{$searchTerm}%");
+            });
+        }
+
+        $cars = $query->orderBy('created_at', 'desc')->get();
+        
+        $carts = Auth::check() ? Auth::user()->carts : collect();
+        
+        $pendingRequests = Auth::check() 
+            ? DB::table('rentals')
+                ->where('user_id', Auth::id())
+                ->where('status', 'pending')
+                ->pluck('car_id')
+                ->toArray() 
+            : [];
+
+        return view('available_cars.main', [
+            'cars' => $cars,
+            'carts' => $carts,
+            'pendingRequests' => $pendingRequests
+        ]);
     }
-
-    // Connected sa available cars na search filter wala pani na human 
-    // public function index(Request $request)
-    // {
-    //     $query = Car::query();
-
-    //     if ($request->filled('search')) {
-    //         $searchTerm = $request->search;
-            
-    //         $query->where(function($q) use ($searchTerm) {
-    //             $q->where('brand', 'like', '%' . $searchTerm . '%')
-    //             ->orWhere('model', 'like', '%' . $searchTerm . '%')
-    //             ->orWhere('category', 'like', '%' . $searchTerm . '%');
-    //         });
-    //     }
-
-    //     $cars = $query->latest()->get();
-
-    //     return view('cars.index', compact('cars'));
-    // }
 
     // STORE CAR
     public function store(Request $request)

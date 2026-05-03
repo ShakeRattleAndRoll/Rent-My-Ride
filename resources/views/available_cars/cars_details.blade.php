@@ -111,7 +111,6 @@
                     <p class="text-white font-bold mb-1">Car Owner</p>
 
                     <div class="flex items-center gap-3 text-gray-400">
-
                         <img src="{{ $car->user->profile_picture 
                             ? asset('storage/' . $car->user->profile_picture) 
                             : 'https://ui-avatars.com/api/?name=' . urlencode($car->user->username) }}"
