@@ -146,6 +146,7 @@ class CarController extends Controller
     // UPDATE CAR
     public function update(Request $request, $id)
     {
+
         $car = Car::where('id', $id)
                 ->where('user_id', Auth::id())
                 ->firstOrFail();
@@ -160,14 +161,14 @@ class CarController extends Controller
             'transmission' => ['required'],
             'fuel_type'    => ['required'],
             'description'  => ['nullable', 'string'],
+            'existing_image' => ['nullable', 'string'],
         ]);
 
         // If new image uploaded
         if ($request->hasFile('car_image')) {
             $attributes['car_image'] = $request->file('car_image')->store('car_photos', 'public');
-        
-        } else { //keep the old image if no change
-        unset($attributes['car_image']);
+        } else {
+            $attributes['car_image'] = $request->input('existing_image') ?: $car->car_image;
         }
 
         $car->update($attributes);

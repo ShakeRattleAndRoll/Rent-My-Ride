@@ -3,7 +3,17 @@
 <div class="col-span-1 space-y-6">
     <label class="block text-sm font-semibold text-gray-300">Car Picture</label>
 
+    @if($car->car_image ?? false)
+        <div class="mb-3">
+            <p class="text-xs text-gray-500 mb-1">Current Image:</p>
+            <img src="{{ asset('storage/' . $car->car_image) }}"
+                 class="w-full h-40 object-cover rounded-xl border border-white/10">
+        </div>
+    @endif
+
     <input type="file" name="car_image" id="car_image" accept="image/*"/>
+
+    <input type="hidden" name="existing_image" value="{{ $car->car_image ?? '' }}">
 
     <div class="flex flex-col gap-2">
         <label class="text-sm text-gray-400 font-semibold">Date Bought/Owned</label>

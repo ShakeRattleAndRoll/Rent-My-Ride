@@ -45,7 +45,6 @@
         </div>
     </div>
 
-    {{-- FilePond Script --}}
     <script>
         FilePond.registerPlugin(FilePondPluginImagePreview);
 
@@ -55,25 +54,6 @@
             storeAsFile: true,
             labelIdle: `Drag & Drop your picture or <span class="filepond--label-action">Browse</span>`,
             imagePreviewHeight: 250,
-
-            files: [
-                @if($car->car_image)
-                {
-                    source: '{{ asset("storage/" . $car->car_image) }}',
-                    options: {
-                        type: 'local',
-                    }
-                }
-                @endif
-            ],
-
-            server: {
-                load: (source, load, error, progress, abort, headers) => {
-                    fetch(source)
-                        .then(res => res.blob())
-                        .then(load);
-                }
-            }
         });
     </script>
 
