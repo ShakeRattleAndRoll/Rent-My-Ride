@@ -1,4 +1,4 @@
-@props(['rentalId'])
+@props(['rentalId', 'route' => ''])
 
 <div id="delete-modal-{{ $rentalId }}" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
     <div class="bg-[#1e1e1e] border border-white/10 rounded-2xl p-6 w-80 shadow-2xl text-center" style="font-family: 'Montserrat', sans-serif;">
@@ -8,10 +8,14 @@
         <h3 class="text-white font-black uppercase tracking-tight text-sm mb-1">Remove Record</h3>
         <p class="text-gray-400 text-xs mb-6">Are you sure you want to delete this rental record?</p>
         <div class="flex gap-3">
-            <button onclick="document.getElementById('delete-modal-{{ $rentalId }}').classList.add('hidden'); document.querySelector('[data-rental-card=\'{{ $rentalId }}\']').remove()"
-                class="flex-1 bg-red-600 hover:bg-red-500 text-white text-xs font-bold py-2.5 rounded-full transition-all duration-200 uppercase tracking-widest">
-                Yes, Delete
-            </button>
+            <form action="{{ $route }}" method="POST" class="flex-1">
+                @csrf
+                @method('PATCH')
+                <button type="submit"
+                    class="w-full bg-red-600 hover:bg-red-500 text-white text-xs font-bold py-2.5 rounded-full transition-all duration-200 uppercase tracking-widest">
+                    Yes, Delete
+                </button>
+            </form>
             <button onclick="document.getElementById('delete-modal-{{ $rentalId }}').classList.add('hidden')"
                 class="flex-1 border border-white/10 text-gray-400 hover:text-white hover:border-white/30 text-xs font-bold py-2.5 rounded-full transition-all duration-200 uppercase tracking-widest">
                 No

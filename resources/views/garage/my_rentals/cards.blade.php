@@ -109,4 +109,6 @@
     </div>
 </div>
 
-<x-modals.delete_confirmation :rentalId="$rental->id" />
+<x-modals.delete_confirmation 
+    :rentalId="$rental->id" 
+    :route="'/garage/rental/' . $rental->id . '/hide'" />

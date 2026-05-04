@@ -18,6 +18,8 @@ class Rental extends Model
         'days',
         'rent_unit',
         'total_price',
+        'hidden_by_renter',
+        'hidden_by_owner',
     ];
 
     public function user()

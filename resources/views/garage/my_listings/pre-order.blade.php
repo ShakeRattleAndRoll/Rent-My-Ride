@@ -1,6 +1,8 @@
 <x-layout>
     <div class="bg-[#121212] min-h-screen font-['Montserrat']">
         
+        <x-back_button/>
+
         {{-- Header Section --}}
         <x-garage_header 
             active="listing" 

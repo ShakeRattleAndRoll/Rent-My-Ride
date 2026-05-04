@@ -118,11 +118,12 @@ class CarController extends Controller
     }
 
     // DETAILS PAGE
-    public function details($id)
+   public function details($id)
     {
         $car = Car::with('user')->findOrFail($id);
 
         $rentals = Rental::where('car_id', $id)
+            ->where('hidden_by_owner', false)
             ->with('user', 'car')
             ->latest()
             ->get();
