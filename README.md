@@ -1,10 +1,7 @@
 # RENT MY RIDE
 
 ### SETUP FOR SEEDERS 
-#### copy the images inside of TestCarImage in resources, then go to storage/app/public 
-#### if you dont have \[car_photos\] folder inside, then create new one same folder name \[car_image\],
-#### then copy the images inside of car_image
-#### when running the seeder \[php artisan migrate:fresh --seed\]
+#### copy the images inside of TestCarImage in resources, then go to storage/app/public if you dont have \[car_photos\] folder inside, then create new one same folder name \[car_image\], then paste the images inside of car_image, when running the seeder \[php artisan migrate:fresh --seed\]
 
 
 ## ALREADY FINISH
