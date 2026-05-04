@@ -26,6 +26,9 @@
                     {{ auth()->user()->username }}
                 </h2>
                 <p class="text-yellow-400 text-xs font-bold uppercase tracking-widest mt-1">Verified Member</p>
+                <p class="text-gray-500 text-[10px] font-bold uppercase tracking-widest mt-1">
+                    Member since {{ \Carbon\Carbon::parse(auth()->user()->created_at)->format('F d, Y') }}
+                </p>
 
                 <hr class="w-full border-white/5 my-6">
 

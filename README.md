@@ -53,8 +53,6 @@
 ## PARTIALLY DONE
 
 ### FEATURES
-
-* Filter for car type in Available cars section
 * Edit post
 * Email Verification
 * View Details in My Rentals

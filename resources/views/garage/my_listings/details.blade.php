@@ -1,6 +1,8 @@
 <x-layout>
 <div class="bg-[#121212] min-h-screen text-white" style="font-family: 'Montserrat', sans-serif;">
 
+<x-back_button/>
+
     {{-- HEADER --}}
     <div class="px-10 pt-10 pb-6">
         <h1 class="text-3xl font-bold">Details</h1>
@@ -114,7 +116,9 @@
                 </div>
             </div>
 
-            <x-modals.delete_confirmation :rentalId="$rental->id" />
+            <x-modals.delete_confirmation 
+                :rentalId="$rental->id" 
+                :route="'/garage/rental/' . $rental->id . '/hide-owner'" />
 
             @empty
                 <p class="text-gray-500 text-center py-10">No renters yet.</p>

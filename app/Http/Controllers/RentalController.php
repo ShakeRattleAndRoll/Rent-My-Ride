@@ -103,12 +103,14 @@ class RentalController extends Controller
     {
         $rentals = Rental::with('car')
             ->where('user_id', Auth::id())
+            ->where('hidden_by_renter', false)
             ->latest()
             ->get();
 
         return view('garage.my_rentals.my-rental', compact('rentals'));
     }
 
+    // CANCEL RENTAL
     public function cancel($id)
     {
         $rental = Rental::findOrFail($id);
@@ -126,5 +128,22 @@ class RentalController extends Controller
         return redirect()->back()->with('success', 'Rental request cancelled.');
     }
 
-    
+    public function hideForRenter($id)
+    {
+        $rental = Rental::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        $rental->update(['hidden_by_renter' => true]);
+
+        return redirect()->back()->with('success', 'Record removed.');
+    }
+
+    public function hideForOwner($id)
+    {
+        $rental = Rental::findOrFail($id);
+        $rental->update(['hidden_by_owner' => true]);
+
+        return redirect()->back()->with('success', 'Record removed.');
+    }
 }

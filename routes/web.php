@@ -85,6 +85,8 @@ Route::get('/car/pre-order/{id}', [RentalController::class, 'showPreOrders'])->m
 Route::post('/rental/{id}/accept', [RentalController::class, 'accept'])->middleware('auth');
 Route::post('/rental/{id}/deny', [RentalController::class, 'deny'])->middleware('auth');
 Route::patch('/garage/rental/{id}/cancel', [RentalController::class, 'cancel'])->middleware('auth');
+Route::patch('/garage/rental/{id}/hide', [RentalController::class, 'hideForRenter'])->middleware('auth');
+Route::patch('/garage/rental/{id}/hide-owner', [RentalController::class, 'hideForOwner'])->middleware('auth');
 
 //Route for garage cart
 Route::get('/garage/my-cart', function () {
@@ -97,5 +99,4 @@ Route::delete('/cart/remove/{id}', [CartController::class, 'destroy'])->name('ca
 Route::post('/cart/checkout/{id}', [CartController::class, 'checkout'])->middleware('auth');
 
 Route::post('/rental/{id}/request', [RentalController::class, 'requestRental'])->middleware('auth');
-
 Route::get('/available-cars', [CarController::class, 'index'])->name('cars.index');

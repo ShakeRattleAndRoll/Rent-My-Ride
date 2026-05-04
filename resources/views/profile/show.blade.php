@@ -2,6 +2,8 @@
     <div class="bg-[#121212] min-h-screen py-12 px-6">
         <div class="max-w-6xl mx-auto">
             
+        <x-back_button/>
+
             {{-- Profile --}}
             <div class="bg-[#1e1e1e] rounded-3xl p-8 border border-white/10 mb-10 shadow-2xl">
                 <div class="flex flex-col items-center md:flex-row md:items-start gap-8">
@@ -17,39 +19,59 @@
 
                     {{-- User Details --}}
                     <div class="flex-1 text-center md:text-left">
-                        <h1 class="text-white text-4xl font-black uppercase tracking-tight">{{ $user->full_name }}</h1>
-                        <p class="text-yellow-400 font-bold tracking-widest text-sm mb-4">{{ $user->username }}</p>
+                        <p class="text-gray-500 uppercase font-bold tracking-widest text-base">{{ $user->username }}</p>
+                        <h1 class="text-white text-gray-500 text-4xl uppercase font-black tracking-tight mb-4">{{ $user->full_name }}</h1>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-gray-400 text-sm">
-                            
+
                             {{-- Email --}}
-                            <div class="flex items-center justify-center md:justify-start gap-3 group">
-                                <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-yellow-400/10 transition">
-                                    <i class="fa-solid fa-envelope text-gray-500 group-hover:text-yellow-400"></i>
+                            <div class="flex items-center justify-center md:justify-start gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
+                                    <i class="fa-solid fa-envelope text-gray-500"></i>
                                 </div>
-                                <a href="mailto:{{ $user->email }}" class="hover:text-white transition">
+                                <a href="mailto:{{ $user->email }}">
                                     {{ $user->email }}
                                 </a>
                             </div>
 
                             {{-- Phone --}}
-                            <div class="flex items-center justify-center md:justify-start gap-3 group">
-                                <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-lime-400/10 transition">
-                                    <i class="fa-solid fa-phone text-gray-500 group-hover:text-lime-400 text-xs"></i>
+                            <div class="flex items-center justify-center md:justify-start gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
+                                    <i class="fa-solid fa-phone text-gray-500 text-xs"></i>
                                 </div>
-                                <span class="hover:text-white transition">
-                                    {{ $user->contact_number ?? 'No contact number' }}
-                                </span>
+                                <span>{{ $user->contact_number ?? 'No contact number' }}</span>
                             </div>
 
                             {{-- Address --}}
-                            <div class="flex items-center justify-center md:justify-start gap-3 group">
-                                <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-blue-400/10 transition">
-                                    <i class="fa-solid fa-location-dot text-gray-500 group-hover:text-blue-400"></i>
+                            <div class="flex items-center justify-center md:justify-start gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
+                                    <i class="fa-solid fa-location-dot text-gray-500"></i>
                                 </div>
-                                <span class="hover:text-white transition">
-                                    {{ $user->address ?? 'Location not set' }}
-                                </span>
+                                <span>{{ $user->address ?? 'Location not set' }}</span>
+                            </div>
+
+                            {{-- Gender --}}
+                            <div class="flex items-center justify-center md:justify-start gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
+                                    <i class="fa-solid fa-venus-mars text-gray-500 text-xs"></i>
+                                </div>
+                                <span>{{ ucfirst($user->sex ?? 'Not specified') }}</span>
+                            </div>
+
+                            {{-- Birthdate --}}
+                            <div class="flex items-center justify-center md:justify-start gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
+                                    <i class="fa-solid fa-cake-candles text-gray-500 text-xs"></i>
+                                </div>
+                                <span>{{ $user->dob ? \Carbon\Carbon::parse($user->dob)->format('F d, Y') : 'Not specified' }}</span>
+                            </div>
+
+                            {{-- Member Since --}}
+                            <div class="flex items-center justify-center md:justify-start gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
+                                    <i class="fa-solid fa-star text-gray-500 text-xs"></i>
+                                </div>
+                                <span>Member since {{ \Carbon\Carbon::parse($user->created_at)->format('F d, Y') }}</span>
                             </div>
 
                         </div>
