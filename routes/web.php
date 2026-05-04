@@ -44,10 +44,12 @@ Route::get('/profile', [AuthController::class, 'profile'])->name('profile.main')
 
 // Route for edit profile page
 Route::get('/profile/edit', [AuthController::class, 'edit'])->name('profile.edit')->middleware('auth');
-Route::get('/profile/{id}', [AuthController::class, 'show'])->name('user.profile');
 
 // Route for update profile
 Route::patch('/profile/update', [AuthController::class, 'update'])->name('profile.update')->middleware('auth');
+
+// Route for user profile view
+Route::get('/profile/{id}', [AuthController::class, 'show'])->name('user.profile');
 
 // Route for message page
 Route::get('/messages/{receiverId?}', [MessageController::class, 'index'])->name('messages.index')->middleware('auth');
@@ -57,20 +59,22 @@ Route::post('/messages', [MessageController::class, 'store'])->name('messages.st
 Route::get('/garage', function () {
     return redirect('/garage/my-listing');
 });
-Route::get('/garage/my-listing', [CarController::class, 'my_listings'])
-    ->name('garage.my-listing')
-    ->middleware('auth');
 
-// Edit and update listing routes
-Route::get('/garage/edit/{id}', [CarController::class, 'edit']);
-Route::patch('/garage/update/{id}', [CarController::class, 'update']);
+Route::middleware('auth')->group(function () {
 
-// route for car details page
-Route::get('/garage/details/{id}', [CarController::class, 'details'])
-    ->middleware('auth');
+    Route::get('/garage/my-listing', [CarController::class, 'my_listings'])->name('garage.my-listing');
 
-// Route for delete listing
-Route::delete('/garage/delete/{id}', [CarController::class, 'destroy']);
+    // Edit and update listing routes
+    Route::get('/garage/edit/{id}', [CarController::class, 'edit']);
+    Route::patch('/garage/update/{id}', [CarController::class, 'update']);
+
+    // Route for car details page
+    Route::get('/garage/details/{id}', [CarController::class, 'details']);
+
+    // Route for delete listing
+    Route::delete('/garage/delete/{id}', [CarController::class, 'destroy']);
+
+});
 
 // Route for garage pre-order feature
 Route::get('/car/pre-order/{id}', function ($id) {

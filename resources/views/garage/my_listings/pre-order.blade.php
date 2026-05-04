@@ -26,19 +26,24 @@
                     <div>
                         <p class="text-yellow-500 text-[10px] font-bold uppercase tracking-widest mb-1">Current Vehicle</p>
                         <h1 class="text-white text-3xl font-black italic uppercase tracking-tighter leading-none mb-2">
-                            {{ $car->brand }} {{ $car->model }}
+                            {{ $car->brand }}
                         </h1>
-                        <p class="text-gray-400 text-sm italic">{{ $car->description ?? 'No description available' }}</p>
+                        <h1 class="text-white text-3xl font-black italic uppercase tracking-tighter leading-none mb-2">
+                            {{ $car->model }}
+                        </h1>
                         
                         <div class="flex gap-6 mt-6 text-gray-500 text-[10px] font-bold uppercase tracking-widest">
+                            <span>Date Owned: <span class="text-white ml-1">{{ $car->date_owned->format('M j, Y') }}</span></span>
                             <span>Transmission: <span class="text-white ml-1">{{ $car->transmission }}</span></span>
                             <span>Fuel: <span class="text-white ml-1">{{ $car->fuel_type }}</span></span>
                         </div>
+
+                        <p class="text-gray-400 mt-6 text-sm italic">{{ $car->description ?? 'No description available' }}</p>
                     </div>
 
                     <div class="text-right">
                         <p class="text-white text-2xl font-black italic leading-none">₱{{ number_format($car->price) }}</p>
-                        <p class="text-gray-500 text-[10px] font-bold uppercase tracking-widest mt-1">Per Day</p>
+                        <p class="text-gray-500 text-[10px] font-bold uppercase tracking-widest mt-1">Per {{ $car->rent_unit }}</p>
                     </div>
                 </div>
             </div>

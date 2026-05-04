@@ -16,13 +16,12 @@
                 <h1 class="text-3xl font-bold mb-2">EDIT LISTING</h1>
                 <p class="text-gray-400 mb-10 text-sm">Update your vehicle details.</p>
 
-                <form action="/garage/update/{{ $car->id }}" method="POST" enctype="multipart/form-data"
+                <form id="edit-form" action="/garage/update/{{ $car->id }}" method="POST" enctype="multipart/form-data"
                       class="grid grid-cols-1 md:grid-cols-3 gap-10">
 
                     @csrf
                     @method('PATCH')
 
-                    {{-- Reusable Fields Component --}}
                     <x-car_form_fields :car="$car" />
 
                     {{-- Buttons --}}
@@ -33,7 +32,8 @@
                             Cancel
                         </a>
 
-                        <button type="submit"
+                        <button type="button"
+                                onclick="document.getElementById('confirm-update-modal').classList.remove('hidden')"
                                 class="px-12 py-3 bg-yellow-400 text-black rounded-full font-bold hover:bg-yellow-300 transition">
                             Update
                         </button>
@@ -45,6 +45,8 @@
         </div>
     </div>
 
+    <x-modals.confirm_update formId="edit-form" />
+
     {{-- FilePond Script --}}
     <script>
         FilePond.registerPlugin(FilePondPluginImagePreview);
@@ -55,25 +57,6 @@
             storeAsFile: true,
             labelIdle: `Drag & Drop your picture or <span class="filepond--label-action">Browse</span>`,
             imagePreviewHeight: 250,
-
-            files: [
-                @if($car->car_image)
-                {
-                    source: '{{ asset("storage/" . $car->car_image) }}',
-                    options: {
-                        type: 'local',
-                    }
-                }
-                @endif
-            ],
-
-            server: {
-                load: (source, load, error, progress, abort, headers) => {
-                    fetch(source)
-                        .then(res => res.blob())
-                        .then(load);
-                }
-            }
         });
     </script>
 

@@ -79,6 +79,14 @@ class RentalController extends Controller
             'status'     => 'accepted',
             'start_date' => now(),
             'end_date'   => now()->addSeconds($seconds),
+            'snap_brand'        => $rental->car->brand,
+            'snap_model'        => $rental->car->model,
+            'snap_car_image'    => $rental->car->car_image,
+            'snap_price'        => $rental->car->price,
+            'snap_rent_unit'    => $rental->car->rent_unit,
+            'snap_fuel_type'    => $rental->car->fuel_type,
+            'snap_transmission' => $rental->car->transmission,
+            'snap_date_owned'   => $rental->car->date_owned,
         ]);
 
         return redirect()->route('garage.my-listing')->with('success', 'Rental accepted successfully.');
@@ -93,7 +101,17 @@ class RentalController extends Controller
             abort(403);
         }
 
-        $rental->update(['status' => 'denied']);
+        $rental->update([
+            'status'            => 'denied',
+            'snap_brand'        => $rental->car->brand,
+            'snap_model'        => $rental->car->model,
+            'snap_car_image'    => $rental->car->car_image,
+            'snap_price'        => $rental->car->price,
+            'snap_rent_unit'    => $rental->car->rent_unit,
+            'snap_fuel_type'    => $rental->car->fuel_type,
+            'snap_transmission' => $rental->car->transmission,
+            'snap_date_owned'   => $rental->car->date_owned,
+        ]);
 
         return redirect()->back()->with('success', 'Rental request denied.');
     }

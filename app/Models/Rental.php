@@ -20,6 +20,14 @@ class Rental extends Model
         'total_price',
         'hidden_by_renter',
         'hidden_by_owner',
+        'snap_brand',
+        'snap_model',
+        'snap_car_image',
+        'snap_price',
+        'snap_rent_unit',
+        'snap_fuel_type',
+        'snap_transmission',
+        'snap_date_owned',
     ];
 
     public function user()

@@ -27,7 +27,7 @@
                 <p class="text-gray-400">{{ $car->model }}</p>
 
                 <div class="flex items-center gap-6 mt-4 text-gray-400 text-xs">
-                    <span><i class="fa-regular fa-calendar mr-1"></i>{{ \Carbon\Carbon::parse($car->created_at)->format('F j, Y') }}</span>
+                    <span><i class="fa-regular fa-calendar mr-1"></i>{{ \Carbon\Carbon::parse($car->date_owned)->format('F j, Y') }}</span>
                     <span><i class="fa-solid fa-gas-pump mr-1"></i>{{ $car->fuel_type }}</span>
                     <span><i class="fa-solid fa-gears mr-1"></i>{{ $car->transmission }}</span>
                 </div>
