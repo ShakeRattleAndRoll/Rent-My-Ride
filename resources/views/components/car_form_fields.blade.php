@@ -18,19 +18,21 @@
     <div class="flex flex-col gap-2">
         <label class="text-sm text-gray-400 font-semibold">Date Bought/Owned</label>
         <input type="date" name="date_owned"
-            value="{{ old('date_owned', isset($car->date_owned) ? \Carbon\Carbon::parse($car->date_owned)->format('Y-m-d') : '') }}"               
-            class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5 outline-none focus:border-yellow-400">
+            value="{{ old('date_owned', isset($car->date_owned) ? \Carbon\Carbon::parse($car->date_owned)->format('Y-m-d') : '') }}"
+            {{ $car ? 'disabled' : '' }}
+            class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5 outline-none focus:border-yellow-400 {{ $car ? 'opacity-50 cursor-not-allowed' : '' }}">
     </div>
 </div>
 
 <div class="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-    
+
     <div class="flex flex-col gap-2">
         <label class="text-sm text-gray-400 font-semibold">Car Brand</label>
         <input type="text" name="brand"
                value="{{ old('brand', $car->brand ?? '') }}"
                placeholder="e.g. Toyota"
-               class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5 outline-none focus:border-yellow-400">
+               {{ $car ? 'disabled' : '' }}
+               class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5 outline-none focus:border-yellow-400 {{ $car ? 'opacity-50 cursor-not-allowed' : '' }}">
     </div>
 
     <div class="flex flex-col gap-2">
@@ -38,15 +40,19 @@
         <input type="text" name="model"
                value="{{ old('model', $car->model ?? '') }}"
                placeholder="e.g. Corolla"
-               class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5 outline-none focus:border-yellow-400">
+               {{ $car ? 'disabled' : '' }}
+               class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5 outline-none focus:border-yellow-400 {{ $car ? 'opacity-50 cursor-not-allowed' : '' }}">
     </div>
 
     <div class="flex flex-col gap-2">
         <label class="text-sm text-gray-400 font-semibold">Price</label>
-        <input type="number" name="price"
-               value="{{ old('price', $car->price ?? '') }}"
-               placeholder="₱ Enter Amount"
-               class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5 outline-none focus:border-yellow-400">
+        <input type="number"
+            name="price"
+            step="1"
+            min="1"
+            value="{{ old('price', isset($car->price) ? floor($car->price) : '') }}"
+            placeholder="₱ Enter Amount"
+            class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5 outline-none focus:border-yellow-400">
     </div>
 
     <div class="flex flex-col gap-2">
@@ -62,7 +68,9 @@
 
     <div class="flex flex-col gap-2">
         <label class="text-sm text-gray-400 font-semibold">Transmission Type</label>
-        <select name="transmission" class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5">
+        <select name="transmission"
+                {{ $car ? 'disabled' : '' }}
+                class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5 {{ $car ? 'opacity-50 cursor-not-allowed' : '' }}">
             <option value="Automatic" {{ old('transmission', $car->transmission ?? '') == 'Automatic' ? 'selected' : '' }}>Automatic</option>
             <option value="Manual" {{ old('transmission', $car->transmission ?? '') == 'Manual' ? 'selected' : '' }}>Manual</option>
         </select>
@@ -70,7 +78,9 @@
 
     <div class="flex flex-col gap-2">
         <label class="text-sm text-gray-400 font-semibold">Fuel Type</label>
-        <select name="fuel_type" class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5">
+        <select name="fuel_type"
+                {{ $car ? 'disabled' : '' }}
+                class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5 {{ $car ? 'opacity-50 cursor-not-allowed' : '' }}">
             <option value="Gasoline" {{ old('fuel_type', $car->fuel_type ?? '') == 'Gasoline' ? 'selected' : '' }}>Gasoline</option>
             <option value="Diesel" {{ old('fuel_type', $car->fuel_type ?? '') == 'Diesel' ? 'selected' : '' }}>Diesel</option>
             <option value="Electric" {{ old('fuel_type', $car->fuel_type ?? '') == 'Electric' ? 'selected' : '' }}>Electric</option>

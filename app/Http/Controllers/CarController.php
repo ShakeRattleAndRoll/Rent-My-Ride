@@ -77,12 +77,14 @@ class CarController extends Controller
             'date_owned'   => ['required', 'date'],
             'brand'        => ['required', 'string'],
             'model'        => ['required', 'string'],
-            'price'        => ['required', 'numeric'],
+            'price'        => ['required', 'integer', 'min:1'],
             'rent_unit'    => ['required', 'string'],
             'transmission' => ['required'],
             'fuel_type'    => ['required'],
             'description'  => ['nullable', 'string'],
         ]);
+
+        $attributes['price'] = (int) $attributes['price'];
 
         if ($request->hasFile('car_image')) {
             $attributes['car_image'] = $request->file('car_image')->store('car_photos', 'public');
@@ -153,16 +155,18 @@ class CarController extends Controller
 
         $attributes = $request->validate([
             'car_image'    => ['nullable', 'image', 'max:2048'],
-            'date_owned'   => ['required', 'date'],
-            'brand'        => ['required', 'string'],
-            'model'        => ['required', 'string'],
-            'price'        => ['required', 'numeric'],
+            'date_owned'   => ['sometimes', 'required', 'date'],
+            'brand'        => ['sometimes', 'required', 'string'],
+            'model'        => ['sometimes', 'required', 'string'],
+            'price'        => ['required', 'integer', 'min:1'],
             'rent_unit'    => ['required', 'string'],
-            'transmission' => ['required'],
-            'fuel_type'    => ['required'],
+            'transmission' => ['sometimes', 'required'],
+            'fuel_type'    => ['sometimes', 'required'],
             'description'  => ['nullable', 'string'],
             'existing_image' => ['nullable', 'string'],
         ]);
+
+        $attributes['price'] = (int) $attributes['price'];
 
         // If new image uploaded
         if ($request->hasFile('car_image')) {
@@ -171,7 +175,27 @@ class CarController extends Controller
             $attributes['car_image'] = $request->input('existing_image') ?: $car->car_image;
         }
 
-        $car->update($attributes);
+        DB::transaction(function () use ($car, $attributes) {
+            $pendingRentals = Rental::where('car_id', $car->id)
+                ->where('status', 'pending')
+                ->get();
+
+            foreach ($pendingRentals as $rental) {
+                $rental->update([
+                    'status'            => 'denied',
+                    'snap_brand'        => $car->brand,      
+                    'snap_model'        => $car->model,
+                    'snap_car_image'    => $car->car_image,
+                    'snap_price'        => $car->price,
+                    'snap_rent_unit'    => $car->rent_unit,
+                    'snap_fuel_type'    => $car->fuel_type,
+                    'snap_transmission' => $car->transmission,
+                    'snap_date_owned'   => $car->date_owned,
+                ]);
+            }
+
+            $car->update($attributes);
+        });
 
         return redirect('/garage/my-listing')->with('feedback', 'Car updated successfully!');
     }

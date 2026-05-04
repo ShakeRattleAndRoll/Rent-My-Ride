@@ -8,6 +8,10 @@
         <h3 class="text-white font-black uppercase tracking-tight text-sm mb-1">Remove Record</h3>
         <p class="text-gray-400 text-xs mb-6">Are you sure you want to delete this rental record?</p>
         <div class="flex gap-3">
+            <button onclick="document.getElementById('delete-modal-{{ $rentalId }}').classList.add('hidden')"
+                class="flex-1 border border-white/10 text-gray-400 hover:text-white hover:border-white/30 text-xs font-bold py-2.5 rounded-full transition-all duration-200 uppercase tracking-widest">
+                No
+            </button>
             <form action="{{ $route }}" method="POST" class="flex-1">
                 @csrf
                 @method('PATCH')
@@ -16,10 +20,6 @@
                     Yes, Delete
                 </button>
             </form>
-            <button onclick="document.getElementById('delete-modal-{{ $rentalId }}').classList.add('hidden')"
-                class="flex-1 border border-white/10 text-gray-400 hover:text-white hover:border-white/30 text-xs font-bold py-2.5 rounded-full transition-all duration-200 uppercase tracking-widest">
-                No
-            </button>
         </div>
     </div>
 </div>
