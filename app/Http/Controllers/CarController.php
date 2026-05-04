@@ -151,7 +151,7 @@ class CarController extends Controller
                 ->firstOrFail();
 
         $attributes = $request->validate([
-            'car_image'    => ['nullable', 'image'],
+            'car_image'    => ['nullable', 'image', 'max:2048'],
             'date_owned'   => ['required', 'date'],
             'brand'        => ['required', 'string'],
             'model'        => ['required', 'string'],
@@ -165,6 +165,9 @@ class CarController extends Controller
         // If new image uploaded
         if ($request->hasFile('car_image')) {
             $attributes['car_image'] = $request->file('car_image')->store('car_photos', 'public');
+        
+        } else { //keep the old image if no change
+        unset($attributes['car_image']);
         }
 
         $car->update($attributes);

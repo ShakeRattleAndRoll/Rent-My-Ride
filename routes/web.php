@@ -40,18 +40,18 @@ Route::get('/available', [CarController::class, 'index'])->name('cars.index');
 Route::get('/cars/{car}', [CarController::class, 'show'])->name('cars.show');
 
 // Route for profile page
-Route::get('/profile', [AuthController::class, 'profile'])->name('profile.main');
+Route::get('/profile', [AuthController::class, 'profile'])->name('profile.main')->middleware('auth');
 
 // Route for edit profile page
 Route::get('/profile/edit', [AuthController::class, 'edit'])->name('profile.edit')->middleware('auth');
 Route::get('/profile/{id}', [AuthController::class, 'show'])->name('user.profile');
 
 // Route for update profile
-Route::patch('/profile/update', [AuthController::class, 'update'])->name('profile.update');
+Route::patch('/profile/update', [AuthController::class, 'update'])->name('profile.update')->middleware('auth');
 
 // Route for message page
-Route::get('/messages/{receiverId?}', [MessageController::class, 'index'])->name('messages.index');
-Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
+Route::get('/messages/{receiverId?}', [MessageController::class, 'index'])->name('messages.index')->middleware('auth');
+Route::post('/messages', [MessageController::class, 'store'])->name('messages.store')->middleware('auth');
 
 // Routes for garage listing
 Route::get('/garage', function () {

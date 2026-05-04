@@ -15,11 +15,21 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
+        $admin = \App\Models\User::factory()->create([
+            'username' => 'admin',
+            'first_name' => 'Admin',
+            'last_name' => 'Account',
             'email' => 'test@example.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        $Users = \App\Models\User::factory(5)->create();
+        \App\Models\Car::factory(10)->create();
+
+        $allUsers = $Users->concat([$admin]);
+
+        \App\Models\Car::factory(10)->create([
+            'user_id' => fn() => $allUsers->random()->id,
         ]);
     }
 }

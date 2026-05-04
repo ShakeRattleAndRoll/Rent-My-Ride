@@ -8,8 +8,8 @@
     <div class="flex flex-col gap-2">
         <label class="text-sm text-gray-400 font-semibold">Date Bought/Owned</label>
         <input type="date" name="date_owned"
-               value="{{ old('date_owned', $car->date_owned ?? '') }}"
-               class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5 outline-none focus:border-yellow-400">
+            value="{{ old('date_owned', isset($car->date_owned) ? \Carbon\Carbon::parse($car->date_owned)->format('Y-m-d') : '') }}"               
+            class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5 outline-none focus:border-yellow-400">
     </div>
 </div>
 

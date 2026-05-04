@@ -50,6 +50,12 @@
 * result counter is now accurate
 * Added Search Filter for Price, Transmission, and FuelType
 
+#### Added Something & Bug Fixes 5/4/2026
+* Added database seeders
+
+* Fixed when editing the post the date is default resulting in mm/dd/yy not the date when the car is owned
+* 
+
 ## PARTIALLY DONE
 
 ### FEATURES

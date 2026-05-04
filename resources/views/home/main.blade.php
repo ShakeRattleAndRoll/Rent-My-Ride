@@ -222,8 +222,7 @@
             <a href="/garage/post-car" wire:navigate class="px-10 py-3 bg-yellow-400 text-black rounded-full font-bold hover:bg-yellow-300 transition text-center">
                 <i class="fa-solid fa-plus mr-2"></i> Post Your Car
             </a>
-        </div>
-
+        </div> 
     </div>
 </section>
 
