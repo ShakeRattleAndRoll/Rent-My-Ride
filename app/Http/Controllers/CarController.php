@@ -19,15 +19,26 @@ class CarController extends Controller
     // GET ALL CARS and search fileter
     public function index(Request $request)
     {
+
+        $brands = Car::select('brand')->distinct()->orderBy('brand')->pluck('brand');
+        $models = Car::select('model')->distinct()->orderBy('model')->pluck('model');
+
         $query = Car::query();
 
         if ($request->filled('search')) {
             $searchTerm = $request->search;
-
             $query->where(function ($q) use ($searchTerm) {
                 $q->where('brand', 'LIKE', "%{$searchTerm}%")
                 ->orWhere('model', 'LIKE', "%{$searchTerm}%");
             });
+        }
+
+        if ($request->filled('brand')) {
+            $query->where('brand', $request->brand);
+        }
+
+        if ($request->filled('model')) {
+            $query->where('model', $request->model);
         }
 
         if ($request->filled('min_price')) {
@@ -46,7 +57,7 @@ class CarController extends Controller
             $query->where('transmission', $request->transmission);
         }
 
-        $cars = $query->orderBy('created_at', 'desc')->get();
+        $cars = $query->orderBy('created_at', 'desc')->paginate(20);
 
         $carts = Auth::check() ? Auth::user()->carts : collect();
 
@@ -61,7 +72,9 @@ class CarController extends Controller
         return view('available_cars.main', [
             'cars' => $cars,
             'carts' => $carts,
-            'pendingRequests' => $pendingRequests
+            'pendingRequests' => $pendingRequests,
+            'brands' => $brands, 
+            'models' => $models,    
         ]);
     }
 

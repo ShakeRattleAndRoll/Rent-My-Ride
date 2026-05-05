@@ -60,10 +60,18 @@
 * Fixed when editing the post the date is default resulting in mm/dd/yy not the date when the car is owned
 * Editing posted cars 
 
+#### Added Features & Bug Fixes 5/5/2026
+* Added a pagination (max of 20 cars per page)
+* Added a jump to page
+* Added a view profile, mute user, and block user in message clickable by clicking the three dot next to profile
+* Update the search filter, added model and brand
+* Fix the bug when clicking the search it immediately show the filter
+* Fix the bug when clicking the filter it also show you your search suggestion overlapping the filter
+
 ## PARTIALLY DONE
 
 ### FEATURES
 * Email Verification
 * View Details in My Rentals
 * (Search bar in messages, searching for users in the system) -- tanggala ra ug dili nata ani
-
+* Not allowing block user to check your car and profile

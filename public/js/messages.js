@@ -1,10 +1,19 @@
-document.addEventListener("DOMContentLoaded", function () {
+function initMessages() {
     const chatForm = document.getElementById('chat-form');
     const chatContainer = document.getElementById("chat-container");
 
     if (!chatForm || !chatContainer) return;
 
-    chatContainer.scrollTop = chatContainer.scrollHeight;
+    if (chatContainer) {
+        chatContainer.scrollTo({
+            top: chatContainer.scrollHeight,
+            behavior: 'instant'
+        });
+        
+        setTimeout(() => {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }, 50);
+    } 
 
     const messageInput = document.getElementById('message_body');
     const sendBtn = chatForm.querySelector('button[type="submit"]');
@@ -37,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
         `;
 
-        chatContainer.insertAdjacentHTML('beforeend', newMessage);
+        chatContainer.insertAdjacentHTML('afterbegin', newMessage);
         chatContainer.scrollTop = chatContainer.scrollHeight;
         bodyInput.value = '';
 
@@ -57,4 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
             })
         });
     });
-});
+}
+
+document.addEventListener("DOMContentLoaded", initMessages);
+document.addEventListener("livewire:navigated", initMessages);

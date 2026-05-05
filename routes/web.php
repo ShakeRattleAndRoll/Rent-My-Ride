@@ -13,6 +13,8 @@ use App\Http\Controllers\MessageController;
 // Download og livewire para walay loading copy ning nasa baba sa terminal [ctrl + `]
 // composer require livewire/livewire
 
+// cloudflared tunnel --url http://localhost:8000 
+
 Route::get('/', function () {
     if (Auth::check()) {
         return view('home.main');
@@ -54,6 +56,9 @@ Route::get('/profile/{id}', [AuthController::class, 'show'])->name('user.profile
 // Route for message page
 Route::get('/messages/{receiverId?}', [MessageController::class, 'index'])->name('messages.index')->middleware('auth');
 Route::post('/messages', [MessageController::class, 'store'])->name('messages.store')->middleware('auth');
+    // Mute or Block Message
+Route::post('/messages/mute/{targetId}', [MessageController::class, 'toggleMute'])->name('messages.mute');
+Route::post('/messages/block/{targetId}', [MessageController::class, 'toggleBlock'])->name('messages.block');
 
 // Routes for garage listing
 Route::get('/garage', function () {
