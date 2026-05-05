@@ -67,11 +67,23 @@
 * Update the search filter, added model and brand
 * Fix the bug when clicking the search it immediately show the filter
 * Fix the bug when clicking the filter it also show you your search suggestion overlapping the filter
+* * View Details in My Rentals
 
 ## PARTIALLY DONE
 
 ### FEATURES
-* Email Verification
-* View Details in My Rentals
 * (Search bar in messages, searching for users in the system) -- tanggala ra ug dili nata ani
 * Not allowing block user to check your car and profile
+* Authorization:
+    * Email Verification
+    * Log in and Sign up UI improvements
+    * "Remember me" and "Forgot Password" feature
+* Not Responsive:
+    * Homepage
+        * Background
+        * Cards
+    * Available Page, My Listings, My Rentals and My Cart
+        * Details (Listings and Rentals)
+        * Cards improvement
+    * Messages
+        * Improvement
