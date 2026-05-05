@@ -50,8 +50,10 @@
             name="price"
             step="1"
             min="1"
+            max="999999"
             value="{{ old('price', isset($car->price) ? floor($car->price) : '') }}"
             placeholder="₱ Enter Amount"
+            oninput="if(this.value.length > 6) this.value = this.value.slice(0, 6)"
             class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5 outline-none focus:border-yellow-400">
     </div>
 

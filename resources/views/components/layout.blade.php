@@ -23,7 +23,7 @@
 
 <body class="bg-gray-700">
 
-    @if (!request()->is('login') && !request()->is('register'))
+    @if (!request()->is('login') && !request()->is('register') && !request()->is('profile/*'))
         <x-nav />
     @endif
 
@@ -95,7 +95,7 @@
         {{ $slot }}
     </main>
 
-    @if (!request()->is('login') && !request()->is('register'))
+    @if (!request()->is('login') && !request()->is('register') && !request()->is('profile/*'))
         <x-footer />
     @endif
 

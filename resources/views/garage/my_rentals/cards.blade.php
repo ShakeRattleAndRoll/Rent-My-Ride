@@ -93,10 +93,10 @@
                 </button>
             </form>
         @elseif ($isActive)
-            <a href="/garage/rental/{{ $rental->id }}"
-            class="border border-gray-600 hover:border-gray-400 text-gray-300 hover:text-white text-[10px] font-bold px-5 py-2 rounded-full transition-all duration-200 text-center uppercase tracking-widest">
+            <button onclick="document.getElementById('details-modal-{{ $rental->id }}').classList.remove('hidden')"
+                class="border border-gray-600 hover:border-gray-400 text-gray-300 hover:text-white text-[10px] font-bold px-5 py-2 rounded-full transition-all duration-200 text-center uppercase tracking-widest">
                 View Details
-            </a>
+            </button>
         @elseif ($isFinished || $isDeclined)
             <div class="flex items-center gap-2 mt-1">
                 @if ($isDeclined)
@@ -108,10 +108,10 @@
                     class="w-9 h-9 flex items-center justify-center rounded-full border border-red-600/40 text-red-500 hover:bg-red-600 hover:text-white transition-all duration-200">
                     <i class="fa-solid fa-trash text-[11px]"></i>
                 </button>
-                <a href="/garage/rental/{{ $rental->id }}"
-                class="border border-gray-600 hover:border-gray-400 text-gray-300 hover:text-white text-[10px] font-bold px-5 py-2 rounded-full transition-all duration-200 text-center uppercase tracking-widest">
+                <button onclick="document.getElementById('details-modal-{{ $rental->id }}').classList.remove('hidden')"
+                    class="border border-gray-600 hover:border-gray-400 text-gray-300 hover:text-white text-[10px] font-bold px-5 py-2 rounded-full transition-all duration-200 text-center uppercase tracking-widest">
                     View Details
-                </a>
+                </button>
             </div>
         @endif
 
@@ -121,3 +121,5 @@
 <x-modals.delete_confirmation
     :rentalId="$rental->id"
     :route="'/garage/rental/' . $rental->id . '/hide'" />
+
+<x-modals.rental_details :rental="$rental" />

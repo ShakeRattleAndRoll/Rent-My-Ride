@@ -66,7 +66,7 @@
             </div>
         </div>
 
-        <a href="/messages" wire:navigate class="px-4 py-2 rounded-full {{ request()->is('messages') ? 'bg-lime-400 text-black' : 'text-white hover:text-lime-400' }}">
+        <a href="/messages" wire:navigate class="px-4 py-2 rounded-full {{ request()->is('messages*') ? 'bg-lime-400 text-black' : 'text-white hover:text-lime-400' }}">
             Messages
         </a>
 
@@ -109,7 +109,7 @@
             </div>
         </div>
 
-        <a href="/messages" class="px-2 py-1 rounded-lg {{ request()->is('messages') ? 'bg-lime-400 text-black' : 'hover:text-lime-400' }}">Messages</a>
+        <a href="/messages" class="px-2 py-1 rounded-lg {{ request()->is('messages*') ? 'bg-lime-400 text-black' : 'hover:text-lime-400' }}">Messages</a>
         <a href="/profile" class="px-2 py-1 rounded-lg {{ request()->is('profile*') ? 'bg-lime-400 text-black' : 'hover:text-lime-400' }}">Profile</a>
 
     </div>
@@ -131,22 +131,4 @@
 
 </div>
 
-<script>
-    document.addEventListener('livewire:navigated', () => { 
-    console.log('Page swapped instantly!');});
-    function toggleSidebar() {
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        if(sidebar && overlay) {
-            sidebar.classList.toggle('-translate-x-full');
-            overlay.classList.toggle('hidden');
-        }
-    }
-    function toggleGarageDropdown() {
-        const dropdown = document.getElementById('garageDropdown');
-        const arrow = document.getElementById('garageArrow');
-        dropdown.classList.toggle('hidden');
-        dropdown.classList.toggle('flex');
-        arrow.classList.toggle('rotate-180');
-    }
-</script>
+<script src="{{ asset('js/navbar.js') }}"></script>
