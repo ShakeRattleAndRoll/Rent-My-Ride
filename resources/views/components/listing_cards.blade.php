@@ -106,24 +106,20 @@
         @endif
 
         {{-- DELETE --}}
-        @if ($IsOccupied)  {{-- Same as Edit, if true disable --}} 
+        @if ($IsOccupied)
             <button type="button" 
                     class="bg-gray-800 text-gray-500 cursor-not-allowed text-xs font-bold px-5 py-2 rounded-full w-32 text-center border border-gray-700">
                 Delete Post
             </button>
-        @else  {{-- Otherwise allow delete --}}
-            <form method="POST" 
-                action="/garage/delete/{{ $car->id }}"
-                onsubmit="return confirm('Are you sure you want to delete this car?');">
-                @csrf
-                @method('DELETE')
-
-                <button type="submit"
-                        class="bg-red-500 hover:bg-red-400 text-white text-xs font-bold px-5 py-2 rounded-full transition-all duration-200 w-32 text-center">
-                    Delete Post
-                </button>
-            </form>
+        @else
+            <button type="button"
+                    onclick="document.getElementById('delete-car-modal-{{ $car->id }}').classList.remove('hidden')"
+                    class="bg-red-500 hover:bg-red-400 text-white text-xs font-bold px-5 py-2 rounded-full transition-all duration-200 w-32 text-center">
+                Delete Post
+            </button>
         @endif
     </div>
 
 </div>
+
+/<x-modals.delete_post :carId="$car->id" />
