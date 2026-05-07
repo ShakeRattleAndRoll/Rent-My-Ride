@@ -41,21 +41,33 @@
             Available Cars
         </a>
 
-       <div class="relative group">
-            <button class="flex items-center gap-1 px-4 py-2 rounded-full uppercase tracking-wider font-bold transition-all {{ request()->is('garage*') || request()->is('car/pre-order*') ? 'bg-lime-400 text-black' : 'text-white hover:text-lime-400' }}"
+        {{-- Garage with pending orders badge --}}
+        <div class="relative group">
+            <button class="relative flex items-center gap-1 px-4 py-2 rounded-full uppercase tracking-wider font-bold transition-all {{ request()->is('garage*') || request()->is('car/pre-order*') ? 'bg-lime-400 text-black' : 'text-white hover:text-lime-400' }}"
                     style="font-family: inherit; letter-spacing: inherit;">
                 Garage
                 <svg class="w-3 h-3 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path>
                 </svg>
+                @if($totalPendingOrders > 0)
+                    <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-600 rounded-full text-white text-[9px] flex items-center justify-center font-black animate-pulse">
+                        {{ $totalPendingOrders > 99 ? '99+' : $totalPendingOrders }}
+                    </span>
+                @endif
             </button>
 
             <div class="absolute left-0 mt-2 w-48 bg-[#111] border border-white/10 rounded-xl shadow-2xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                 <a href="/garage/post-car" wire:navigate class="block px-5 py-3 text-white hover:bg-lime-400 hover:text-black transition text-[11px]" style="font-family: inherit;">
                     Post a Car
                 </a>
-                <a href="/garage/my-listing" wire:navigate class="block px-5 py-3 text-white hover:bg-lime-400 hover:text-black transition text-[11px]" style="font-family: inherit;">
+                {{-- My Listings with badge --}}
+                <a href="/garage/my-listing" wire:navigate class="relative flex items-center justify-between px-5 py-3 text-white hover:bg-lime-400 hover:text-black transition text-[11px]" style="font-family: inherit;">
                     My Listings
+                    @if($totalPendingOrders > 0)
+                        <span class="w-4 h-4 bg-red-600 rounded-full text-white text-[9px] flex items-center justify-center font-black">
+                            {{ $totalPendingOrders > 99 ? '99+' : $totalPendingOrders }}
+                        </span>
+                    @endif
                 </a>
                 <a href="/garage/my-rental" wire:navigate class="block px-5 py-3 text-white hover:bg-lime-400 hover:text-black transition text-[11px]" style="font-family: inherit;">
                     My Rental
@@ -66,8 +78,14 @@
             </div>
         </div>
 
-        <a href="/messages" wire:navigate class="px-4 py-2 rounded-full {{ request()->is('messages*') ? 'bg-lime-400 text-black' : 'text-white hover:text-lime-400' }}">
+        {{-- Messages with unread badge --}}
+        <a href="/messages" wire:navigate class="relative px-4 py-2 rounded-full {{ request()->is('messages*') ? 'bg-lime-400 text-black' : 'text-white hover:text-lime-400' }}">
             Messages
+            @if($totalUnreadMessages > 0)
+                <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-600 rounded-full text-white text-[9px] flex items-center justify-center font-black animate-pulse">
+                    {{ $totalUnreadMessages > 99 ? '99+' : $totalUnreadMessages }}
+                </span>
+            @endif
         </a>
 
         <a href="/profile" wire:navigate class="px-4 py-2 rounded-full {{ request()->is('profile*') ? 'bg-lime-400 text-black' : 'text-white hover:text-lime-400' }}">
@@ -94,8 +112,15 @@
 
         {{-- Garage Dropdown --}}
         <div>
-            <button onclick="toggleGarageDropdown()" class="w-full flex items-center justify-between px-2 py-1 rounded-lg {{ request()->is('garage*') || request()->is('car/pre-order*') ? 'bg-lime-400 text-black' : 'hover:text-lime-400' }} transition-colors">
-                Garage
+            <button onclick="toggleGarageDropdown()" class="relative w-full flex items-center justify-between px-2 py-1 rounded-lg {{ request()->is('garage*') || request()->is('car/pre-order*') ? 'bg-lime-400 text-black' : 'hover:text-lime-400' }} transition-colors">
+                <span class="flex items-center gap-2">
+                    Garage
+                    @if($totalPendingOrders > 0)
+                        <span class="w-4 h-4 bg-red-600 rounded-full text-white text-[9px] flex items-center justify-center font-black animate-pulse">
+                            {{ $totalPendingOrders > 99 ? '99+' : $totalPendingOrders }}
+                        </span>
+                    @endif
+                </span>
                 <svg id="garageArrow" class="w-3 h-3 transition-transform duration-200 {{ request()->is('garage*') || request()->is('car/pre-order*') ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path>
                 </svg>
@@ -103,13 +128,30 @@
 
             <div id="garageDropdown" class="{{ request()->is('garage*') || request()->is('car/pre-order*') ? 'flex' : 'hidden' }} flex-col gap-1 mt-2 pl-4 border-l border-white/10">
                 <a href="/garage/post-car" class="px-2 py-1 rounded-lg {{ request()->is('garage/post-car') ? 'bg-lime-400 text-black' : 'text-gray-400 hover:text-lime-400' }} transition-colors">Post a Car</a>
-                <a href="/garage/my-listing" class="px-2 py-1 rounded-lg {{ request()->is('garage/my-listing') ? 'bg-lime-400 text-black' : 'text-gray-400 hover:text-lime-400' }} transition-colors">My Listings</a>
+                {{-- My Listings with badge --}}
+                <a href="/garage/my-listing" class="flex items-center justify-between px-2 py-1 rounded-lg {{ request()->is('garage/my-listing') ? 'bg-lime-400 text-black' : 'text-gray-400 hover:text-lime-400' }} transition-colors">
+                    My Listings
+                    @if($totalPendingOrders > 0)
+                        <span class="w-4 h-4 bg-red-600 rounded-full text-white text-[9px] flex items-center justify-center font-black">
+                            {{ $totalPendingOrders > 99 ? '99+' : $totalPendingOrders }}
+                        </span>
+                    @endif
+                </a>
                 <a href="/garage/my-rental" class="px-2 py-1 rounded-lg {{ request()->is('garage/my-rental') ? 'bg-lime-400 text-black' : 'text-gray-400 hover:text-lime-400' }} transition-colors">My Rental</a>
                 <a href="/garage/my-cart" class="px-2 py-1 rounded-lg {{ request()->is('garage/my-cart') ? 'bg-lime-400 text-black' : 'text-gray-400 hover:text-lime-400' }} transition-colors">My Cart</a>
             </div>
         </div>
 
-        <a href="/messages" class="px-2 py-1 rounded-lg {{ request()->is('messages*') ? 'bg-lime-400 text-black' : 'hover:text-lime-400' }}">Messages</a>
+        {{-- Messages with unread badge --}}
+        <a href="/messages" class="relative flex items-center justify-between px-2 py-1 rounded-lg {{ request()->is('messages*') ? 'bg-lime-400 text-black' : 'hover:text-lime-400' }}">
+            Messages
+            @if($totalUnreadMessages > 0)
+                <span class="w-4 h-4 bg-red-600 rounded-full text-white text-[9px] flex items-center justify-center font-black animate-pulse">
+                    {{ $totalUnreadMessages > 99 ? '99+' : $totalUnreadMessages }}
+                </span>
+            @endif
+        </a>
+
         <a href="/profile" class="px-2 py-1 rounded-lg {{ request()->is('profile*') ? 'bg-lime-400 text-black' : 'hover:text-lime-400' }}">Profile</a>
 
     </div>

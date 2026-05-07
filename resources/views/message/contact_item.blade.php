@@ -2,15 +2,20 @@
     <a href="{{ route('messages.index', $contact->id) }}" wire:navigate
     class="flex items-center gap-3 p-4 rounded-2xl transition {{ isset($activeContact) && $activeContact->id == $contact->id ? 'bg-yellow-400 text-black' : 'hover:bg-[#242424]' }}">
         
-        <div class="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden border border-white/10">
-            <img src="{{ $contact->profile_picture ? asset('storage/' . $contact->profile_picture) : 'https://ui-avatars.com/api/?name=' . urlencode($contact->username) . '&background=random' }}" 
-                class="w-full h-full object-cover">
+        {{-- Avatar wrapper needs position:relative for the badge --}}
+        <div class="relative w-10 h-10 flex-shrink-0">
+            <div class="w-10 h-10 rounded-full bg-gray-700 overflow-hidden border border-white/10">
+                <img src="{{ $contact->profile_picture ? asset('storage/' . $contact->profile_picture) : 'https://ui-avatars.com/api/?name=' . urlencode($contact->username) . '&background=random' }}" 
+                    class="w-full h-full object-cover">
+            </div>
+
+            {{-- Badge is now OUTSIDE the img container, correctly anchored --}}
             @if($contact->unread_count > 0 && !$contact->is_muted)
                 <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-600 border-2 border-[#1a1a1a] rounded-full text-white text-[10px] flex items-center justify-center font-black animate-pulse">
                     {{ $contact->unread_count }}
                 </span>
             @endif
-        </div> 
+        </div>
 
         <div class="flex-1 min-w-0 pr-6"> 
             <div class="flex items-center gap-2">
@@ -22,7 +27,7 @@
             <span class="text-xs {{ isset($activeContact) && $activeContact->id == $contact->id ? 'text-black/70' : 'text-gray-500' }} truncate block">{{ $contact->full_name }}</span>
         </div>
     </a>
-
+    
     <button 
         @click.stop.prevent="menuOpen = !menuOpen"
         class="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full hover:bg-white/10 transition {{ isset($activeContact) && $activeContact->id == $contact->id ? 'text-black hover:bg-black/10' : 'text-gray-500' }}">

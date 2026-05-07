@@ -18,21 +18,23 @@ class MessageController extends Controller
         $myRelations = \App\Models\UserRelation::where('user_id', $authId)->get();
 
         $contacts = Message::where('sender_id', $authId)
-            ->orWhere('receiver_id', $authId)
-            ->get()
-            ->map(function ($message) use ($authId) {
-                return $message->sender_id == $authId ? $message->receiver : $message->sender;
-        })->unique('id')->map(function ($contact) use ($authId, $myRelations) {
+        ->orWhere('receiver_id', $authId)
+        ->get()
+        ->map(function ($message) use ($authId) {
+            return $message->sender_id == $authId ? $message->receiver : $message->sender;
+        })->unique('id')->map(function ($contact) use ($authId, $myRelations, $receiverId) { // 👈 add $receiverId
             $contact->is_muted = $myRelations->where('target_id', $contact->id)->where('type', 'mute')->first();
             $contact->is_blocked_by_me = $myRelations->where('target_id', $contact->id)->where('type', 'block')->first();
             
-            $contact->unread_count = Message::where('sender_id', $contact->id)
-                ->where('receiver_id', $authId)
-                ->where('is_read', false)
-                ->count();
+            $contact->unread_count = ($receiverId && $contact->id == $receiverId)
+                ? 0
+                : Message::where('sender_id', $contact->id)
+                    ->where('receiver_id', $authId)
+                    ->where('is_read', false)
+                    ->count();
 
             return $contact;
-        });;
+        });
 
         $messages = [];
         $activeContact = null;
@@ -129,4 +131,32 @@ class MessageController extends Controller
 
         return back()->with('status', "User successfully $status");
     }
+
+    // MessageController.php
+    public function searchUsers(Request $request)
+    {
+        $q = $request->query('q', '');
+
+        $users = User::where('id', '!=', auth()->id())
+            ->where(function ($query) use ($q) {
+                $query->where('username', 'like', "%{$q}%")
+                    ->orWhere('first_name', 'like', "%{$q}%")
+                    ->orWhere('last_name', 'like', "%{$q}%")
+                    ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$q}%"]);
+            })
+            ->select('id', 'username', 'first_name', 'last_name', 'profile_picture') // <-- fixed
+            ->limit(8)
+            ->get()
+            ->map(fn($u) => [
+                'id'       => $u->id,
+                'username' => $u->username,
+                'name'     => trim("{$u->first_name} {$u->last_name}"),
+                'avatar'   => $u->profile_picture 
+                                ? asset('storage/' . $u->profile_picture) 
+                                : 'https://ui-avatars.com/api/?name=' . urlencode($u->username), // <-- fallback like the rest of your app
+            ]);
+
+        return response()->json($users);
+    }
+
 }

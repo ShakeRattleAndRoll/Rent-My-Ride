@@ -57,17 +57,13 @@
 
                     {{-- Avatar --}}
                     <a href="{{ route('user.profile', $user->id) }}"
-                       class="block w-20 h-20 rounded-full overflow-hidden bg-gray-700 flex items-center justify-center text-black text-xl font-bold
-                              border-2 border-transparent hover:border-white/30 transition-all duration-300">
-                        @if($user->profile_picture)
-                            <img
-                                src="{{ asset('storage/' . $user->profile_picture) }}"
-                                alt="{{ $user->name }}"
-                                class="w-full h-full object-cover"
-                            >
-                        @else
-                            {{ strtoupper(substr($user->name, 0, 1)) }}
-                        @endif
+                    class="block w-20 h-20 rounded-full overflow-hidden bg-gray-700
+                            border-2 border-transparent hover:border-white/30 transition-all duration-300">
+                        <img
+                            src="{{ $user->profile_picture ? asset('storage/' . $user->profile_picture) : 'https://ui-avatars.com/api/?name=' . urlencode($user->username ?? $user->username ?? 'User') }}"
+                            alt="{{ $user->name }}"
+                            class="w-full h-full object-cover"
+                        >
                     </a>
 
                     {{-- Details --}}

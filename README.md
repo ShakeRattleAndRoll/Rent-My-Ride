@@ -68,12 +68,20 @@
 * Fix the bug when clicking the search it immediately show the filter
 * Fix the bug when clicking the filter it also show you your search suggestion overlapping the filter
 
+#### Added Features & Bug Fixes 5/5/2026
+* View Details in My Rentals
+* "First come, First serve", Longest days, and Shortest days options on pre order added
+* Search bar in messages, searching for users in the system
+* Display in the Garage/My Listing and Messages number notifs
+
 ## PARTIALLY DONE
 
 ### FEATURES
-* View Details in My Rentals
-* (Search bar in messages, searching for users in the system) -- tanggala ra ug dili nata ani
+* Delete Post -- Ako ra ani 
+* Search bar in messages, searching for users in the system optimization
 * Not allowing block user to check your car and profile
+* Livewire Messages
+* Homepage background optimization
 * Authorization:
     * Email Verification
     * Log in and Sign up UI improvements

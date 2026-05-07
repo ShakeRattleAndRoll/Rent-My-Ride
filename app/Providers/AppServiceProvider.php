@@ -3,26 +3,38 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Message;
+use App\Models\Rental;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        //
-        if (config('app.env') !== 'local') {
-            URL::forceScheme('https');
-        }
+        View::composer('*', function ($view) {
+            if (Auth::check()) {
+                $totalUnreadMessages = Message::where('receiver_id', Auth::id())
+                    ->where('is_read', false)
+                    ->count();
+
+                $totalPendingOrders = Rental::whereHas('car', function ($q) {
+                        $q->where('user_id', Auth::id());
+                    })
+                    ->where('status', 'pending')
+                    ->count();
+            } else {
+                $totalUnreadMessages = 0;
+                $totalPendingOrders = 0;
+            }
+
+            $view->with('totalUnreadMessages', $totalUnreadMessages);
+            $view->with('totalPendingOrders', $totalPendingOrders);
+        });
     }
 }

@@ -53,6 +53,8 @@ Route::patch('/profile/update', [AuthController::class, 'update'])->name('profil
 // Route for user profile view
 Route::get('/profile/{id}', [AuthController::class, 'show'])->name('user.profile');
 
+// Message search users
+Route::get('/messages/search-users', [MessageController::class, 'searchUsers'])->middleware('auth');
 // Route for message page
 Route::get('/messages/{receiverId?}', [MessageController::class, 'index'])->name('messages.index')->middleware('auth');
 Route::post('/messages', [MessageController::class, 'store'])->name('messages.store')->middleware('auth');
