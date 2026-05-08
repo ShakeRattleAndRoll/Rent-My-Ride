@@ -1,4 +1,4 @@
-<div x-data="{ menuOpen: false }" class="relative group">
+<div x-data="{ menuOpen: false, blockModalOpen: false }" class="relative group">
     <a href="{{ route('messages.index', $contact->id) }}" wire:navigate data-message-navigate
     class="flex items-center gap-3 p-4 rounded-2xl transition {{ isset($activeContact) && $activeContact->id == $contact->id ? 'bg-yellow-400 text-black' : 'hover:bg-[#242424]' }}">
         
@@ -57,15 +57,59 @@
             </button>
         </form>
 
-        <form action="{{ route('messages.block', $contact->id) }}" method="POST"
-            data-livewire-form
-            data-confirm="{{ $contact->is_blocked_by_me ? 'Unblock this user?' : 'Block this user? You will no longer receive their messages.' }}">
-            @csrf
-            <button type="submit" 
-                    class="w-full flex items-center gap-2 px-4 py-3 text-[10px] uppercase font-bold transition text-left border-t border-white/5 text-gray-300 hover:bg-yellow-400 hover:text-black">
-                <i class="fa-solid {{ $contact->is_blocked_by_me ? 'fa-circle-check text-green-500' : 'fa-ban text-red-500' }} w-4"></i> 
+        <button
+            type="button"
+            @click.stop="menuOpen = false; blockModalOpen = true"
+            class="w-full flex items-center gap-2 px-4 py-3 text-[10px] uppercase font-bold transition text-left border-t border-white/5 text-gray-300 hover:bg-yellow-400 hover:text-black">
+            <i class="fa-solid {{ $contact->is_blocked_by_me ? 'fa-circle-check text-green-500' : 'fa-ban text-red-500' }} w-4"></i> 
+            {{ $contact->is_blocked_by_me ? 'Unblock User' : 'Block User' }}
+        </button>
+    </div>
+
+    <div
+        x-show="blockModalOpen"
+        x-cloak
+        x-transition.opacity
+        class="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-sm px-4"
+        @keydown.escape.window="blockModalOpen = false"
+    >
+        <div
+            class="w-full max-w-sm bg-[#1e1e1e] border border-white/10 rounded-2xl p-6 shadow-2xl text-center"
+            @click.stop
+        >
+            <div class="w-12 h-12 mx-auto mb-4 rounded-full {{ $contact->is_blocked_by_me ? 'bg-lime-400/10 border-lime-400/30' : 'bg-red-600/10 border-red-600/30' }} border flex items-center justify-center">
+                <i class="fa-solid {{ $contact->is_blocked_by_me ? 'fa-circle-check text-lime-400' : 'fa-ban text-red-500' }} text-lg"></i>
+            </div>
+
+            <h3 class="text-white font-black uppercase tracking-tight text-sm mb-2">
                 {{ $contact->is_blocked_by_me ? 'Unblock User' : 'Block User' }}
-            </button>
-        </form>
+            </h3>
+
+            <p class="text-gray-400 text-xs leading-5 mb-6">
+                {{ $contact->is_blocked_by_me
+                    ? 'This user will be able to message you and view your profile again.'
+                    : 'This user will no longer be able to message you or view your profile and listings.' }}
+            </p>
+
+            <div class="flex gap-3">
+                <button
+                    type="button"
+                    @click="blockModalOpen = false"
+                    class="flex-1 border border-white/10 text-gray-400 hover:text-white hover:border-white/30 text-xs font-bold py-2.5 rounded-full transition-all duration-200 uppercase tracking-widest"
+                >
+                    Cancel
+                </button>
+
+                <form action="{{ route('messages.block', $contact->id) }}" method="POST" class="flex-1" data-livewire-form>
+                    @csrf
+                    <button
+                        type="submit"
+                        class="w-full {{ $contact->is_blocked_by_me ? 'bg-lime-400 hover:bg-lime-300 text-black' : 'bg-red-600 hover:bg-red-500 text-white' }} text-xs font-bold py-2.5 rounded-full transition-all duration-200 uppercase tracking-widest"
+                    >
+                        {{ $contact->is_blocked_by_me ? 'Unblock' : 'Block' }}
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>

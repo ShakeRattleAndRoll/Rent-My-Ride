@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Car;
+use App\Models\Cart;
 use App\Models\Rental;
+use App\Models\UserRelation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -24,6 +26,10 @@ class CarController extends Controller
         $models = Car::select('model')->distinct()->orderBy('model')->pluck('model');
 
         $query = Car::query();
+
+        if (Auth::check()) {
+            $query->whereNotIn('user_id', $this->blockedUserIdsFor(Auth::id()));
+        }
 
         if ($request->filled('search')) {
             $searchTerm = $request->search;
@@ -153,7 +159,28 @@ class CarController extends Controller
                   ->where('user_id', Auth::id()) 
                   ->firstOrFail();
 
-        $car->delete();
+        DB::transaction(function () use ($car) {
+            $pendingRentals = Rental::where('car_id', $car->id)
+                ->where('status', 'pending')
+                ->get();
+
+            foreach ($pendingRentals as $rental) {
+                $rental->update([
+                    'status'            => 'denied',
+                    'snap_brand'        => $car->brand,
+                    'snap_model'        => $car->model,
+                    'snap_car_image'    => $car->car_image,
+                    'snap_price'        => $car->price,
+                    'snap_rent_unit'    => $car->rent_unit,
+                    'snap_fuel_type'    => $car->fuel_type,
+                    'snap_transmission' => $car->transmission,
+                    'snap_date_owned'   => $car->date_owned,
+                ]);
+            }
+
+            Cart::where('car_id', $car->id)->delete();
+            $car->delete();
+        });
 
         if (request()->expectsJson()) {
             session()->flash('success', 'Car deleted successfully!');
@@ -221,6 +248,41 @@ class CarController extends Controller
     
     public function show(Car $car)
     {
+        if (Auth::check() && Auth::id() !== $car->user_id && $this->hasBlockRelationWith($car->user_id)) {
+            return response()
+                ->view('profile.blocked', ['user' => $car->user], 403);
+        }
+
         return view('available_cars.cars_details', compact('car'));
+    }
+
+    private function blockedUserIdsFor($userId)
+    {
+        return UserRelation::where('type', 'block')
+            ->where(function ($query) use ($userId) {
+                $query->where('user_id', $userId)
+                    ->orWhere('target_id', $userId);
+            })
+            ->get()
+            ->map(fn ($relation) => $relation->user_id == $userId
+                ? $relation->target_id
+                : $relation->user_id)
+            ->unique()
+            ->values();
+    }
+
+    private function hasBlockRelationWith($targetId)
+    {
+        return UserRelation::where('type', 'block')
+            ->where(function ($query) use ($targetId) {
+                $query->where(function ($q) use ($targetId) {
+                    $q->where('user_id', Auth::id())
+                        ->where('target_id', $targetId);
+                })->orWhere(function ($q) use ($targetId) {
+                    $q->where('user_id', $targetId)
+                        ->where('target_id', Auth::id());
+                });
+            })
+            ->exists();
     }
 }

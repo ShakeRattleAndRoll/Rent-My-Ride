@@ -117,6 +117,15 @@ class MessageController extends Controller
         $authId = Auth::id();
         User::findOrFail($receiverId);
 
+        $chatBlocked = \App\Models\UserRelation::where('type', 'block')
+            ->where(function($q) use ($authId, $receiverId) {
+                $q->where(function($inner) use ($authId, $receiverId) {
+                    $inner->where('user_id', $authId)->where('target_id', $receiverId);
+                })->orWhere(function($inner) use ($authId, $receiverId) {
+                    $inner->where('user_id', $receiverId)->where('target_id', $authId);
+                });
+            })->exists();
+
         Message::where('sender_id', $receiverId)
             ->where('receiver_id', $authId)
             ->where('is_read', false)
@@ -132,6 +141,7 @@ class MessageController extends Controller
 
         return response()->json([
             'messages' => $messages->map(fn($message) => $this->formatMessage($message)),
+            'chat_blocked' => $chatBlocked,
         ]);
     }
 

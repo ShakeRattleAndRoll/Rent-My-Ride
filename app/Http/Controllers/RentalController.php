@@ -57,6 +57,26 @@ class RentalController extends Controller
         return view('garage.my_listings.pre-order', compact('car', 'preOrders'));
     }
 
+    public function notifications()
+    {
+        $pendingOrders = Rental::query()
+            ->selectRaw('car_id, COUNT(*) as pending_orders_count')
+            ->whereHas('car', function ($q) {
+                $q->where('user_id', Auth::id());
+            })
+            ->where('status', 'pending')
+            ->groupBy('car_id')
+            ->get();
+
+        return response()->json([
+            'total_pending_orders' => $pendingOrders->sum('pending_orders_count'),
+            'cars' => $pendingOrders->map(fn ($order) => [
+                'id' => $order->car_id,
+                'pending_orders_count' => $order->pending_orders_count,
+            ]),
+        ]);
+    }
+
     // ACCEPT RENTAL
     public function accept(Request $request, $id)
     {
@@ -138,6 +158,32 @@ class RentalController extends Controller
             ->get();
 
         return view('garage.my_rentals.my-rental', compact('rentals'));
+    }
+
+    public function myStatuses()
+    {
+        $rentals = Rental::with('car.user')
+            ->where('user_id', Auth::id())
+            ->where('hidden_by_renter', false)
+            ->latest()
+            ->get();
+
+        return response()->json([
+            'rentals' => $rentals->map(fn ($rental) => [
+                'id' => $rental->id,
+                'status_key' => $this->rentalStatusKey($rental),
+                'html' => view('garage.my_rentals.cards', compact('rental'))->render(),
+            ]),
+        ]);
+    }
+
+    private function rentalStatusKey(Rental $rental)
+    {
+        if ($rental->status === 'accepted') {
+            return now()->gt($rental->end_date) ? 'completed' : 'active';
+        }
+
+        return $rental->status;
     }
 
     // CANCEL RENTAL

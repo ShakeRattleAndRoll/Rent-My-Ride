@@ -2,7 +2,7 @@ var rentRideMessages = window.rentRideMessages || (window.rentRideMessages = {})
 
 function initMessages() {
     const chatContainer = document.getElementById("chat-container");
-    const chatForm = document.getElementById("chat-form");
+    const chatComposer = document.getElementById("chat-composer");
 
     if (rentRideMessages.pollTimer) {
         clearInterval(rentRideMessages.pollTimer);
@@ -24,6 +24,84 @@ function initMessages() {
 
     const scrollToBottom = () => {
         chatContainer.scrollTop = chatContainer.scrollHeight;
+    };
+
+    const blockedHtml = () => `
+        <div class="p-4 bg-black/20 text-center text-red-500 text-xs font-bold uppercase" data-chat-blocked-notice>
+            <i class="fa-solid fa-ban mr-2"></i> You cannot send messages in this conversation.
+        </div>
+    `;
+
+    const formHtml = () => `
+        <div class="p-6 bg-[#1a1a1a] border-t border-white/5" data-chat-form-wrap>
+            <form id="chat-form" action="${chatComposer.dataset.storeUrl}" method="POST" class="flex items-center gap-3">
+                <input type="hidden" id="receiver_id" name="receiver_id" value="${chatComposer.dataset.receiverId}">
+                <input type="text" id="message_body" name="body" placeholder="Write your message..."
+                    class="flex-1 bg-[#242424] text-white px-6 py-3.5 rounded-2xl border border-white/5 outline-none focus:border-yellow-400 transition-all font-medium text-sm">
+                <button type="submit" class="w-11 h-11 bg-yellow-400 text-black rounded-2xl flex items-center justify-center shadow-lg shadow-yellow-400/20 hover:bg-yellow-300 transition">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    `;
+
+    const bindChatForm = () => {
+        const chatForm = document.getElementById("chat-form");
+        if (!chatForm || chatForm.dataset.ajaxReady) return;
+
+        chatForm.dataset.ajaxReady = "true";
+        chatForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const input = chatForm.querySelector("#message_body");
+            const submitButton = chatForm.querySelector('button[type="submit"]');
+            const body = input.value.trim();
+
+            if (!body) return;
+
+            submitButton.disabled = true;
+
+            try {
+                const response = await fetch(chatForm.action, {
+                    method: "POST",
+                    headers: {
+                        Accept: "application/json",
+                        "X-CSRF-TOKEN": csrfToken,
+                    },
+                    body: new FormData(chatForm),
+                });
+
+                if (response.ok) {
+                    input.value = "";
+                    await loadMessages();
+                    window.refreshRentRideNotifications?.();
+                } else if (response.status === 403) {
+                    renderComposer(true);
+                }
+            } finally {
+                submitButton.disabled = false;
+                input.focus();
+            }
+        });
+    };
+
+    const renderComposer = (isBlocked) => {
+        if (!chatComposer) return;
+
+        const nextBlocked = isBlocked ? "1" : "0";
+        const hasMatchingState = chatComposer.dataset.blocked === nextBlocked;
+        const hasExpectedMarkup = isBlocked
+            ? Boolean(chatComposer.querySelector("[data-chat-blocked-notice]"))
+            : Boolean(chatComposer.querySelector("#chat-form"));
+
+        if (hasMatchingState && hasExpectedMarkup) return;
+
+        chatComposer.dataset.blocked = nextBlocked;
+        chatComposer.innerHTML = isBlocked ? blockedHtml() : formHtml();
+
+        if (!isBlocked) {
+            bindChatForm();
+        }
     };
 
     const renderMessages = (messages) => {
@@ -61,6 +139,7 @@ function initMessages() {
 
             const data = await response.json();
             renderMessages(data.messages || []);
+            renderComposer(Boolean(data.chat_blocked));
             window.refreshRentRideNotifications?.();
         } catch (error) {
             if (error.name !== "AbortError") {
@@ -70,43 +149,10 @@ function initMessages() {
     };
 
     scrollToBottom();
+    renderComposer(chatComposer?.dataset.blocked === "1");
+    bindChatForm();
     loadMessages();
     rentRideMessages.pollTimer = setInterval(loadMessages, 2000);
-
-    if (chatForm && !chatForm.dataset.ajaxReady) {
-        chatForm.dataset.ajaxReady = "true";
-        chatForm.addEventListener("submit", async (event) => {
-            event.preventDefault();
-
-            const input = chatForm.querySelector("#message_body");
-            const submitButton = chatForm.querySelector('button[type="submit"]');
-            const body = input.value.trim();
-
-            if (!body) return;
-
-            submitButton.disabled = true;
-
-            try {
-                const response = await fetch(chatForm.action, {
-                    method: "POST",
-                    headers: {
-                        Accept: "application/json",
-                        "X-CSRF-TOKEN": csrfToken,
-                    },
-                    body: new FormData(chatForm),
-                });
-
-                if (response.ok) {
-                    input.value = "";
-                    await loadMessages();
-                    window.refreshRentRideNotifications?.();
-                }
-            } finally {
-                submitButton.disabled = false;
-                input.focus();
-            }
-        });
-    }
 
     window.addEventListener("scroll-chat", () => {
         setTimeout(scrollToBottom, 100);

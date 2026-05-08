@@ -31,26 +31,51 @@ function setBadgeCount(badge, count) {
 async function refreshRentRideNotifications() {
     const unreadBadges = document.querySelectorAll('[data-unread-messages-badge]');
     const contactBadges = document.querySelectorAll('[data-contact-unread-badge]');
+    const pendingOrderBadges = document.querySelectorAll('[data-pending-orders-badge]');
+    const carPendingOrderBadges = document.querySelectorAll('[data-car-pending-orders-badge]');
 
-    if (unreadBadges.length === 0 && contactBadges.length === 0) return;
+    if (unreadBadges.length === 0 && contactBadges.length === 0 && pendingOrderBadges.length === 0 && carPendingOrderBadges.length === 0) return;
 
-    try {
-        const response = await fetch('/messages/notifications', {
-            headers: { Accept: 'application/json' },
-        });
+    if (unreadBadges.length > 0 || contactBadges.length > 0) {
+        try {
+            const response = await fetch('/messages/notifications', {
+                headers: { Accept: 'application/json' },
+            });
 
-        if (!response.ok) return;
+            if (!response.ok) return;
 
-        const data = await response.json();
-        unreadBadges.forEach((badge) => setBadgeCount(badge, Number(data.total_unread_messages || 0)));
+            const data = await response.json();
+            unreadBadges.forEach((badge) => setBadgeCount(badge, Number(data.total_unread_messages || 0)));
 
-        contactBadges.forEach((badge) => setBadgeCount(badge, 0));
-        (data.contacts || []).forEach((contact) => {
-            const badge = document.querySelector(`[data-contact-unread-badge="${contact.id}"]`);
-            setBadgeCount(badge, Number(contact.unread_count || 0));
-        });
-    } catch (error) {
-        console.error('Unable to refresh notifications.', error);
+            contactBadges.forEach((badge) => setBadgeCount(badge, 0));
+            (data.contacts || []).forEach((contact) => {
+                const badge = document.querySelector(`[data-contact-unread-badge="${contact.id}"]`);
+                setBadgeCount(badge, Number(contact.unread_count || 0));
+            });
+        } catch (error) {
+            console.error('Unable to refresh message notifications.', error);
+        }
+    }
+
+    if (pendingOrderBadges.length > 0 || carPendingOrderBadges.length > 0) {
+        try {
+            const response = await fetch('/rentals/notifications', {
+                headers: { Accept: 'application/json' },
+            });
+
+            if (!response.ok) return;
+
+            const data = await response.json();
+            pendingOrderBadges.forEach((badge) => setBadgeCount(badge, Number(data.total_pending_orders || 0)));
+
+            carPendingOrderBadges.forEach((badge) => setBadgeCount(badge, 0));
+            (data.cars || []).forEach((car) => {
+                const badges = document.querySelectorAll(`[data-car-pending-orders-badge="${car.id}"]`);
+                badges.forEach((badge) => setBadgeCount(badge, Number(car.pending_orders_count || 0)));
+            });
+        } catch (error) {
+            console.error('Unable to refresh rental notifications.', error);
+        }
     }
 }
 

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Car;
+use App\Models\UserRelation;
 
 
 class AuthController extends Controller
@@ -151,6 +152,26 @@ class AuthController extends Controller
     public function show($id)
     {
         $user = User::findOrFail($id);
+
+        if (Auth::check() && Auth::id() !== $user->id) {
+            $isBlocked = UserRelation::where('type', 'block')
+                ->where(function ($query) use ($id) {
+                    $query->where(function ($q) use ($id) {
+                        $q->where('user_id', Auth::id())
+                            ->where('target_id', $id);
+                    })->orWhere(function ($q) use ($id) {
+                        $q->where('user_id', $id)
+                            ->where('target_id', Auth::id());
+                    });
+                })
+                ->exists();
+
+            if ($isBlocked) {
+                return response()
+                    ->view('profile.blocked', ['user' => $user], 403);
+            }
+        }
+
         $cars = Car::where('user_id', $id)->get();
     
         $currentUser = Auth::user();

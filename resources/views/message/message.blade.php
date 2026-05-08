@@ -3,21 +3,68 @@
         <div class="max-w-6xl mx-auto flex flex-col gap-6">
 
             {{-- Search Bar --}}
-            <div x-data="userSearch()" class="relative w-full">
+            <div
+                x-data="{
+                    query: '',
+                    results: [],
+                    open: false,
+                    loading: false,
+                    async search() {
+                        const term = this.query.trim();
+
+                        if (!term) {
+                            this.results = [];
+                            this.open = false;
+                            return;
+                        }
+
+                        this.loading = true;
+                        this.open = true;
+
+                        try {
+                            const response = await fetch(`/messages/search-users?q=${encodeURIComponent(term)}`, {
+                                headers: { Accept: 'application/json' },
+                            });
+
+                            this.results = response.ok ? await response.json() : [];
+                        } catch (error) {
+                            this.results = [];
+                        } finally {
+                            this.loading = false;
+                        }
+                    },
+                    goToUser(userId) {
+                        this.open = false;
+                        this.query = '';
+
+                        if (window.Livewire?.navigate) {
+                            window.Livewire.navigate(`/messages/${userId}`);
+                            return;
+                        }
+
+                        window.location.href = `/messages/${userId}`;
+                    },
+                }"
+                @click.outside="open = false"
+                class="relative w-full"
+            >
                 <div class="relative">
                     <input
+                        x-ref="searchInput"
                         type="text"
                         x-model="query"
                         @input.debounce.300ms="search()"
                         @focus="open = query.length > 0"
-                        @click.outside="open = false"
+                        @keydown.escape="open = false"
+                        @keydown.enter.prevent="search()"
                         placeholder="Search users by name or username..."
                         class="w-full bg-[#1a1a1a] border border-gray-800 text-white text-sm rounded-2xl py-4 px-6 pr-24 focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none transition-all"
                     >
 
                     <button
                         type="button"
-                        @click="search()"
+                        @click="query.trim() ? search() : $refs.searchInput.focus()"
+                        aria-label="Search users"
                         class="absolute right-3 top-1/2 -translate-y-1/2 bg-yellow-400 p-2 rounded-xl text-black hover:bg-yellow-300 transition-colors"
                     >
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -48,11 +95,11 @@
                                     <img :src="user.avatar" :alt="user.name" class="w-full h-full object-cover">
                                 </template>
                                 <template x-if="!user.avatar">
-                                    <span class="text-yellow-400 text-xs font-bold uppercase" x-text="user.name.charAt(0)"></span>
+                                    <span class="text-yellow-400 text-xs font-bold uppercase" x-text="(user.name || user.username || 'U').charAt(0)"></span>
                                 </template>
                             </div>
                             <div class="flex flex-col min-w-0">
-                                <span class="text-white text-sm font-semibold truncate" x-text="user.name"></span>
+                                <span class="text-white text-sm font-semibold truncate" x-text="user.name || user.username"></span>
                                 <span class="text-gray-500 text-xs truncate" x-text="`@${user.username}`"></span>
                             </div>
                         </a>

@@ -49,11 +49,9 @@
                 <svg class="w-3 h-3 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path>
                 </svg>
-                @if($totalPendingOrders > 0)
-                    <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-600 rounded-full text-white text-[9px] flex items-center justify-center font-black animate-pulse">
-                        {{ $totalPendingOrders > 99 ? '99+' : $totalPendingOrders }}
-                    </span>
-                @endif
+                <span data-pending-orders-badge class="absolute -top-1 -right-1 w-4 h-4 bg-red-600 rounded-full text-white text-[9px] {{ $totalPendingOrders > 0 ? 'flex' : 'hidden' }} items-center justify-center font-black animate-pulse">
+                    {{ $totalPendingOrders > 99 ? '99+' : $totalPendingOrders }}
+                </span>
             </button>
 
             <div class="absolute left-0 mt-2 w-48 bg-[#111] border border-white/10 rounded-xl shadow-2xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
@@ -63,11 +61,9 @@
                 {{-- My Listings with badge --}}
                 <a href="/garage/my-listing" wire:navigate data-nav-navigate class="relative flex items-center justify-between px-5 py-3 text-white hover:bg-lime-400 hover:text-black transition text-[11px]" style="font-family: inherit;">
                     My Listings
-                    @if($totalPendingOrders > 0)
-                        <span class="w-4 h-4 bg-red-600 rounded-full text-white text-[9px] flex items-center justify-center font-black">
-                            {{ $totalPendingOrders > 99 ? '99+' : $totalPendingOrders }}
-                        </span>
-                    @endif
+                    <span data-pending-orders-badge class="w-4 h-4 bg-red-600 rounded-full text-white text-[9px] {{ $totalPendingOrders > 0 ? 'flex' : 'hidden' }} items-center justify-center font-black">
+                        {{ $totalPendingOrders > 99 ? '99+' : $totalPendingOrders }}
+                    </span>
                 </a>
                 <a href="/garage/my-rental" wire:navigate data-nav-navigate class="block px-5 py-3 text-white hover:bg-lime-400 hover:text-black transition text-[11px]" style="font-family: inherit;">
                     My Rental
@@ -113,11 +109,9 @@
             <button onclick="toggleGarageDropdown()" class="relative w-full flex items-center justify-between px-2 py-1 rounded-lg {{ request()->is('garage*') || request()->is('car/pre-order*') ? 'bg-lime-400 text-black' : 'hover:text-lime-400' }} transition-colors">
                 <span class="flex items-center gap-2">
                     Garage
-                    @if($totalPendingOrders > 0)
-                        <span class="w-4 h-4 bg-red-600 rounded-full text-white text-[9px] flex items-center justify-center font-black animate-pulse">
-                            {{ $totalPendingOrders > 99 ? '99+' : $totalPendingOrders }}
-                        </span>
-                    @endif
+                    <span data-pending-orders-badge class="w-4 h-4 bg-red-600 rounded-full text-white text-[9px] {{ $totalPendingOrders > 0 ? 'flex' : 'hidden' }} items-center justify-center font-black animate-pulse">
+                        {{ $totalPendingOrders > 99 ? '99+' : $totalPendingOrders }}
+                    </span>
                 </span>
                 <svg id="garageArrow" class="w-3 h-3 transition-transform duration-200 {{ request()->is('garage*') || request()->is('car/pre-order*') ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path>
@@ -129,11 +123,9 @@
                 {{-- My Listings with badge --}}
                 <a href="/garage/my-listing" wire:navigate data-nav-navigate class="flex items-center justify-between px-2 py-1 rounded-lg {{ request()->is('garage/my-listing') ? 'bg-lime-400 text-black' : 'text-gray-400 hover:text-lime-400' }} transition-colors">
                     My Listings
-                    @if($totalPendingOrders > 0)
-                        <span class="w-4 h-4 bg-red-600 rounded-full text-white text-[9px] flex items-center justify-center font-black">
-                            {{ $totalPendingOrders > 99 ? '99+' : $totalPendingOrders }}
-                        </span>
-                    @endif
+                    <span data-pending-orders-badge class="w-4 h-4 bg-red-600 rounded-full text-white text-[9px] {{ $totalPendingOrders > 0 ? 'flex' : 'hidden' }} items-center justify-center font-black">
+                        {{ $totalPendingOrders > 99 ? '99+' : $totalPendingOrders }}
+                    </span>
                 </a>
                 <a href="/garage/my-rental" wire:navigate data-nav-navigate class="px-2 py-1 rounded-lg {{ request()->is('garage/my-rental') ? 'bg-lime-400 text-black' : 'text-gray-400 hover:text-lime-400' }} transition-colors">My Rental</a>
                 <a href="/garage/my-cart" wire:navigate data-nav-navigate class="px-2 py-1 rounded-lg {{ request()->is('garage/my-cart') ? 'bg-lime-400 text-black' : 'text-gray-400 hover:text-lime-400' }} transition-colors">My Cart</a>

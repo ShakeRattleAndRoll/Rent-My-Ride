@@ -20,7 +20,14 @@
     <div class="px-10 pb-10 space-y-4">
 
         @forelse ($rentals as $rental)
-            @include('garage.my_rentals.cards', ['rental' => $rental])
+            @php
+                $rentalStatusKey = $rental->status === 'accepted'
+                    ? (now()->gt($rental->end_date) ? 'completed' : 'active')
+                    : $rental->status;
+            @endphp
+            <div data-rental-row="{{ $rental->id }}" data-rental-status="{{ $rentalStatusKey }}">
+                @include('garage.my_rentals.cards', ['rental' => $rental])
+            </div>
         @empty
             <div class="flex flex-col items-center justify-center py-24 text-center">
                 <a href="/available" wire:navigate>
@@ -38,4 +45,5 @@
 
     </div>
 </div>
+<script src="{{ asset('js/rentals.js') }}"></script>
 </x-layout>

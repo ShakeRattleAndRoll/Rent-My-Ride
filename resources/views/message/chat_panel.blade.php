@@ -39,8 +39,14 @@
             @endforelse
         </div>
 
-        @if(!$chatBlocked)
-            <div class="p-6 bg-[#1a1a1a] border-t border-white/5">
+        <div
+            id="chat-composer"
+            data-blocked="{{ $chatBlocked ? '1' : '0' }}"
+            data-store-url="{{ route('messages.store') }}"
+            data-receiver-id="{{ $activeContact->id }}"
+        >
+            @if(!$chatBlocked)
+            <div class="p-6 bg-[#1a1a1a] border-t border-white/5" data-chat-form-wrap>
                 <form id="chat-form" action="{{ route('messages.store') }}" method="POST" class="flex items-center gap-3">
                     @csrf
                     <input type="hidden" id="receiver_id" name="receiver_id" value="{{ $activeContact->id }}">
@@ -51,11 +57,12 @@
                     </button>
                 </form>
             </div>
-        @else
-            <div class="p-4 bg-black/20 text-center text-red-500 text-xs font-bold uppercase">
+            @else
+            <div class="p-4 bg-black/20 text-center text-red-500 text-xs font-bold uppercase" data-chat-blocked-notice>
                 <i class="fa-solid fa-ban mr-2"></i> You cannot send messages in this conversation.
             </div>
-        @endif
+            @endif
+        </div>
 
     @else
 

@@ -62,8 +62,8 @@ Route::get('/messages/thread/{receiverId}', [MessageController::class, 'thread']
 Route::get('/messages/{receiverId?}', [MessageController::class, 'index'])->name('messages.index')->middleware('auth');
 Route::post('/messages', [MessageController::class, 'store'])->name('messages.store')->middleware('auth');
     // Mute or Block Message
-Route::post('/messages/mute/{targetId}', [MessageController::class, 'toggleMute'])->name('messages.mute');
-Route::post('/messages/block/{targetId}', [MessageController::class, 'toggleBlock'])->name('messages.block');
+Route::post('/messages/mute/{targetId}', [MessageController::class, 'toggleMute'])->name('messages.mute')->middleware('auth');
+Route::post('/messages/block/{targetId}', [MessageController::class, 'toggleBlock'])->name('messages.block')->middleware('auth');
 
 // Routes for garage listing
 Route::get('/garage', function () {
@@ -94,6 +94,8 @@ Route::get('/car/pre-order/{id}', function ($id) {
 
 //Route for garage rental
 Route::post('/rent', [RentalController::class, 'store'])->middleware('auth');
+Route::get('/rentals/notifications', [RentalController::class, 'notifications'])->name('rentals.notifications')->middleware('auth');
+Route::get('/rentals/my-statuses', [RentalController::class, 'myStatuses'])->name('rentals.my-statuses')->middleware('auth');
 Route::get('/garage/my-rental', [RentalController::class, 'index'])->middleware('auth');
 Route::get('/car/pre-order/{id}', [RentalController::class, 'showPreOrders'])->middleware('auth');
 Route::post('/rental/{id}/accept', [RentalController::class, 'accept'])->middleware('auth');
@@ -104,7 +106,11 @@ Route::patch('/garage/rental/{id}/hide-owner', [RentalController::class, 'hideFo
 
 //Route for garage cart
 Route::get('/garage/my-cart', function () {
-    $cartItems = Cart::where('user_id', Auth::id())->with('car')->get();
+    $cartItems = Cart::where('user_id', Auth::id())
+        ->with('car')
+        ->latest()
+        ->get();
+
     return view('garage.my_cart.my-cart', ['carts' => $cartItems]);  
 })->middleware('auth');
 

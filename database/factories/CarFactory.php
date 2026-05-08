@@ -33,7 +33,7 @@ class CarFactory extends Factory
             'date_owned' => fake()->date(),
             'brand' => fake()->randomElement(['Toyota', 'Honda', 'Nissan', 'Mitsubishi', 'Ford']),
             'model' => fake()->word(),
-            'price' => fake()->randomFloat(2, 200, 1000), 
+            'price' => fake()->numberBetween(200, 1000), 
             'transmission' => fake()->randomElement(['Automatic', 'Manual']),
             'fuel_type' => fake()->randomElement(['Gasoline', 'Diesel', 'Electric']),
             'description' => fake()->sentence(),

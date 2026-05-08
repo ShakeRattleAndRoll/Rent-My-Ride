@@ -74,19 +74,19 @@
 * Search bar in messages, searching for users in the system
 * Display in the Garage/My Listing and Messages number notifs
 
-#### Added Features & Bug Fixes 5/7/2026
+#### Added Features & Bug Fixes 5/8/2026
 * No reload or full refresh for most of the clickable 
 * Show real time update (e.g notif) no refresh needed
 * Optimize the video in homepage
+* Livewire Messages
+* Delete Post
+* Search bar in messages, searching for users in the system optimization
+* Allowing block user to check your car and profile
 
 ## PARTIALLY DONE
 
 ### FEATURES
-* Delete Post -- Ako ra ani 
-* Search bar in messages, searching for users in the system optimization
-* Not allowing block user to check your car and profile
-* Livewire Messages
-* Homepage background optimization
+* Customer rental logic update
 * Authorization:
     * Email Verification
     * Log in and Sign up UI improvements
