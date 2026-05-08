@@ -95,7 +95,7 @@
                                 data-days="{{ $order->days }}">
 
                                 <td class="px-6 py-4 first:rounded-l-2xl border-y border-l border-transparent group-hover:border-gray-700">
-                                    <a href="{{ route('user.profile', $order->user->id) }}"
+                                    <a href="{{ route('user.profile', $order->user->id) }}" wire:navigate data-nav-navigate
                                        class="inline-flex items-center gap-3
                                               border border-transparent hover:border-white/30
                                               rounded-xl px-2 py-1 -mx-2
@@ -132,7 +132,7 @@
                                         </button>
 
                                         {{-- Deny --}}
-                                        <form action="/rental/{{ $order->id }}/deny" method="POST" class="inline">
+                                        <form action="/rental/{{ $order->id }}/deny" method="POST" class="inline" data-livewire-form>
                                             @csrf
                                             <button class="bg-red-600/10 hover:bg-red-600 text-red-500 hover:text-white border border-red-600/50 px-5 py-1.5 rounded-full font-black text-[9px] uppercase tracking-tighter transition-all active:scale-95">
                                                 Deny

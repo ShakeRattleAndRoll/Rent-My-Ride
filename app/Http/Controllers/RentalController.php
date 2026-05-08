@@ -58,7 +58,7 @@ class RentalController extends Controller
     }
 
     // ACCEPT RENTAL
-    public function accept($id)
+    public function accept(Request $request, $id)
     {
         $rental = Rental::with('car')->findOrFail($id);
 
@@ -89,11 +89,17 @@ class RentalController extends Controller
             'snap_date_owned'   => $rental->car->date_owned,
         ]);
 
+        if ($request->expectsJson()) {
+            session()->flash('success', 'Rental accepted successfully.');
+
+            return response()->json(['redirect' => route('garage.my-listing')]);
+        }
+
         return redirect()->route('garage.my-listing')->with('success', 'Rental accepted successfully.');
     }
 
     // DENY RENTAL
-    public function deny($id)
+    public function deny(Request $request, $id)
     {
         $rental = Rental::with('car')->findOrFail($id);
 
@@ -112,6 +118,12 @@ class RentalController extends Controller
             'snap_transmission' => $rental->car->transmission,
             'snap_date_owned'   => $rental->car->date_owned,
         ]);
+
+        if ($request->expectsJson()) {
+            session()->flash('success', 'Rental request denied.');
+
+            return response()->json(['redirect' => url()->previous()]);
+        }
 
         return redirect()->back()->with('success', 'Rental request denied.');
     }

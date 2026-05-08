@@ -2,140 +2,179 @@
 
     <div class="relative w-full h-[600px] flex items-center justify-center overflow-hidden">
         
-        <div 
+        <div
             x-data="{
                 frame: 1,
                 total: 240,
-                direction: 1,
-
                 dragging: false,
                 lastX: 0,
                 accumulated: 0,
-                step: 6,
-
-                idleDelay: 2000,
+                step: 5,
                 idleTimer: null,
-                interval: null,
+                direction: 1,
+                reverseFrame: null,
+                reverseLastTime: null,
 
-                baseSpeed: 40, // normal speed
-                slowSpeed: 90, // slow at edges
+                frameSrc() {
+                    return `/images/frames/ezgif-frame-${String(this.frame).padStart(3, '0')}.jpg`
+                },
 
-                start(e) {
+                syncFrameFromVideo() {
+                    const video = this.$refs.carVideo
+
+                    if (!video || !video.duration) return
+
+                    const progress = video.currentTime / video.duration
+                    this.frame = Math.min(this.total, Math.max(1, Math.round(progress * this.total)))
+                },
+
+                syncVideoFromFrame() {
+                    const video = this.$refs.carVideo
+
+                    if (!video || !video.duration) return
+
+                    video.currentTime = ((this.frame - 1) / this.total) * video.duration
+                },
+
+                resumeIdle() {
+                    const video = this.$refs.carVideo
+
+                    if (!video) return
+
+                    cancelAnimationFrame(this.reverseFrame)
+
+                    if (this.direction === -1) {
+                        this.reverseVideo()
+                        return
+                    }
+
+                    video.play()
+                },
+
+                reverseVideo(time = null) {
+                    const video = this.$refs.carVideo
+
+                    if (!video || !video.duration || this.dragging) return
+
+                    video.pause()
+
+                    if (this.reverseLastTime === null || time === null) {
+                        this.reverseLastTime = time
+                    }
+
+                    const elapsed = Math.min(((time || this.reverseLastTime) - this.reverseLastTime) / 1000, 0.05)
+                    this.reverseLastTime = time || this.reverseLastTime
+                    video.currentTime = Math.max(0, video.currentTime - elapsed)
+
+                    if (video.currentTime <= 0.03) {
+                        video.currentTime = 0
+                        this.direction = 1
+                        this.reverseLastTime = null
+                        video.play()
+                        return
+                    }
+
+                    this.reverseFrame = requestAnimationFrame((nextTime) => this.reverseVideo(nextTime))
+                },
+
+                reverseAtEnd() {
+                    this.direction = -1
+                    this.reverseLastTime = null
+                    this.reverseVideo()
+                },
+
+                start(event) {
                     this.dragging = true
-                    this.lastX = e.clientX
-                    this.stopAuto()
+                    this.lastX = event.clientX
+                    this.accumulated = 0
+                    clearTimeout(this.idleTimer)
+                    cancelAnimationFrame(this.reverseFrame)
+                    this.syncFrameFromVideo()
+                    this.$refs.carVideo.pause()
+                    this.preloadNearby()
                 },
 
                 stop() {
-                    this.dragging = false
-                    this.startIdleTimer()
-                },
-
-                move(e) {
                     if (!this.dragging) return
 
-                    let delta = e.clientX - this.lastX
-                    this.lastX = e.clientX
+                    this.dragging = false
+                    this.syncVideoFromFrame()
 
-                    this.accumulated += delta
+                    if (this.frame >= this.total - 1) {
+                        this.direction = -1
+                    }
+
+                    if (this.frame <= 2) {
+                        this.direction = 1
+                    }
+
+                    this.idleTimer = setTimeout(() => this.resumeIdle(), 350)
+                },
+
+                move(event) {
+                    if (!this.dragging) return
+
+                    this.accumulated += event.clientX - this.lastX
+                    this.lastX = event.clientX
 
                     while (this.accumulated >= this.step) {
-                        this.frame++
+                        this.frame = this.frame >= this.total ? 1 : this.frame + 1
                         this.accumulated -= this.step
                     }
 
                     while (this.accumulated <= -this.step) {
-                        this.frame--
+                        this.frame = this.frame <= 1 ? this.total : this.frame - 1
                         this.accumulated += this.step
                     }
 
-                    if (this.frame > this.total) this.frame = this.total
-                    if (this.frame < 1) this.frame = 1
+                    this.preloadNearby()
                 },
 
-                startAuto() {
-                    this.runAuto(this.baseSpeed)
-                },
+                preloadNearby() {
+                    for (let offset = -4; offset <= 4; offset++) {
+                        let next = this.frame + offset
 
-                runAuto(speed) {
-                    clearInterval(this.interval)
+                        if (next < 1) next += this.total
+                        if (next > this.total) next -= this.total
 
-                    this.interval = setInterval(() => {
-                        this.frame += this.direction
-
-                        // slow zone near edges
-                        if (this.frame >= this.total - 5 || this.frame <= 5) {
-                            this.runAuto(this.slowSpeed)
-                        } else {
-                            this.runAuto(this.baseSpeed)
-                        }
-
-                        // reverse at ends
-                        if (this.frame >= this.total) {
-                            this.frame = this.total
-                            this.direction = -1
-                        }
-
-                        if (this.frame <= 1) {
-                            this.frame = 1
-                            this.direction = 1
-                        }
-
-                    }, speed)
-                },
-
-                stopAuto() {
-                    clearInterval(this.interval)
-                    clearTimeout(this.idleTimer)
-                },
-
-                startIdleTimer() {
-                    this.idleTimer = setTimeout(() => {
-                        this.startAuto()
-                    }, this.idleDelay)
+                        const img = new Image()
+                        img.src = `/images/frames/ezgif-frame-${String(next).padStart(3, '0')}.jpg`
+                    }
                 }
             }"
-
-            x-init="startAuto()"
-
-            @mousedown.window="start($event)"
-            @mouseup.window="stop()"
-            @mouseleave.window="stop()"
-            @mousemove.window="move($event)"
-
-            @touchstart.window="dragging = true; lastX = $event.touches[0].clientX; stopAuto()"
-            @touchend.window="dragging = false; startIdleTimer()"
-            @touchmove.window="
-                if (!dragging) return;
-                let delta = $event.touches[0].clientX - lastX;
-                lastX = $event.touches[0].clientX;
-                accumulated += delta;
-
-                while (accumulated >= step) {
-                    frame++;
-                    accumulated -= step;
-                }
-                while (accumulated <= -step) {
-                    frame--;
-                    accumulated += step;
-                }
-
-                if (frame > total) frame = total;
-                if (frame < 1) frame = 1;
-            "
-
-            class="absolute inset-0 flex items-center justify-center select-none"
+            @pointerdown.prevent="start($event)"
+            @pointermove.window="move($event)"
+            @pointerup.window="stop()"
+            @pointercancel.window="stop()"
+            class="absolute inset-0 z-0 select-none touch-none cursor-grab active:cursor-grabbing"
         >
-            <img 
-                :src="'/images/frames/ezgif-frame-' + String(frame).padStart(3, '0') + '.jpg'"
+            <video
+                x-ref="carVideo"
+                class="absolute inset-0 w-full h-full object-cover object-center blur-sm"
+                autoplay
+                muted
+                playsinline
+                preload="metadata"
+                poster="{{ asset('images/frames/ezgif-frame-001.jpg') }}"
+                aria-label="Spinning car background"
+                @loadedmetadata="resumeIdle()"
+                @ended="reverseAtEnd()"
+            >
+                <source src="{{ asset('images/frames/output.mp4') }}" type="video/mp4">
+            </video>
+
+            <img
+                x-show="dragging"
+                :src="frameSrc()"
                 class="absolute inset-0 w-full h-full object-cover object-center blur-sm"
                 draggable="false"
-                alt="360 Car View"
+                alt="Interactive car spin"
+                x-cloak
             >
         </div>
-        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-black/10"></div>
+        <div class="absolute inset-0 z-10 pointer-events-none bg-gradient-to-t from-black via-black/10 to-black/10"></div>
 
-        <div class="relative z-10 w-full max-w-4xl px-6 text-center" style="font-family: 'Montserrat', sans-serif;">
+        <div class="relative z-20 pointer-events-none w-full max-w-4xl px-6 text-center" style="font-family: 'Montserrat', sans-serif;">
             
             <h1 class="text-4xl md:text-6xl font-black text-white mb-4 tracking-tighter uppercase">
                 Drive the <span class="text-lime-400">Experience</span>
@@ -225,13 +264,5 @@
         </div> 
     </div>
 </section>
-
-<script>
-    const total = 240;
-    for (let i = 1; i <= total; i++) {
-        const img = new Image();
-        img.src = `/images/frames2/ezgif-frame_${String(i).padStart(3, '0')}.jpg`;
-    }
-</script>
 
 </x-layout>

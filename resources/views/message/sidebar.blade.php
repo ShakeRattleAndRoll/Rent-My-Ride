@@ -3,7 +3,7 @@
     <div class="p-8 bg-[#242424]/50 border-b border-white/5 flex items-center justify-between">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-yellow-400 to-lime-400 p-[2px]">
-                <a href='/profile'>
+                <a href='/profile' wire:navigate>
                     <img src="{{ auth()->user()->profile_picture ? asset('storage/' . auth()->user()->profile_picture) : 'https://ui-avatars.com/api/?name=' . auth()->user()->username }}" 
                          class="w-full h-full rounded-full object-cover border-2 border-[#1a1a1a]">
                 </a>

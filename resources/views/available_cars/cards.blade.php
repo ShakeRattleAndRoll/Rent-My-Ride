@@ -53,7 +53,7 @@
 
     <div class="mt-auto p-4 pt-0 relative z-20" style="font-family: 'Montserrat', sans-serif;">
         @if(Auth::check() && $car->user_id === Auth::id())
-            <a href="/garage/my-listing"
+            <a href="/garage/my-listing" wire:navigate data-nav-navigate
             class="w-full block py-3 bg-gray-800 border border-white/5 text-gray-400 text-[10px] font-bold uppercase tracking-widest rounded-xl text-center">
                 You Own This
             </a>
@@ -71,7 +71,7 @@
             </div>
 
         @else 
-            <form action="/cart/add" method="POST">
+            <form action="/cart/add" method="POST" data-livewire-form>
                 @csrf
                 <input type="hidden" name="car_id" value="{{ $car->id }}">
                 <button type="submit"

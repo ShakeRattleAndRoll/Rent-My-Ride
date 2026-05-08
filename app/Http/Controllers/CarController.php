@@ -155,6 +155,12 @@ class CarController extends Controller
 
         $car->delete();
 
+        if (request()->expectsJson()) {
+            session()->flash('success', 'Car deleted successfully!');
+
+            return response()->json(['redirect' => url()->previous()]);
+        }
+
         return redirect()->back()->with('success', 'Car deleted successfully!');
     }
 

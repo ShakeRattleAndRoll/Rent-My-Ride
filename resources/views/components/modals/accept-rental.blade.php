@@ -42,7 +42,7 @@
 
         </div>
 
-        <form id="acceptForm" method="POST">
+        <form id="acceptForm" method="POST" data-livewire-form>
             @csrf
             <div class="flex justify-end gap-3">
                 <button type="button" onclick="closeAcceptModal()"

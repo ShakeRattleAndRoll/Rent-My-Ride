@@ -36,8 +36,11 @@
                     class="absolute top-full left-0 mt-2 w-full bg-[#1a1a1a] border border-gray-800 rounded-2xl shadow-2xl z-50 overflow-hidden"
                 >
                     <template x-for="user in results" :key="user.id">
-                        
+                        <a
                             :href="`/messages/${user.id}`"
+                            wire:navigate
+                            data-message-navigate
+                            @click.prevent="goToUser(user.id)"
                             class="flex items-center gap-3 px-5 py-3 hover:bg-white/5 transition-colors border-b border-gray-800/60 last:border-0"
                         >
                             <div class="w-9 h-9 rounded-full bg-yellow-400/10 border border-yellow-400/20 flex items-center justify-center flex-shrink-0 overflow-hidden">

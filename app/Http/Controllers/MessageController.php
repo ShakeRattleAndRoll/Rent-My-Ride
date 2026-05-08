@@ -90,16 +90,79 @@ class MessageController extends Controller
         })->exists();
 
         if ($isBlocked) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Message could not be sent.'], 403);
+            }
+
             return back()->with('error', 'Message could not be sent.'); 
         }
 
-        Message::create([
+        $message = Message::create([
             'sender_id' => Auth::id(),
             'receiver_id' => $request->receiver_id,
             'body' => $request->body,
         ]);
 
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => $this->formatMessage($message),
+            ], 201);
+        }
+
         return back();
+    }
+
+    public function thread($receiverId)
+    {
+        $authId = Auth::id();
+        User::findOrFail($receiverId);
+
+        Message::where('sender_id', $receiverId)
+            ->where('receiver_id', $authId)
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
+
+        $messages = Message::where(function($query) use ($authId, $receiverId) {
+            $query->where('sender_id', $authId)
+                ->where('receiver_id', $receiverId);
+        })->orWhere(function($query) use ($authId, $receiverId) {
+            $query->where('sender_id', $receiverId)
+                ->where('receiver_id', $authId);
+        })->orderBy('created_at', 'asc')->get();
+
+        return response()->json([
+            'messages' => $messages->map(fn($message) => $this->formatMessage($message)),
+        ]);
+    }
+
+    public function notifications()
+    {
+        $authId = Auth::id();
+
+        $mutedUserIds = UserRelation::where('user_id', $authId)
+            ->where('type', 'mute')
+            ->pluck('target_id');
+
+        $totalUnreadMessages = Message::where('receiver_id', $authId)
+            ->where('is_read', false)
+            ->whereNotIn('sender_id', $mutedUserIds)
+            ->count();
+
+        $contacts = Message::where('receiver_id', $authId)
+            ->where('is_read', false)
+            ->whereNotIn('sender_id', $mutedUserIds)
+            ->selectRaw('sender_id, COUNT(*) as unread_count')
+            ->groupBy('sender_id')
+            ->get()
+            ->map(fn($message) => [
+                'id' => $message->sender_id,
+                'unread_count' => $message->unread_count,
+            ]);
+
+        return response()->json([
+            'total_unread_messages' => $totalUnreadMessages,
+            'contacts' => $contacts,
+        ]);
     }
 
     public function toggleMute($targetId)
@@ -129,6 +192,14 @@ class MessageController extends Controller
             $status = "{$type}d";
         }
 
+        if (request()->expectsJson()) {
+            session()->flash('status', "User successfully $status");
+
+            return response()->json([
+                'redirect' => url()->previous(),
+            ]);
+        }
+
         return back()->with('status', "User successfully $status");
     }
 
@@ -137,26 +208,37 @@ class MessageController extends Controller
     {
         $q = $request->query('q', '');
 
-        $users = User::where('id', '!=', auth()->id())
+        $users = User::where('id', '!=', Auth::id())
             ->where(function ($query) use ($q) {
                 $query->where('username', 'like', "%{$q}%")
                     ->orWhere('first_name', 'like', "%{$q}%")
                     ->orWhere('last_name', 'like', "%{$q}%")
                     ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$q}%"]);
             })
-            ->select('id', 'username', 'first_name', 'last_name', 'profile_picture') // <-- fixed
+            ->select('id', 'username', 'first_name', 'last_name', 'profile_picture')
             ->limit(8)
             ->get()
-            ->map(fn($u) => [
+            ->map(fn($u) => [   
                 'id'       => $u->id,
                 'username' => $u->username,
                 'name'     => trim("{$u->first_name} {$u->last_name}"),
                 'avatar'   => $u->profile_picture 
                                 ? asset('storage/' . $u->profile_picture) 
-                                : 'https://ui-avatars.com/api/?name=' . urlencode($u->username), // <-- fallback like the rest of your app
+                                : 'https://ui-avatars.com/api/?name=' . urlencode($u->username),
             ]);
 
         return response()->json($users);
+    }
+
+    private function formatMessage(Message $message)
+    {
+        return [
+            'id' => $message->id,
+            'sender_id' => $message->sender_id,
+            'receiver_id' => $message->receiver_id,
+            'body' => $message->body,
+            'time' => $message->created_at->timezone('Asia/Manila')->format('g:i A'),
+        ];
     }
 
 }

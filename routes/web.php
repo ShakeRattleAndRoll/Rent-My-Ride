@@ -9,6 +9,7 @@ use App\Http\Controllers\CartController;
 use App\Models\Cart;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\MessageController;
+use App\Livewire\Message\ChatManager;
 
 // Download og livewire para walay loading copy ning nasa baba sa terminal [ctrl + `]
 // composer require livewire/livewire
@@ -55,6 +56,8 @@ Route::get('/profile/{id}', [AuthController::class, 'show'])->name('user.profile
 
 // Message search users
 Route::get('/messages/search-users', [MessageController::class, 'searchUsers'])->middleware('auth');
+Route::get('/messages/notifications', [MessageController::class, 'notifications'])->name('messages.notifications')->middleware('auth');
+Route::get('/messages/thread/{receiverId}', [MessageController::class, 'thread'])->name('messages.thread')->middleware('auth');
 // Route for message page
 Route::get('/messages/{receiverId?}', [MessageController::class, 'index'])->name('messages.index')->middleware('auth');
 Route::post('/messages', [MessageController::class, 'store'])->name('messages.store')->middleware('auth');

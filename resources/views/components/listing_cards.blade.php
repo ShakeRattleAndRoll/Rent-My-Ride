@@ -57,7 +57,7 @@
                 <span class="bg-gray-600 text-white text-xs font-bold px-3 py-1 rounded-full">Unoccupied</span>
             @endif
 
-            <a href="/garage/details/{{ $car->id }}" wire:navigate
+            <a href="/garage/details/{{ $car->id }}" wire:navigate data-nav-navigate
                class="bg-[#2a2a2a] hover:bg-[#333] border border-gray-700 text-gray-300 text-xs font-bold px-4 py-1 rounded-full transition-all duration-200">
                 Details
             </a>
@@ -84,7 +84,7 @@
             @endif
         </button>
         @else
-            <a href="/car/pre-order/{{ $car->id }}" wire:navigate
+            <a href="/car/pre-order/{{ $car->id }}" wire:navigate data-nav-navigate
             class="relative bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-bold px-5 py-2 rounded-full transition-all duration-200 w-32 text-center">
                 Pre orders
 
@@ -104,7 +104,7 @@
                 Edit Post
             </button>
         @else {{-- Active Edit Button if otherwise not --}}
-            <a href="/garage/edit/{{ $car->id }}" wire:navigate
+            <a href="/garage/edit/{{ $car->id }}" wire:navigate data-nav-navigate
             class="bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-bold px-5 py-2 rounded-full transition-all duration-200 w-32 text-center">
                 Edit Post
             </a>

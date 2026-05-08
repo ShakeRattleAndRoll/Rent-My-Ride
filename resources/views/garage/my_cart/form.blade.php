@@ -17,7 +17,7 @@
 
         <div class="border-t border-white/5 mb-6"></div>
 
-        <form id="rentForm" method="POST" action="/cart/checkout/0">
+        <form id="rentForm" method="POST" action="/cart/checkout/0" data-livewire-form>
             @csrf
 
             <input type="hidden" id="cart_id_hidden" name="cart_id">

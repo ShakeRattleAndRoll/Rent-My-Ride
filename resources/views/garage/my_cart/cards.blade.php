@@ -87,7 +87,7 @@
         @endif
 
         {{-- Remove --}}
-        <form method="POST" action="{{ route('cart.remove', $cart->id) }}">
+        <form method="POST" action="{{ route('cart.remove', $cart->id) }}" data-livewire-form>
             @csrf
             @method('DELETE')
             <button type="submit"

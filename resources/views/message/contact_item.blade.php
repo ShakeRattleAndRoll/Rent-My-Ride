@@ -1,5 +1,5 @@
 <div x-data="{ menuOpen: false }" class="relative group">
-    <a href="{{ route('messages.index', $contact->id) }}" wire:navigate
+    <a href="{{ route('messages.index', $contact->id) }}" wire:navigate data-message-navigate
     class="flex items-center gap-3 p-4 rounded-2xl transition {{ isset($activeContact) && $activeContact->id == $contact->id ? 'bg-yellow-400 text-black' : 'hover:bg-[#242424]' }}">
         
         {{-- Avatar wrapper needs position:relative for the badge --}}
@@ -10,9 +10,12 @@
             </div>
 
             {{-- Badge is now OUTSIDE the img container, correctly anchored --}}
-            @if($contact->unread_count > 0 && !$contact->is_muted)
-                <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-600 border-2 border-[#1a1a1a] rounded-full text-white text-[10px] flex items-center justify-center font-black animate-pulse">
-                    {{ $contact->unread_count }}
+            @if(!$contact->is_muted)
+                <span
+                    data-contact-unread-badge="{{ $contact->id }}"
+                    class="absolute -top-1 -right-1 w-5 h-5 bg-red-600 border-2 border-[#1a1a1a] rounded-full text-white text-[10px] {{ $contact->unread_count > 0 ? 'flex' : 'hidden' }} items-center justify-center font-black animate-pulse"
+                >
+                    {{ $contact->unread_count > 99 ? '99+' : $contact->unread_count }}
                 </span>
             @endif
         </div>
@@ -41,11 +44,11 @@
         x-cloak
         class="absolute right-2 top-12 w-40 bg-[#242424] border border-white/10 rounded-xl shadow-2xl z-[100] overflow-hidden">
         
-        <a href="{{ route('user.profile', $contact->id) }}" class="flex items-center gap-2 px-4 py-3 text-[10px] uppercase font-bold text-gray-300 hover:bg-yellow-400 hover:text-black transition">
+        <a href="{{ route('user.profile', $contact->id) }}" wire:navigate data-nav-navigate class="flex items-center gap-2 px-4 py-3 text-[10px] uppercase font-bold text-gray-300 hover:bg-yellow-400 hover:text-black transition">
             <i class="fa-solid fa-user w-4"></i> View Profile
         </a>
         
-        <form action="{{ route('messages.mute', $contact->id) }}" method="POST">
+        <form action="{{ route('messages.mute', $contact->id) }}" method="POST" data-livewire-form>
             @csrf
             <button type="submit" 
                     class="w-full flex items-center gap-2 px-4 py-3 text-[10px] uppercase font-bold transition text-left border-t border-white/5 text-gray-300 hover:bg-yellow-400 hover:text-black">
@@ -54,8 +57,9 @@
             </button>
         </form>
 
-        <form action="{{ route('messages.block', $contact->id) }}" method="POST" 
-            onsubmit="return confirm('{{ $contact->is_blocked_by_me ? 'Unblock this user?' : 'Block this user? You will no longer receive their messages.' }}')">
+        <form action="{{ route('messages.block', $contact->id) }}" method="POST"
+            data-livewire-form
+            data-confirm="{{ $contact->is_blocked_by_me ? 'Unblock this user?' : 'Block this user? You will no longer receive their messages.' }}">
             @csrf
             <button type="submit" 
                     class="w-full flex items-center gap-2 px-4 py-3 text-[10px] uppercase font-bold transition text-left border-t border-white/5 text-gray-300 hover:bg-yellow-400 hover:text-black">

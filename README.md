@@ -68,11 +68,16 @@
 * Fix the bug when clicking the search it immediately show the filter
 * Fix the bug when clicking the filter it also show you your search suggestion overlapping the filter
 
-#### Added Features & Bug Fixes 5/5/2026
+#### Added Features & Bug Fixes 5/7/2026
 * View Details in My Rentals
 * "First come, First serve", Longest days, and Shortest days options on pre order added
 * Search bar in messages, searching for users in the system
 * Display in the Garage/My Listing and Messages number notifs
+
+#### Added Features & Bug Fixes 5/7/2026
+* No reload or full refresh for most of the clickable 
+* Show real time update (e.g notif) no refresh needed
+* Optimize the video in homepage
 
 ## PARTIALLY DONE
 

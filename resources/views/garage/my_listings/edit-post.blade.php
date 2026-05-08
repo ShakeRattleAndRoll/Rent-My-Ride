@@ -27,7 +27,7 @@
                     {{-- Buttons --}}
                     <div class="col-span-full flex justify-end gap-4 mt-4">
 
-                        <a href="/garage/my-listing"
+                        <a href="/garage/my-listing" wire:navigate data-nav-navigate
                            class="px-8 py-3 font-bold text-gray-400 flex items-center">
                             Cancel
                         </a>

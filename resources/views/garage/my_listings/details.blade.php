@@ -56,7 +56,7 @@
                 <div class="flex items-center gap-5">
 
                     {{-- Avatar --}}
-                    <a href="{{ route('user.profile', $user->id) }}"
+                    <a href="{{ route('user.profile', $user->id) }}" wire:navigate data-nav-navigate
                     class="block w-20 h-20 rounded-full overflow-hidden bg-gray-700
                             border-2 border-transparent hover:border-white/30 transition-all duration-300">
                         <img

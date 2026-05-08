@@ -15,12 +15,24 @@ class CartController extends Controller
         $car = Car::findOrFail($request->car_id);
 
         if ($car->user_id === Auth::id()) {
+            if ($request->expectsJson()) {
+                session()->flash('error', 'You cannot add your own car to the cart!');
+
+                return response()->json(['redirect' => url()->previous()], 422);
+            }
+
             return redirect()->back()->with('error', 'You cannot add your own car to the cart!');
         }
 
         $exists = Cart::where('user_id', Auth::id())->where('car_id', $car->id)->exists();
         
         if ($exists) {
+            if ($request->expectsJson()) {
+                session()->flash('error', 'This car is already in your cart!');
+
+                return response()->json(['redirect' => url()->previous()], 422);
+            }
+
             return redirect()->back()->with('error', 'This car is already in your cart!');
         }
 
@@ -28,6 +40,12 @@ class CartController extends Controller
             'user_id' => Auth::id(),
             'car_id' => $car->id
         ]);
+
+        if ($request->expectsJson()) {
+            session()->flash('success', 'Car added to your cart!');
+
+            return response()->json(['redirect' => url('/garage/my-cart')]);
+        }
 
         return redirect('/garage/my-cart')->with('success', 'Car added to your cart!');
     }
@@ -49,13 +67,25 @@ class CartController extends Controller
 
         $cartItem->delete();
 
+        if ($request->expectsJson()) {
+            session()->flash('success', 'Request sent! Wait for owner approval.');
+
+            return response()->json(['redirect' => url('/garage/my-rental')]);
+        }
+
         return redirect('/garage/my-rental')->with('success', 'Request sent! Wait for owner approval.');
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $cartItem = Cart::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
         $cartItem->delete();
+
+        if ($request->expectsJson()) {
+            session()->flash('success', 'Item removed from cart.');
+
+            return response()->json(['redirect' => url()->previous()]);
+        }
 
         return redirect()->back()->with('success', 'Item removed from cart.');
     }

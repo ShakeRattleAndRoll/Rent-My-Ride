@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Message;
 use App\Models\Rental;
+use App\Models\UserRelation;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,8 +20,13 @@ class AppServiceProvider extends ServiceProvider
     {
         View::composer('*', function ($view) {
             if (Auth::check()) {
+                $mutedUserIds = UserRelation::where('user_id', Auth::id())
+                    ->where('type', 'mute')
+                    ->pluck('target_id');
+
                 $totalUnreadMessages = Message::where('receiver_id', Auth::id())
                     ->where('is_read', false)
+                    ->whereNotIn('sender_id', $mutedUserIds)
                     ->count();
 
                 $totalPendingOrders = Rental::whereHas('car', function ($q) {
