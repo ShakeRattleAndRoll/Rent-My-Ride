@@ -83,10 +83,13 @@
 * Search bar in messages, searching for users in the system optimization
 * Allowing block user to check your car and profile
 
+#### Added Features & Bug Fixes 5/9/2026
+* Homepage redesign
+* Cart rent now bug fixed
+
 ## PARTIALLY DONE
 
 ### FEATURES
-* Homepage improvements
 * Customer rental logic update
 * Authorization:
     * Email Verification
@@ -95,7 +98,6 @@
 * Not Responsive:
     * Homepage
         * Background
-        * Cards
     * Available Page, My Listings, My Rentals and My Cart
         * Details (Listings and Rentals)
         * Cards improvement
