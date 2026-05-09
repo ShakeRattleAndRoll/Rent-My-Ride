@@ -59,9 +59,6 @@
                         <p class="text-gray-600 text-[10px] mt-1">
                             Auto-calculated based on <span id="unitLabelSub">duration</span> entered
                         </p>
-                        <p class="text-gray-600 text-[10px] mt-1">
-                            <i class="fa-solid fa-triangle-exclamation text-yellow-400 text-xs"></i> Refresh the page if price doesn't update after changing duration
-                        </p>
                     </div>
                     <div class="p-3 bg-lime-400/10 rounded-xl">
                         <i class="fa-solid fa-peso-sign text-lime-400"></i>

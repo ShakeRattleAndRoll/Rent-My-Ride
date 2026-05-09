@@ -18,7 +18,13 @@ use App\Livewire\Message\ChatManager;
 
 Route::get('/', function () {
     if (Auth::check()) {
-        return view('home.main');
+        $featuredCars = Car::with('user')->latest()->take(3)->get();
+        $homeStats = [
+            'cars' => Car::count(),
+            'owners' => Car::distinct('user_id')->count('user_id'),
+        ];
+
+        return view('home.main', compact('featuredCars', 'homeStats'));
     }
     return redirect()->route('login');
 });

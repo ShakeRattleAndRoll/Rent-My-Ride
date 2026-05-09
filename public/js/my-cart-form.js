@@ -1,15 +1,6 @@
-const unitToMs = {
-    'Hour':  1000 * 60 * 60,
-    'Day':   1000 * 60 * 60 * 24,
-    'Week':  1000 * 60 * 60 * 24 * 7,
-    'Month': 1000 * 60 * 60 * 24 * 30,
-};
-
-/* =========================
-   LIMIT FUNCTION
-========================= */
 function setMaxLimit(rentUnit) {
     const input = document.getElementById('days');
+    if (!input) return;
 
     const limits = {
         Hour: 24,
@@ -21,12 +12,10 @@ function setMaxLimit(rentUnit) {
     input.max = limits[rentUnit] || 30;
 }
 
-/* =========================
-   RENT MODAL
-========================= */
 function openRentModal(cartId, rentUnit, pricePerUnit) {
     const modal = document.getElementById('rentModal');
-    const form  = document.getElementById('rentForm');
+    const form = document.getElementById('rentForm');
+    if (!modal || !form) return;
 
     form.action = `/cart/checkout/${cartId}`;
 
@@ -40,64 +29,70 @@ function openRentModal(cartId, rentUnit, pricePerUnit) {
     document.getElementById('unitLabelSub').textContent = rentUnit.toLowerCase() + 's';
 
     document.getElementById('days').value = '';
-    document.getElementById('totalPrice').textContent = '₱0';
+    document.getElementById('totalPrice').textContent = '\u20b10';
     document.getElementById('displayDays').innerHTML =
         `<i class="fa-regular fa-clock text-gray-500"></i> 0 ${rentUnit}s`;
 
+    bindRentModalInput();
     modal.classList.remove('hidden');
 }
 
 function closeRentModal() {
-    document.getElementById('rentModal').classList.add('hidden');
+    const modal = document.getElementById('rentModal');
+    if (modal) modal.classList.add('hidden');
 }
 
-/* =========================
-   INPUT CONTROL
-========================= */
-document.addEventListener('DOMContentLoaded', function () {
+function updateRentTotal() {
     const daysInput = document.getElementById('days');
     if (!daysInput) return;
 
-    daysInput.addEventListener('input', function () {
-        const max = parseInt(this.max);
+    const max = parseInt(daysInput.max);
 
-        // clamp value
-        if (parseInt(this.value) > max) {
-            this.value = max;
-        }
+    if (parseInt(daysInput.value) > max) {
+        daysInput.value = max;
+    }
 
-        const count = parseInt(this.value);
-        const rentUnit = document.getElementById('rent_unit_hidden').value;
-        const price = parseFloat(document.getElementById('price_per_unit_hidden').value);
-        const display = document.getElementById('displayDays');
+    const count = parseInt(daysInput.value);
+    const rentUnit = document.getElementById('rent_unit_hidden').value;
+    const price = parseFloat(document.getElementById('price_per_unit_hidden').value);
+    const display = document.getElementById('displayDays');
 
-        if (!isNaN(count) && count > 0) {
-            document.getElementById('totalPrice').textContent =
-                '₱' + (count * price).toLocaleString('en-PH');
+    if (!isNaN(count) && count > 0) {
+        document.getElementById('totalPrice').textContent =
+            '\u20b1' + (count * price).toLocaleString('en-PH');
 
-            display.innerHTML = `
-                <i class="fa-regular fa-clock text-gray-500"></i>
-                ${count} ${rentUnit}${count > 1 ? 's' : ''}
-            `;
-        } else {
-            document.getElementById('totalPrice').textContent = '₱0';
-            display.innerHTML = `
-                <i class="fa-regular fa-clock text-gray-500"></i>
-                0 ${rentUnit || 'Day'}s
-            `;
-        }
-    });
+        display.innerHTML = `
+            <i class="fa-regular fa-clock text-gray-500"></i>
+            ${count} ${rentUnit}${count > 1 ? 's' : ''}
+        `;
+    } else {
+        document.getElementById('totalPrice').textContent = '\u20b10';
+        display.innerHTML = `
+            <i class="fa-regular fa-clock text-gray-500"></i>
+            0 ${rentUnit || 'Day'}s
+        `;
+    }
+}
 
-    // block typing overflow
+function bindRentModalInput() {
+    const daysInput = document.getElementById('days');
+    if (!daysInput || daysInput.dataset.rentModalBound === 'true') return;
+
+    daysInput.dataset.rentModalBound = 'true';
+    daysInput.addEventListener('input', updateRentTotal);
+
     daysInput.addEventListener('keydown', function (e) {
         const max = parseInt(this.max);
         const value = parseInt(this.value || 0);
 
-        const allowed = ['Backspace','ArrowLeft','ArrowRight','Tab','Delete'];
+        const allowed = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete'];
         if (allowed.includes(e.key)) return;
 
         if (value >= max) {
             e.preventDefault();
         }
     });
-});
+}
+
+document.addEventListener('DOMContentLoaded', bindRentModalInput);
+document.addEventListener('livewire:navigated', bindRentModalInput);

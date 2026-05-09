@@ -86,6 +86,7 @@
 ## PARTIALLY DONE
 
 ### FEATURES
+* Homepage improvements
 * Customer rental logic update
 * Authorization:
     * Email Verification
