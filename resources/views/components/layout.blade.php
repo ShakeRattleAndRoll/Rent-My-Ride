@@ -21,7 +21,7 @@
 
 <body class="bg-gray-700">
 
-    @if (!request()->is('login') && !request()->is('register') && !request()->is('profile/*'))
+    @if (!request()->is('login') && !request()->is('register'))
         <x-nav />
     @endif
 
@@ -95,7 +95,7 @@
 
     @livewireScripts
 
-    @if (!request()->is('login') && !request()->is('register') && !request()->is('profile/*'))
+    @if (!request()->is('login') && !request()->is('register'))
         <x-footer />
     @endif
 

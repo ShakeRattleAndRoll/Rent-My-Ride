@@ -172,7 +172,14 @@ class AuthController extends Controller
             }
         }
 
-        $cars = Car::where('user_id', $id)->get();
+        $cars = Car::where('user_id', $id)
+            ->withExists(['rentals as is_occupied' => function ($query) {
+                $query->where('status', 'accepted')
+                    ->where('start_date', '<=', now())
+                    ->where('end_date', '>=', now());
+            }])
+            ->latest()
+            ->get();
     
         $currentUser = Auth::user();
         

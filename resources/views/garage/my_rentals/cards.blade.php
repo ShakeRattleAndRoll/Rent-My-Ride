@@ -88,15 +88,11 @@
         @endif
 
         @if ($isPending)
-            <form action="/garage/rental/{{ $rental->id }}/cancel" method="POST" class="w-full">
-                @csrf
-                @method('PATCH')
-                <button type="submit"
-                    onclick="return confirm('Cancel this rental request?')"
-                    class="w-full text-center border border-red-600/50 text-red-500 hover:bg-red-600 hover:text-white text-[10px] font-bold px-5 py-2 rounded-full transition-all duration-200 uppercase tracking-widest mt-1">
-                    Cancel
-                </button>
-            </form>
+            <button type="button"
+                onclick="document.getElementById('delete-modal-{{ $rental->id }}').classList.remove('hidden')"
+                class="w-full text-center border border-red-600/50 text-red-500 hover:bg-red-600 hover:text-white text-[10px] font-bold px-5 py-2 rounded-full transition-all duration-200 uppercase tracking-widest mt-1">
+                Cancel
+            </button>
         @elseif ($isUpcoming)
             <button onclick="document.getElementById('details-modal-{{ $rental->id }}').classList.remove('hidden')"
                 class="border border-gray-600 hover:border-gray-400 text-gray-300 hover:text-white text-[10px] font-bold px-5 py-2 rounded-full transition-all duration-200 text-center uppercase tracking-widest">
@@ -130,6 +126,9 @@
 
 <x-modals.delete_confirmation
     :rentalId="$rental->id"
-    :route="'/garage/rental/' . $rental->id . '/hide'" />
+    :route="$isPending ? '/garage/rental/' . $rental->id . '/cancel' : '/garage/rental/' . $rental->id . '/hide'"
+    :title="$isPending ? 'Cancel Request' : 'Remove Record'"
+    :message="$isPending ? 'Are you sure you want to cancel this pending rental request?' : 'Are you sure you want to delete this rental record?'"
+    :confirmText="$isPending ? 'Yes, Cancel' : 'Yes, Delete'" />
 
 <x-modals.rental_details :rental="$rental" />

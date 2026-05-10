@@ -89,6 +89,11 @@
 
 #### Added Features & Bug Fixes 5/10/2026
 * Customer rental logic update
+* Auto Accept Feature in my listing
+* Notification Feature (left side next to profile pic)
+* Modal for cancel pending
+* Occupied cars not shown in available cars
+* Show Occupied indicator if checking owner profile
 
 ## PARTIALLY DONE
 

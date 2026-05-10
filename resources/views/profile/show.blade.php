@@ -10,11 +10,17 @@
                     
                     {{-- Avatar --}}
                     <div class="relative">
-                        <img src="{{ $user->profile_picture 
-                            ? asset('storage/' . $user->profile_picture) 
-                            : 'https://ui-avatars.com/api/?name=' . urlencode($user->username) . '&background=random' }}" 
-                            class="w-32 h-32 rounded-full object-cover border-4 border-yellow-400 shadow-lg" 
-                            alt="Profile Picture">
+                        @if($user->profile_picture)
+                            <img src="{{ asset('storage/' . $user->profile_picture) }}"
+                                class="w-32 h-32 rounded-full object-cover border-4 border-yellow-400 shadow-lg"
+                                alt="Profile Picture">
+                        @else
+                            <div class="w-32 h-32 rounded-full border-4 border-yellow-400 shadow-lg bg-[#242424] flex items-center justify-center">
+                                <svg class="w-14 h-14 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                            </div>
+                        @endif
                     </div>
 
                     {{-- User Details --}}

@@ -33,8 +33,9 @@ async function refreshRentRideNotifications() {
     const contactBadges = document.querySelectorAll('[data-contact-unread-badge]');
     const pendingOrderBadges = document.querySelectorAll('[data-pending-orders-badge]');
     const carPendingOrderBadges = document.querySelectorAll('[data-car-pending-orders-badge]');
+    const notificationBadges = document.querySelectorAll('[data-unread-notifications-badge]');
 
-    if (unreadBadges.length === 0 && contactBadges.length === 0 && pendingOrderBadges.length === 0 && carPendingOrderBadges.length === 0) return;
+    if (unreadBadges.length === 0 && contactBadges.length === 0 && pendingOrderBadges.length === 0 && carPendingOrderBadges.length === 0 && notificationBadges.length === 0) return;
 
     if (unreadBadges.length > 0 || contactBadges.length > 0) {
         try {
@@ -75,6 +76,21 @@ async function refreshRentRideNotifications() {
             });
         } catch (error) {
             console.error('Unable to refresh rental notifications.', error);
+        }
+    }
+
+    if (notificationBadges.length > 0) {
+        try {
+            const response = await fetch('/notifications/count', {
+                headers: { Accept: 'application/json' },
+            });
+
+            if (!response.ok) return;
+
+            const data = await response.json();
+            notificationBadges.forEach((badge) => setBadgeCount(badge, Number(data.unread_notifications || 0)));
+        } catch (error) {
+            console.error('Unable to refresh notifications.', error);
         }
     }
 }
@@ -142,7 +158,7 @@ if (!rentRideNavbar.bound) {
             });
 
             if (response.redirected) {
-                window.Livewire.navigate(response.url);
+                window.Livewire.navigate(response.url, { scroll: (response.url === window.location.href) });
                 return;
             }
 
@@ -150,11 +166,11 @@ if (!rentRideNavbar.bound) {
 
             if (contentType.includes('application/json')) {
                 const data = await response.json();
-                window.Livewire.navigate(data.redirect || window.location.href);
+                window.Livewire.navigate( data.redirect || window.location.href, { scroll: false });
                 return;
             }
 
-            window.Livewire.navigate(window.location.href);
+            window.Livewire.navigate(window.location.href, { scroll: false });
         } catch (error) {
             form.submit();
         } finally {

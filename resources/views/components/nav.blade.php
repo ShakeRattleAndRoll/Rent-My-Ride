@@ -2,9 +2,9 @@
     style="font-family: 'Montserrat', sans-serif; letter-spacing: -0.02em;">
 
     {{-- LEFT --}}
-    <div class="flex items-center space-x-6">
-        <button onclick="toggleSidebar()" class="md:hidden w-8 h-8 rounded-full bg-white flex items-center justify-center">
-            ☰
+    <div class="flex items-center gap-4">
+        <button onclick="toggleSidebar()" class="md:hidden w-8 h-8 rounded-full bg-white text-black flex items-center justify-center">
+            <i class="fa-solid fa-bars text-sm"></i>
         </button>
 
         <a href="/profile" wire:navigate data-nav-navigate class="w-10 h-10 rounded-full bg-[#242424] border border-white/10 flex items-center justify-center cursor-pointer shrink-0 overflow-hidden hover:border-lime-400 transition-colors">
@@ -23,6 +23,15 @@
                     <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                 </svg>
             @endauth
+        </a>
+
+        <a href="/notifications" wire:navigate data-nav-navigate
+           class="relative w-10 h-10 rounded-full bg-[#242424] border border-white/10 flex items-center justify-center shrink-0 text-gray-300 hover:text-lime-400 hover:border-lime-400 transition-colors {{ request()->is('notifications*') ? 'border-lime-400 text-lime-400' : '' }}"
+           title="Notifications">
+            <i class="fa-solid fa-bell text-sm"></i>
+            <span data-unread-notifications-badge class="absolute -top-1 -right-1 w-4 h-4 bg-red-600 rounded-full text-white text-[9px] {{ $totalUnreadNotifications > 0 ? 'flex' : 'hidden' }} items-center justify-center font-black animate-pulse">
+                {{ $totalUnreadNotifications > 99 ? '99+' : $totalUnreadNotifications }}
+            </span>
         </a>
 
         <a href="/" wire:navigate data-nav-navigate>
@@ -137,6 +146,13 @@
             Messages
             <span data-unread-messages-badge class="w-4 h-4 bg-red-600 rounded-full text-white text-[9px] {{ $totalUnreadMessages > 0 ? 'flex' : 'hidden' }} items-center justify-center font-black animate-pulse">
                 {{ $totalUnreadMessages > 99 ? '99+' : $totalUnreadMessages }}
+            </span>
+        </a>
+
+        <a href="/notifications" wire:navigate data-nav-navigate class="relative flex items-center justify-between px-2 py-1 rounded-lg {{ request()->is('notifications*') ? 'bg-lime-400 text-black' : 'hover:text-lime-400' }}">
+            Notifications
+            <span data-unread-notifications-badge class="w-4 h-4 bg-red-600 rounded-full text-white text-[9px] {{ $totalUnreadNotifications > 0 ? 'flex' : 'hidden' }} items-center justify-center font-black animate-pulse">
+                {{ $totalUnreadNotifications > 99 ? '99+' : $totalUnreadNotifications }}
             </span>
         </a>
 

@@ -49,6 +49,40 @@
                 </div>
             </div>
 
+            <div class="flex items-center justify-between gap-6 bg-[#1a1a1a] border border-gray-800 rounded-2xl p-6 mb-8">
+                <div>
+                    <h3 class="text-white font-bold text-sm uppercase tracking-wider">Auto-Accept Requests</h3>
+                    <p class="text-gray-500 text-[10px] mt-1">When enabled, pending and new requests are accepted by priority if their dates are still available.</p>
+                </div>
+
+                <form action="{{ route('car.toggle-auto-accept', $car->id) }}" method="POST" data-livewire-form
+                      class="flex items-center justify-end gap-4">
+                    @csrf
+                    @method('PATCH')
+
+                    <input type="hidden" name="auto_accept" value="0">
+
+                    <select name="auto_accept_priority"
+                        onchange="this.form.requestSubmit()"
+                        class="bg-[#242424] border border-white/10 text-gray-300 text-[10px] font-bold uppercase tracking-widest rounded-xl px-3 py-2 outline-none focus:border-lime-400">
+                        <option value="first_pending" {{ ($car->auto_accept_priority ?? 'first_pending') === 'first_pending' ? 'selected' : '' }}>First Pending</option>
+                        <option value="shortest" {{ ($car->auto_accept_priority ?? 'first_pending') === 'shortest' ? 'selected' : '' }}>Shortest Duration</option>
+                        <option value="longest" {{ ($car->auto_accept_priority ?? 'first_pending') === 'longest' ? 'selected' : '' }}>Longest Duration</option>
+                    </select>
+
+                    <label class="relative inline-flex h-6 w-11 cursor-pointer items-center">
+                        <input type="checkbox"
+                            name="auto_accept"
+                            value="1"
+                            class="peer sr-only"
+                            onchange="this.form.requestSubmit()"
+                            {{ $car->auto_accept ? 'checked' : '' }}>
+                        <span class="absolute inset-0 rounded-full bg-gray-700 transition-colors duration-200 peer-checked:bg-lime-500"></span>
+                        <span class="relative ml-1 inline-block h-4 w-4 rounded-full bg-white transition-transform duration-200 peer-checked:translate-x-5"></span>
+                    </label>
+                </form>
+            </div>
+
             {{-- Pending Header --}}
             <div class="flex items-center gap-3 mb-4">
                 <div class="h-px bg-gray-800 flex-1"></div>

@@ -67,6 +67,27 @@
     {{-- Price + Actions --}}
     <div class="flex flex-col items-end gap-2 shrink-0">
 
+        <form action="{{ route('car.toggle-auto-accept', $car->id) }}" method="POST" data-livewire-form
+              class="flex items-center justify-end gap-2 mb-1">
+            @csrf
+            @method('PATCH')
+            <input type="hidden" name="auto_accept" value="0">
+            <input type="hidden" name="auto_accept_priority" value="{{ $car->auto_accept_priority ?? 'first_pending' }}">
+            <span class="text-[9px] font-black uppercase tracking-widest {{ $car->auto_accept ? 'text-lime-400' : 'text-gray-500' }}">
+                Auto Accept
+            </span>
+            <label class="relative inline-flex h-5 w-10 cursor-pointer items-center">
+                <input type="checkbox"
+                    name="auto_accept"
+                    value="1"
+                    class="peer sr-only"
+                    onchange="this.form.requestSubmit()"
+                    {{ $car->auto_accept ? 'checked' : '' }}>
+                <span class="absolute inset-0 rounded-full bg-gray-700 transition-colors duration-200 peer-checked:bg-lime-500"></span>
+                <span class="relative ml-1 inline-block h-3.5 w-3.5 rounded-full bg-white transition-transform duration-200 peer-checked:translate-x-5"></span>
+            </label>
+        </form>
+
         <p class="text-white font-bold text-base">
             ₱{{ number_format($car->price, 0) }}
             <span class="text-gray-400 font-normal text-sm">/ per {{ $car->rent_unit }}</span>

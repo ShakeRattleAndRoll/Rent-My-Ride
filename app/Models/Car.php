@@ -23,6 +23,8 @@ class Car extends Model
         'transmission',
         'fuel_type',
         'description',
+        'auto_accept',
+        'auto_accept_priority',
     ];
 
     /*
@@ -47,6 +49,7 @@ class Car extends Model
         'created_at' => 'datetime',
         'date_owned' => 'date',
         'price' => 'integer',
+        'auto_accept' => 'boolean',
     ];
 
     /* Helper: Occupied Status*/

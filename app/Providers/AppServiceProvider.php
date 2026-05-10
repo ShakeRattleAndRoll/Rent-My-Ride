@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Message;
 use App\Models\Rental;
+use App\Models\RentalNotification;
 use App\Models\UserRelation;
 
 class AppServiceProvider extends ServiceProvider
@@ -34,13 +35,19 @@ class AppServiceProvider extends ServiceProvider
                     })
                     ->where('status', 'pending')
                     ->count();
+
+                $totalUnreadNotifications = RentalNotification::where('user_id', Auth::id())
+                    ->whereNull('read_at')
+                    ->count();
             } else {
                 $totalUnreadMessages = 0;
                 $totalPendingOrders = 0;
+                $totalUnreadNotifications = 0;
             }
 
             $view->with('totalUnreadMessages', $totalUnreadMessages);
             $view->with('totalPendingOrders', $totalPendingOrders);
+            $view->with('totalUnreadNotifications', $totalUnreadNotifications);
         });
     }
 }

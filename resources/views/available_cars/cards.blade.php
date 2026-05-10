@@ -1,12 +1,18 @@
+@php
+    $isOccupied = (bool) ($car->is_occupied ?? false);
+@endphp
+
 <div
     x-data="{ open: false, profileOpen: false}"
-    class="relative car-card bg-[#1e1e1e] rounded-2xl overflow-hidden border border-white/5 hover:border-yellow-400/40 transition-all shadow-lg flex flex-col h-full"
+    class="relative car-card bg-[#1e1e1e] rounded-2xl overflow-hidden border border-white/5 {{ $isOccupied ? 'opacity-75' : 'hover:border-yellow-400/40' }} transition-all shadow-lg flex flex-col h-full"
 >
     {{-- Clickable overlay --}}
-    <div @click="open = true" class="absolute inset-0 z-10 block cursor-pointer" aria-label="View Details"></div>
+    @unless($isOccupied)
+        <div @click="open = true" class="absolute inset-0 z-10 block cursor-pointer" aria-label="View Details"></div>
+    @endunless
 
     {{-- Car Image --}}
-    <div class="w-full h-48 bg-[#2a2a2a] overflow-hidden">
+    <div class="relative w-full h-48 bg-[#2a2a2a] overflow-hidden">
         @if($car->car_image)
             <img src="{{ asset('storage/' . $car->car_image) }}"
                  class="w-full h-full object-cover"
@@ -16,6 +22,13 @@
                 <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
+            </div>
+        @endif
+
+        @if($isOccupied)
+            <div class="absolute inset-0 bg-black/45"></div>
+            <div class="absolute top-3 left-3 px-3 py-1 rounded-full bg-red-600 text-white text-[10px] font-black uppercase tracking-widest">
+                Occupied
             </div>
         @endif
     </div>
@@ -52,7 +65,13 @@
     </div>
 
     <div class="mt-auto p-4 pt-0 relative z-20" style="font-family: 'Montserrat', sans-serif;">
-        @if(Auth::check() && $car->user_id === Auth::id())
+        @if($isOccupied)
+            <div class="w-full py-3 bg-red-600/10 border border-red-600/30 text-red-400 text-[10px] font-bold uppercase tracking-widest rounded-xl text-center flex items-center justify-center gap-2">
+                <i class="fa-solid fa-lock"></i>
+                Currently Occupied
+            </div>
+
+        @elseif(Auth::check() && $car->user_id === Auth::id())
             <a href="/garage/my-listing" wire:navigate data-nav-navigate
             class="w-full block py-3 bg-gray-800 border border-white/5 text-gray-400 text-[10px] font-bold uppercase tracking-widest rounded-xl text-center">
                 You Own This
@@ -83,6 +102,8 @@
         @endif
     </div>
 
-    <x-modals.car_modal :car="$car" />
+    @unless($isOccupied)
+        <x-modals.car_modal :car="$car" />
+    @endunless
 
 </div>

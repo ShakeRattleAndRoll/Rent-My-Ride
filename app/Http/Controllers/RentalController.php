@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Rental;
 use App\Models\Cart;
 use App\Models\Car;
+use App\Services\RentalAutoAcceptService;
+use App\Services\RentalNotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -29,10 +31,9 @@ class RentalController extends Controller
             return redirect()->back()->with('error', 'You cannot rent your own car!');
         }
 
-        Rental::create([
+        $rental = app(RentalAutoAcceptService::class)->createRental($car, [
             'user_id'     => Auth::id(),
             'car_id'      => $car->id,
-            'status'      => 'pending',
             'start_date'  => $request->start_date,
             'end_date'    => $request->end_date,
             'days'        => $request->days,
@@ -40,8 +41,14 @@ class RentalController extends Controller
             'total_price' => $request->days * $request->price_per_unit,
         ]);
 
+        $message = match ($rental->status) {
+            'accepted' => 'Rental request auto-accepted!',
+            'denied' => 'Rental request denied because the schedule is unavailable.',
+            default => 'Rental request sent!',
+        };
+        
         return redirect('/garage/my-rental')
-            ->with('success', 'Rental request sent!');
+            ->with($rental->status === 'denied' ? 'error' : 'success', $message);
     }
 
     // SHOW PRE-ORDERS (OWNER VIEW)
@@ -86,18 +93,32 @@ class RentalController extends Controller
             abort(403);
         }
 
-        // start_date and end_date are already stored from the renter's form — just flip the status
-        $rental->update([
+        $autoAccept = app(RentalAutoAcceptService::class);
+
+        if (! $autoAccept->canAccept($rental->car, $rental->start_date, $rental->end_date, $rental->id)) {
+            $rental->update(array_merge([
+                'status' => 'denied',
+            ], $autoAccept->snapshot($rental->car)));
+
+            app(RentalNotificationService::class)->denied($rental, 'The schedule is unavailable or already expired.');
+
+            $message = 'Rental request denied because the schedule is unavailable.';
+
+            if ($request->expectsJson()) {
+                session()->flash('error', $message);
+
+                return response()->json(['redirect' => url()->previous()], 422);
+            }
+
+            return redirect()->back()->with('error', $message);
+        }
+
+        // start_date and end_date are already stored from the renter's form; just flip the status
+        $rental->update(array_merge([
             'status'            => 'accepted',
-            'snap_brand'        => $rental->car->brand,
-            'snap_model'        => $rental->car->model,
-            'snap_car_image'    => $rental->car->car_image,
-            'snap_price'        => $rental->car->price,
-            'snap_rent_unit'    => $rental->car->rent_unit,
-            'snap_fuel_type'    => $rental->car->fuel_type,
-            'snap_transmission' => $rental->car->transmission,
-            'snap_date_owned'   => $rental->car->date_owned,
-        ]);
+        ], $autoAccept->snapshot($rental->car)));
+
+        app(RentalNotificationService::class)->accepted($rental);
 
         if ($request->expectsJson()) {
             session()->flash('success', 'Rental accepted successfully.');
@@ -128,6 +149,8 @@ class RentalController extends Controller
             'snap_transmission' => $rental->car->transmission,
             'snap_date_owned'   => $rental->car->date_owned,
         ]);
+
+        app(RentalNotificationService::class)->denied($rental, 'The owner denied the request.');
 
         if ($request->expectsJson()) {
             session()->flash('success', 'Rental request denied.');
@@ -189,6 +212,8 @@ class RentalController extends Controller
             return redirect()->back()->with('error', 'Only pending rentals can be cancelled.');
         }
 
+        app(RentalNotificationService::class)->cancelledByRenter($rental);
+
         $rental->delete();
 
         return redirect()->back()->with('success', 'Rental request cancelled.');
@@ -212,4 +237,38 @@ class RentalController extends Controller
 
         return redirect()->back()->with('success', 'Record removed.');
     }
+
+    public function toggleAutoAccept($id)
+    {
+        $car = Car::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+    
+        $autoAccept = app(RentalAutoAcceptService::class);
+        $priority = $autoAccept->normalizePriority(request('auto_accept_priority', $car->auto_accept_priority));
+        $enabled = request()->has('auto_accept')
+            ? request()->boolean('auto_accept')
+            : ! $car->auto_accept;
+
+        $car->update([
+            'auto_accept' => $enabled,
+            'auto_accept_priority' => $priority,
+        ]);
+
+        if ($enabled) {
+            $autoAccept->processPending($car, $priority);
+        }
+
+        if (request()->expectsJson()) {
+            session()->flash('success', 'Auto-accept setting updated!');
+
+            return response()->json([
+                'redirect' => url()->previous(),
+                'auto_accept' => $car->fresh()->auto_accept
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Auto-accept setting updated!');
+    }
+
 }

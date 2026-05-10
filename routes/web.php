@@ -9,6 +9,7 @@ use App\Http\Controllers\CartController;
 use App\Models\Cart;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\NotificationController;
 use App\Livewire\Message\ChatManager;
 
 // Download og livewire para walay loading copy ning nasa baba sa terminal [ctrl + `]
@@ -71,6 +72,13 @@ Route::post('/messages', [MessageController::class, 'store'])->name('messages.st
 Route::post('/messages/mute/{targetId}', [MessageController::class, 'toggleMute'])->name('messages.mute')->middleware('auth');
 Route::post('/messages/block/{targetId}', [MessageController::class, 'toggleBlock'])->name('messages.block')->middleware('auth');
 
+Route::middleware('auth')->group(function () {
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications/count', [NotificationController::class, 'count'])->name('notifications.count');
+    Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+    Route::patch('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
+});
+
 // Routes for garage listing
 Route::get('/garage', function () {
     return redirect('/garage/my-listing');
@@ -83,6 +91,7 @@ Route::middleware('auth')->group(function () {
     // Edit and update listing routes
     Route::get('/garage/edit/{id}', [CarController::class, 'edit']);
     Route::patch('/garage/update/{id}', [CarController::class, 'update']);
+    Route::patch('/car/{id}/toggle-auto-accept', [RentalController::class, 'toggleAutoAccept'])->name('car.toggle-auto-accept');
 
     // Route for car details page
     Route::get('/garage/details/{id}', [CarController::class, 'details']);
@@ -91,12 +100,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/garage/delete/{id}', [CarController::class, 'destroy']);
 
 });
-
-// Route for garage pre-order feature
-Route::get('/car/pre-order/{id}', function ($id) {
-    $car = Car::findOrFail($id);
-    return view('garage.my_listings.pre-order', compact('car')); 
-})->middleware('auth');
 
 //Route for garage rental
 Route::post('/rent', [RentalController::class, 'store'])->middleware('auth');

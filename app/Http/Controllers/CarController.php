@@ -24,7 +24,12 @@ class CarController extends Controller
         $brands = Car::select('brand')->distinct()->orderBy('brand')->pluck('brand');
         $models = Car::select('model')->distinct()->orderBy('model')->pluck('model');
 
-        $query = Car::query();
+        $query = Car::query()
+            ->whereDoesntHave('rentals', function ($rentalQuery) {
+                $rentalQuery->where('status', 'accepted')
+                    ->where('start_date', '<=', now())
+                    ->where('end_date', '>=', now());
+            });
 
         if (Auth::check()) {
             $query->whereNotIn('user_id', $this->blockedUserIdsFor(Auth::id()));
