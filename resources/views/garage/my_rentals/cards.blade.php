@@ -2,10 +2,11 @@
      data-rental-card="{{ $rental->id }}">
 
      @php
-        $now        = now();
+        $now        = \Carbon\Carbon::now();
         $start      = \Carbon\Carbon::parse($rental->start_date);
         $end        = \Carbon\Carbon::parse($rental->end_date);
         $isPending  = $rental->status === 'pending';
+        $isUpcoming = $rental->status === 'accepted' && $now->lt($start);
         $isActive   = $rental->status === 'accepted' && $now->between($start, $end);
         $isFinished = $rental->status === 'accepted' && $now->gt($end);
         $isDeclined = $rental->status === 'denied';
@@ -68,6 +69,10 @@
             <span class="bg-yellow-500/20 text-yellow-500 border border-yellow-500/50 text-[10px] font-bold px-4 py-1.5 rounded-full uppercase tracking-wider">
                 Pending Approval
             </span>
+        @elseif ($isUpcoming)
+            <span class="bg-blue-500/20 text-blue-400 border border-blue-500/50 text-[10px] font-bold px-4 py-1.5 rounded-full uppercase tracking-wider">
+                Upcoming
+            </span>
         @elseif ($isActive)
             <span class="bg-lime-400 text-black text-[10px] font-bold px-4 py-1.5 rounded-full uppercase tracking-wider">
                 Active
@@ -92,6 +97,11 @@
                     Cancel
                 </button>
             </form>
+        @elseif ($isUpcoming)
+            <button onclick="document.getElementById('details-modal-{{ $rental->id }}').classList.remove('hidden')"
+                class="border border-gray-600 hover:border-gray-400 text-gray-300 hover:text-white text-[10px] font-bold px-5 py-2 rounded-full transition-all duration-200 text-center uppercase tracking-widest">
+                View Details
+            </button>
         @elseif ($isActive)
             <button onclick="document.getElementById('details-modal-{{ $rental->id }}').classList.remove('hidden')"
                 class="border border-gray-600 hover:border-gray-400 text-gray-300 hover:text-white text-[10px] font-bold px-5 py-2 rounded-full transition-all duration-200 text-center uppercase tracking-widest">

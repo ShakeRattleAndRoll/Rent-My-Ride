@@ -18,10 +18,9 @@ class CarController extends Controller
         return view('garage.post_a_car.post-a-car'); 
     }
 
-    // GET ALL CARS and search fileter
+    // GET ALL CARS and search filter
     public function index(Request $request)
     {
-
         $brands = Car::select('brand')->distinct()->orderBy('brand')->pluck('brand');
         $models = Car::select('model')->distinct()->orderBy('model')->pluck('model');
 
@@ -76,11 +75,11 @@ class CarController extends Controller
             : [];
 
         return view('available_cars.main', [
-            'cars' => $cars,
-            'carts' => $carts,
+            'cars'            => $cars,
+            'carts'           => $carts,
             'pendingRequests' => $pendingRequests,
-            'brands' => $brands, 
-            'models' => $models,    
+            'brands'          => $brands,
+            'models'          => $models,
         ]);
     }
 
@@ -139,7 +138,7 @@ class CarController extends Controller
     }
 
     // DETAILS PAGE
-   public function details($id)
+    public function details($id)
     {
         $car = Car::with('user')->findOrFail($id);
 
@@ -152,11 +151,11 @@ class CarController extends Controller
         return view('garage.my_listings.details', compact('car', 'rentals'));
     }
 
-    // DELETE CAR Only owner can delete
+    // DELETE CAR — only owner can delete
     public function destroy($id)
     {
         $car = Car::where('id', $id)
-                  ->where('user_id', Auth::id()) 
+                  ->where('user_id', Auth::id())
                   ->firstOrFail();
 
         DB::transaction(function () use ($car) {
@@ -194,58 +193,69 @@ class CarController extends Controller
     // UPDATE CAR
     public function update(Request $request, $id)
     {
-
         $car = Car::where('id', $id)
                 ->where('user_id', Auth::id())
                 ->firstOrFail();
 
         $attributes = $request->validate([
-            'car_image'    => ['nullable', 'image', 'max:2048'],
-            'date_owned'   => ['sometimes', 'required', 'date'],
-            'brand'        => ['sometimes', 'required', 'string'],
-            'model'        => ['sometimes', 'required', 'string'],
-            'price'        => ['required', 'integer', 'min:1'],
-            'rent_unit'    => ['required', 'string'],
-            'transmission' => ['sometimes', 'required'],
-            'fuel_type'    => ['sometimes', 'required'],
-            'description'  => ['nullable', 'string'],
+            'car_image'      => ['nullable', 'image', 'max:2048'],
+            'date_owned'     => ['sometimes', 'required', 'date'],
+            'brand'          => ['sometimes', 'required', 'string'],
+            'model'          => ['sometimes', 'required', 'string'],
+            'price'          => ['required', 'integer', 'min:1'],
+            'rent_unit'      => ['required', 'string'],
+            'transmission'   => ['sometimes', 'required'],
+            'fuel_type'      => ['sometimes', 'required'],
+            'description'    => ['nullable', 'string'],
             'existing_image' => ['nullable', 'string'],
         ]);
 
         $attributes['price'] = (int) $attributes['price'];
 
-        // If new image uploaded
+        // Handle image
         if ($request->hasFile('car_image')) {
             $attributes['car_image'] = $request->file('car_image')->store('car_photos', 'public');
         } else {
             $attributes['car_image'] = $request->input('existing_image') ?: $car->car_image;
         }
 
-        DB::transaction(function () use ($car, $attributes) {
-            $pendingRentals = Rental::where('car_id', $car->id)
-                ->where('status', 'pending')
-                ->get();
+        // Only deny pending rentals if price or rent_unit changed
+        $priceChanged    = (int) $attributes['price'] !== (int) $car->price;
+        $rentUnitChanged = $attributes['rent_unit'] !== $car->rent_unit;
+        $shouldDeny      = $priceChanged || $rentUnitChanged;
 
-            foreach ($pendingRentals as $rental) {
-                $rental->update([
-                    'status'            => 'denied',
-                    'snap_brand'        => $car->brand,      
-                    'snap_model'        => $car->model,
-                    'snap_car_image'    => $car->car_image,
-                    'snap_price'        => $car->price,
-                    'snap_rent_unit'    => $car->rent_unit,
-                    'snap_fuel_type'    => $car->fuel_type,
-                    'snap_transmission' => $car->transmission,
-                    'snap_date_owned'   => $car->date_owned,
-                ]);
+        // Remove non-column keys before saving
+        $carAttributes = collect($attributes)
+            ->except(['existing_image'])
+            ->toArray();
+
+        DB::transaction(function () use ($car, $carAttributes, $shouldDeny) {
+            if ($shouldDeny) {
+                $pendingRentals = Rental::where('car_id', $car->id)
+                    ->where('status', 'pending')
+                    ->get();
+
+                foreach ($pendingRentals as $rental) {
+                    $rental->update([
+                        'status'            => 'denied',
+                        'snap_brand'        => $car->brand,
+                        'snap_model'        => $car->model,
+                        'snap_car_image'    => $car->car_image,
+                        'snap_price'        => $car->price,
+                        'snap_rent_unit'    => $car->rent_unit,
+                        'snap_fuel_type'    => $car->fuel_type,
+                        'snap_transmission' => $car->transmission,
+                        'snap_date_owned'   => $car->date_owned,
+                    ]);
+                }
             }
 
-            $car->update($attributes);
+            $car->update($carAttributes);
         });
 
         return redirect('/garage/my-listing')->with('feedback', 'Car updated successfully!');
     }
-    
+
     public function show(Car $car)
     {
         if (Auth::check() && Auth::id() !== $car->user_id && $this->hasBlockRelationWith($car->user_id)) {

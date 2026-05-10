@@ -87,10 +87,13 @@
 * Homepage redesign
 * Cart rent now bug fixed
 
+#### Added Features & Bug Fixes 5/10/2026
+* Customer rental logic update
+
 ## PARTIALLY DONE
 
 ### FEATURES
-* Customer rental logic update
+* Pre order conflict schedules
 * Authorization:
     * Email Verification
     * Log in and Sign up UI improvements

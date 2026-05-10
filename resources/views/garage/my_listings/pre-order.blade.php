@@ -56,22 +56,26 @@
                 <div class="h-px bg-gray-800 flex-1"></div>
             </div>
 
-            {{-- Sort Buttons --}}
             <div class="flex items-center gap-2 mb-6">
                 <button onclick="sortTable('fcfs')"
                     id="btn-fcfs"
                     class="sort-btn px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-200 bg-yellow-400 text-black">
-                    First Come First Serve
+                    Earliest Request
                 </button>
                 <button onclick="sortTable('longest')"
                     id="btn-longest"
                     class="sort-btn px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-200 bg-[#1a1a1a] text-gray-400 border border-gray-700 hover:border-gray-500">
-                    Longest Days
+                    Longest Duration
                 </button>
                 <button onclick="sortTable('shortest')"
                     id="btn-shortest"
                     class="sort-btn px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-200 bg-[#1a1a1a] text-gray-400 border border-gray-700 hover:border-gray-500">
-                    Shortest Days
+                    Shortest Duration
+                </button>
+                <button onclick="sortTable('nearest')"
+                    id="btn-nearest"
+                    class="sort-btn px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-200 bg-[#1a1a1a] text-gray-400 border border-gray-700 hover:border-gray-500">
+                    Nearest Start Date
                 </button>
             </div>
 
@@ -83,8 +87,8 @@
                             <th class="px-6 py-4">Username</th>
                             <th class="px-6 py-4">Fullname</th>
                             <th class="px-6 py-4">Contact Number</th>
-                            <th class="px-6 py-4">Email Address</th>
-                            <th class="px-6 py-4">Location</th>
+                            <th class="px-6 py-4">Start Date</th>
+                            <th class="px-6 py-4">End Date</th>
                             <th class="px-6 py-4 text-center">Decision</th>
                         </tr>
                     </thead>
@@ -115,18 +119,46 @@
                                 <td class="px-6 py-4 border-y border-transparent group-hover:border-gray-700">
                                     {{ $order->user->contact_number ?? 'NO CONTACT' }}
                                 </td>
-                                <td class="px-6 py-4 border-y border-transparent group-hover:border-gray-700 underline text-blue-400 decoration-blue-400/30">
-                                    {{ $order->user->email }}
+
+                                {{-- Start Date --}}
+                                <td class="px-6 py-4 border-y border-transparent group-hover:border-gray-700">
+                                    <div class="flex flex-col gap-0.5">
+                                        <span class="text-white font-semibold">
+                                            {{ \Carbon\Carbon::parse($order->start_date)->format('M j, Y') }}
+                                        </span>
+                                        <span class="text-gray-500 text-[10px]">
+                                            {{ \Carbon\Carbon::parse($order->start_date)->format('g:i A') }}
+                                        </span>
+                                    </div>
                                 </td>
-                                <td class="px-6 py-4 border-y border-transparent group-hover:border-gray-700 text-gray-500 italic">
-                                    {{ $order->user->address ?? 'Not specified' }}
+
+                                {{-- End Date --}}
+                                <td class="px-6 py-4 border-y border-transparent group-hover:border-gray-700">
+                                    <div class="flex flex-col gap-0.5">
+                                        <span class="text-lime-400 font-semibold">
+                                            {{ \Carbon\Carbon::parse($order->end_date)->format('M j, Y') }}
+                                        </span>
+                                        <span class="text-gray-500 text-[10px]">
+                                            {{ \Carbon\Carbon::parse($order->end_date)->format('g:i A') }}
+                                            &bull;
+                                            {{ $order->days }} {{ $order->rent_unit }}{{ $order->days > 1 ? 's' : '' }}
+                                        </span>
+                                    </div>
                                 </td>
+
                                 <td class="px-6 py-4 last:rounded-r-2xl border-y border-r border-transparent group-hover:border-gray-700 text-center">
                                     <div class="flex justify-center gap-2">
 
                                         {{-- Accept --}}
                                         <button 
-                                            onclick="openAcceptModal({{ $order->id }}, '{{ $order->rent_unit }}', {{ $order->days }}, {{ $order->total_price }})"
+                                            onclick="openAcceptModal(
+                                                {{ $order->id }},
+                                                '{{ $order->rent_unit }}',
+                                                {{ $order->days }},
+                                                {{ $order->total_price }},
+                                                '{{ \Carbon\Carbon::parse($order->start_date, 'Asia/Manila')->format("Y-m-d\TH:i:s") }}',
+                                                '{{ \Carbon\Carbon::parse($order->end_date, 'Asia/Manila')->format("Y-m-d\TH:i:s") }}'
+                                            )"
                                             class="bg-lime-500 hover:bg-lime-400 text-black px-5 py-1.5 rounded-full font-black text-[9px] uppercase tracking-tighter transition-all active:scale-95 shadow-lg shadow-lime-500/20">
                                             Accept
                                         </button>

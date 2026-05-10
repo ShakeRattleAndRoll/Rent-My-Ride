@@ -86,19 +86,9 @@ class RentalController extends Controller
             abort(403);
         }
 
-        $unitToSeconds = [
-            'Hour'  => 3600,
-            'Day'   => 86400,
-            'Week'  => 604800,
-            'Month' => 2592000,
-        ];
-
-        $seconds = ($unitToSeconds[$rental->rent_unit] ?? 86400) * $rental->days;
-
+        // start_date and end_date are already stored from the renter's form — just flip the status
         $rental->update([
-            'status'     => 'accepted',
-            'start_date' => now(),
-            'end_date'   => now()->addSeconds($seconds),
+            'status'            => 'accepted',
             'snap_brand'        => $rental->car->brand,
             'snap_model'        => $rental->car->model,
             'snap_car_image'    => $rental->car->car_image,

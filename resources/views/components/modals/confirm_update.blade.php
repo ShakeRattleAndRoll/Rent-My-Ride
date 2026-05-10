@@ -15,7 +15,7 @@
         {{-- Message --}}
         <p class="text-gray-400 text-sm mb-8 leading-relaxed text-center">
             Are you sure you want to update this listing?
-            <span class="text-yellow-400 font-semibold">All pending pre-orders will be automatically denied due to changes.</span>
+            <span class="text-yellow-400 font-semibold">Pending pre-orders will only be denied if you changed the price or rental unit.</span>
         </p>
 
         {{-- Buttons --}}

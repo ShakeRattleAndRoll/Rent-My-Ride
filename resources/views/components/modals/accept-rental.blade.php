@@ -23,12 +23,12 @@
 
             <div class="grid grid-cols-2 gap-4">
                 <div class="bg-[#2a2a2a] border border-white/5 rounded-xl p-4">
-                    <p class="text-[10px] text-gray-500 font-bold uppercase">Start</p>
+                    <p class="text-[10px] text-gray-500 font-bold uppercase">Start Date and Time</p>
                     <p id="modalStartDate" class="text-white text-sm font-bold"></p>
                 </div>
 
                 <div class="bg-[#2a2a2a] border border-white/5 rounded-xl p-4">
-                    <p class="text-[10px] text-gray-500 font-bold uppercase">End</p>
+                    <p class="text-[10px] text-gray-500 font-bold uppercase">End Date and Time</p>
                     <p id="modalEndDate" class="text-white text-sm font-bold"></p>
                 </div>
             </div>

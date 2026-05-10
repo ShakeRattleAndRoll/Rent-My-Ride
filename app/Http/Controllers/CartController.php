@@ -55,21 +55,20 @@ class CartController extends Controller
         $cartItem = Cart::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
 
         Rental::create([
-            'user_id'        => Auth::id(),
-            'car_id'         => $cartItem->car_id,
-            'status'         => 'pending',
-            'days'           => $request->days,
-            'rent_unit'      => $request->rent_unit,
-            'total_price'    => $request->price_per_unit * $request->days,
-            'start_date'     => null,
-            'end_date'       => null,
+            'user_id'     => Auth::id(),
+            'car_id'      => $cartItem->car_id,
+            'status'      => 'pending',
+            'days'        => $request->days,
+            'rent_unit'   => $request->rent_unit,
+            'total_price' => $request->price_per_unit * $request->days,
+            'start_date'  => $request->start_date,
+            'end_date'    => $request->end_date,
         ]);
 
         $cartItem->delete();
 
         if ($request->expectsJson()) {
             session()->flash('success', 'Request sent! Wait for owner approval.');
-
             return response()->json(['redirect' => url('/garage/my-rental')]);
         }
 

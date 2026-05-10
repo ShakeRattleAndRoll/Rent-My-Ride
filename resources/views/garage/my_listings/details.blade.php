@@ -46,7 +46,13 @@
             @forelse ($rentals->where('status', 'accepted') as $rental)
 
             @php
-                $user = $rental->user;
+                $user       = $rental->user;
+                $now        = \Carbon\Carbon::now('Asia/Manila');
+                $start      = \Carbon\Carbon::parse($rental->start_date, 'Asia/Manila');
+                $end        = \Carbon\Carbon::parse($rental->end_date, 'Asia/Manila');
+                $isUpcoming = $now->lt($start);
+                $isActive   = $now->between($start, $end);
+                $isFinished = $now->gt($end);
             @endphp
 
             <div class="rental-card bg-[#2a2a2a] rounded-3xl p-6 flex items-center justify-between"
@@ -80,11 +86,11 @@
                 <div class="text-right text-sm space-y-1">
 
                     <p><span class="text-gray-400">Date Rented:</span>
-                        {{ $rental->start_date ? \Carbon\Carbon::parse($rental->start_date)->timezone('Asia/Manila')->format('F j, Y g:i A') : 'TBD' }}
+                        {{ $rental->start_date ? \Carbon\Carbon::parse($rental->start_date)->format('F j, Y g:i A') : 'TBD' }}
                     </p>
 
                     <p><span class="text-gray-400">Return Date:</span>
-                        {{ $rental->end_date ? \Carbon\Carbon::parse($rental->end_date)->timezone('Asia/Manila')->format('F j, Y g:i A') : 'TBD' }}
+                        {{ $rental->end_date ? \Carbon\Carbon::parse($rental->end_date)->format('F j, Y g:i A') : 'TBD' }}
                     </p>
 
                     <p><span class="text-gray-400">Duration:</span>
@@ -95,17 +101,21 @@
 
                     {{-- STATUS --}}
                     <div class="mt-3 flex items-center justify-end gap-2">
-                        @if($rental->status === 'accepted' && \Carbon\Carbon::parse($rental->end_date)->timezone('Asia/Manila')->isFuture())
+                        @if ($isUpcoming)
+                            <span class="bg-blue-500/20 text-blue-400 border border-blue-500/50 px-4 py-1 rounded-full text-xs font-bold">
+                                Upcoming
+                            </span>
+                        @elseif ($isActive)
                             <span class="bg-green-500 text-black px-4 py-1 rounded-full text-xs font-bold">
                                 Active
                             </span>
-                        @else
+                        @elseif ($isFinished)
                             <button onclick="document.getElementById('delete-modal-{{ $rental->id }}').classList.remove('hidden')"
                                 class="w-8 h-8 flex items-center justify-center rounded-full border border-red-600/40 text-red-500 hover:bg-red-600 hover:text-white transition-all duration-200">
                                 <i class="fa-solid fa-trash text-[11px]"></i>
                             </button>
                             <span class="bg-gray-600 text-white px-4 py-1 rounded-full text-xs font-bold">
-                                Done
+                                Completed
                             </span>
                         @endif
                     </div>

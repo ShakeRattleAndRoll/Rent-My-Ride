@@ -18,6 +18,8 @@ function sortTable(mode) {
             return parseInt(b.dataset.days) - parseInt(a.dataset.days);
         } else if (mode === 'shortest') {
             return parseInt(a.dataset.days) - parseInt(b.dataset.days);
+        } else if (mode === 'nearest') {
+            return parseInt(a.dataset.startDate) - parseInt(b.dataset.startDate);
         }
     });
 

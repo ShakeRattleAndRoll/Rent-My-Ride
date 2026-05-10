@@ -4,6 +4,7 @@
     $now        = now();
     $start      = \Carbon\Carbon::parse($rental->start_date);
     $end        = \Carbon\Carbon::parse($rental->end_date);
+    $isUpcoming = $rental->status === 'accepted' && $now->lt($start);
     $isActive   = $rental->status === 'accepted' && $now->between($start, $end);
     $isFinished = $rental->status === 'accepted' && $now->gt($end);
     $isDeclined = $rental->status === 'denied';
@@ -63,7 +64,7 @@
                     </div>
 
                     {{-- Owner Profile + Badge --}}
-                    @if ($isActive)
+                    @if ($isUpcoming)
                         <div class="flex flex-col items-center gap-1 shrink-0">
                             <a href="{{ route('user.profile', $rental->car->user->id) }}"
                                class="flex items-center gap-2
@@ -79,12 +80,28 @@
                                     <p class="text-gray-500 text-[9px] truncate">{{ $rental->car->user->full_name }}</p>
                                 </div>
                             </a>
-
+                            <span class="bg-blue-500/20 text-blue-400 border border-blue-500/50 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shrink-0">Upcoming</span>
+                        </div>
+                    @elseif ($isActive)
+                        <div class="flex flex-col items-center gap-1 shrink-0">
+                            <a href="{{ route('user.profile', $rental->car->user->id) }}"
+                               class="flex items-center gap-2
+                                      border border-transparent hover:border-white/20
+                                      rounded-xl px-2 py-1 transition-all duration-300">
+                                <img src="{{ $rental->car->user->profile_picture
+                                        ? asset('storage/' . $rental->car->user->profile_picture)
+                                        : 'https://ui-avatars.com/api/?name=' . urlencode($rental->car->user->username) }}"
+                                     class="w-9 h-9 rounded-full object-cover border border-white/10 shrink-0"
+                                     alt="{{ $rental->car->user->username }}">
+                                <div class="flex flex-col min-w-0">
+                                    <p class="text-white text-[9px] font-black uppercase tracking-tight truncate">{{ $rental->car->user->username }}</p>
+                                    <p class="text-gray-500 text-[9px] truncate">{{ $rental->car->user->full_name }}</p>
+                                </div>
+                            </a>
                             <span class="bg-lime-400 text-black text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shrink-0">Active</span>
                         </div>
                     @elseif ($isFinished || $isDeclined)
                         <div class="flex flex-col items-center gap-1 shrink-0">
-
                             <a href="{{ route('user.profile', $rental->car->user->id) }}"
                                class="flex items-center gap-2
                                       border border-transparent hover:border-white/20
@@ -99,13 +116,11 @@
                                     <p class="text-gray-500 text-[9px] truncate">{{ $rental->car->user->full_name }}</p>
                                 </div>
                             </a>
-
                             @if ($isFinished)
                                 <span class="bg-gray-700 text-gray-300 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Completed</span>
                             @else
                                 <span class="bg-red-600/20 text-red-500 border border-red-600/50 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Declined</span>
                             @endif
-
                         </div>
                     @endif
                 </div>
@@ -131,18 +146,18 @@
                         </p>
                     </div>
 
-                     @if (!$isDeclined)
+                    @if (!$isDeclined)
                         <div class="bg-[#242424] rounded-xl p-3 border border-white/5">
                             <p class="text-gray-500 uppercase tracking-widest text-[9px] font-bold mb-1">Start Date</p>
                             <p class="text-white font-semibold">
-                                {{ \Carbon\Carbon::parse($rental->start_date)->timezone('Asia/Manila')->format('M j, Y g:i A') }}
+                                {{ \Carbon\Carbon::parse($rental->start_date)->format('M j, Y g:i A') }}
                             </p>
                         </div>
 
                         <div class="bg-[#242424] rounded-xl p-3 border border-white/5">
                             <p class="text-gray-500 uppercase tracking-widest text-[9px] font-bold mb-1">End Date</p>
                             <p class="text-white font-semibold">
-                                {{ \Carbon\Carbon::parse($rental->end_date)->timezone('Asia/Manila')->format('M j, Y g:i A') }}
+                                {{ \Carbon\Carbon::parse($rental->end_date)->format('M j, Y g:i A') }}
                             </p>
                         </div>
                     @endif
