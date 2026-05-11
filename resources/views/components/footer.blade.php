@@ -9,6 +9,14 @@
             Your trusted platform for hassle-free car rentals.
         </p>
 
+        {{-- Email --}}
+        <a 
+            href="mailto:rentmyrideweb@gmail.com"
+            class="text-xs text-lime-400 hover:text-lime-300 transition"
+        >
+            rentmyrideweb@gmail.com
+        </a>
+
         {{-- Copyright --}}
         <p class="text-[11px] text-gray-600">
             © {{ date('Y') }} Rent My Ride. All rights reserved.

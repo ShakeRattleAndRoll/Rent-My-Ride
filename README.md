@@ -101,6 +101,9 @@
 * You can now see what your available cars look now when posting a car and editing
 * Log in and Sign up UI improvements
 * Landing page 
+* Authorization:
+    * Email Verification
+    * "Remember me" and "Forgot Password" feature
 
 ## PARTIALLY DONE
 
@@ -109,9 +112,6 @@
 * Separate the history of rented cars
 * Pre order History
 * Redesign My Listing "Details"
-* Authorization:
-    * Email Verification
-    * "Remember me" and "Forgot Password" feature
 * Not Responsive:
     * Homepage
         * Background

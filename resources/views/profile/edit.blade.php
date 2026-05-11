@@ -119,29 +119,6 @@
                         </div>
                     </div>
 
-                    {{-- SECURITY SECTION --}}
-                    <div x-data="{ open: false }" class="bg-[#1a1a1a] p-8 rounded-3xl border border-white/5 shadow-2xl">
-                        <div class="flex items-center justify-between cursor-pointer" @click="open = !open">
-                            <h3 class="text-sm font-black uppercase tracking-widest text-red-400 flex items-center gap-2">
-                                <i class="fa-solid fa-lock"></i> Security Settings
-                            </h3>
-                            <i class="fa-solid" :class="open ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
-                        </div>
-                        
-                        <div x-show="open" x-transition class="mt-8 space-y-5">
-                            <div class="flex flex-col gap-2">
-                                <label class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">New Password</label>
-                                <input type="password" name="password" id="password" placeholder="Leave blank to keep current"
-                                    class="w-full bg-[#242424] text-white p-4 rounded-2xl border border-white/5 outline-none focus:border-yellow-400 font-semibold">
-                            </div>
-                            <div class="flex flex-col gap-2">
-                                <label class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Confirm Password</label>
-                                <input type="password" name="password_confirmation" id="confirm_password"
-                                    class="w-full bg-[#242424] text-white p-4 rounded-2xl border border-white/5 outline-none focus:border-yellow-400 font-semibold">
-                            </div>
-                        </div>
-                    </div>
-
                     {{-- FORM BUTTONS --}}
                     <div class="flex flex-col md:flex-row gap-4 pt-4">
                         <button type="submit" class="flex-1 py-4 bg-yellow-400 text-xs text-black rounded-2xl font-black uppercase tracking-widest hover:bg-yellow-300 transition shadow-xl shadow-yellow-400/10">

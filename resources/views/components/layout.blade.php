@@ -21,7 +21,7 @@
 
 <body class="bg-gray-700">
 
-    @if (!request()->is('login') && !request()->is('register'))
+    @if (!request()->is('login') && !request()->is('register') && !request()->is('register/verify-email') && !request()->is('forgot-password*') && !request()->is('reset-password*'))
         <x-nav />
     @endif
 
@@ -133,7 +133,7 @@
 
     @livewireScripts
 
-    @if (!request()->is('login') && !request()->is('register'))
+    @if (!request()->is('login') && !request()->is('register') && !request()->is('register/verify-email') && !request()->is('forgot-password*') && !request()->is('reset-password*'))
         <x-footer />
     @endif
 

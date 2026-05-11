@@ -74,9 +74,9 @@
                     </div>
 
                     {{-- Email --}}
-                    <div class="group">
+                    <div class="group min-w-0">
                         <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1 group-hover:text-yellow-400 transition">Email Address</p>
-                        <p class="text-white font-semibold text-lg border-b border-white/5 pb-2">{{ auth()->user()?->email }}</p>
+                        <p class="text-white font-semibold text-lg border-b border-white/5 pb-2 break-all leading-snug">{{ auth()->user()?->email }}</p>
                     </div>
 
                     {{-- Sex --}}
@@ -118,8 +118,37 @@
                     </div>
                 </div>
 
+                <div x-data="{ open: false }" class="mt-6 rounded-2xl border border-red-500/10 bg-[#181818]">
+                    <button type="button" class="w-full flex items-center justify-between gap-4 p-6 text-left" @click="open = !open">
+                        <span class="flex items-center gap-3">
+                            <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/10 text-red-300">
+                                <i class="fa-solid fa-lock"></i>
+                            </span>
+                            <span>
+                                <span class="block text-xs font-black uppercase tracking-widest text-red-300">Security Settings</span>
+                                <span class="mt-1 block text-xs text-gray-500">Reset your password with an email code.</span>
+                            </span>
+                        </span>
+                        <i class="fa-solid text-gray-500" :class="open ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                    </button>
+
+                    <div x-show="open" x-transition class="border-t border-white/5 p-6">
+                        <form method="POST" action="{{ route('profile.password.send-code') }}">
+                            @csrf
+                            @method('PATCH')
+                            <button
+                                type="submit"
+                                class="w-full rounded-xl bg-red-500/10 px-5 py-4 text-xs font-black uppercase tracking-widest text-red-300 transition hover:bg-red-500/20"
+                            >
+                                Send Reset Password Code
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
+
 </div>
 </x-layout>

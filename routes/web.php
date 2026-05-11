@@ -30,10 +30,19 @@ Route::get('/', function () {
 // Route for login
 Route::get('/login', [AuthController::class, 'login'])->name('login')->middleware('guest');
 Route::post('/login', [AuthController::class, 'authenticate']);
+Route::get('/forgot-password', [AuthController::class, 'forgotPassword'])->name('password.request')->middleware('guest');
+Route::post('/forgot-password', [AuthController::class, 'sendPasswordResetLink'])->name('password.email')->middleware('guest');
+Route::get('/forgot-password/verify-code', [AuthController::class, 'showPasswordResetCodeForm'])->name('password.verify-code')->middleware('guest');
+Route::post('/forgot-password/verify-code', [AuthController::class, 'verifyPasswordResetCode'])->name('password.verify-code.submit')->middleware('guest');
+Route::get('/reset-password', [AuthController::class, 'resetPassword'])->name('password.reset')->middleware('guest');
+Route::post('/reset-password', [AuthController::class, 'updatePassword'])->name('password.update')->middleware('guest');
 
 // Route for register
 Route::get('/register', [AuthController::class, 'register'])->name('register')->middleware('guest');
 Route::post('/register', [AuthController::class, 'store']);
+Route::get('/register/verify-email', [AuthController::class, 'showEmailCodeForm'])->name('register.verify-email')->middleware('guest');
+Route::post('/register/verify-email', [AuthController::class, 'verifyEmailCode'])->name('register.verify-email.submit')->middleware('guest');
+Route::post('/register/resend-code', [AuthController::class, 'resendEmailCode'])->name('register.resend-code')->middleware('guest');
 
 // Logout
 Route::post('/logout', [AuthController::class, 'logout']);
@@ -54,6 +63,13 @@ Route::get('/profile/edit', [AuthController::class, 'edit'])->name('profile.edit
 
 // Route for update profile
 Route::patch('/profile/update', [AuthController::class, 'update'])->name('profile.update')->middleware('auth');
+Route::patch('/profile/password/send-code', [AuthController::class, 'sendProfilePasswordCode'])->name('profile.password.send-code')->middleware('auth');
+Route::get('/profile/password/verify-code', [AuthController::class, 'showProfilePasswordCodeForm'])->name('profile.password.verify-code')->middleware('auth');
+Route::post('/profile/password/verify-code', [AuthController::class, 'verifyProfilePasswordCode'])->name('profile.password.verify-code.submit')->middleware('auth');
+Route::get('/profile/password/reset', [AuthController::class, 'showProfilePasswordResetForm'])->name('profile.password.reset')->middleware('auth');
+Route::post('/profile/password/reset', [AuthController::class, 'updateProfilePassword'])->name('profile.password.update')->middleware('auth');
+Route::get('/profile/email/verify-code', [AuthController::class, 'showProfileEmailCodeForm'])->name('profile.email.verify-code')->middleware('auth');
+Route::post('/profile/email/verify-code', [AuthController::class, 'verifyProfileEmailCode'])->name('profile.email.verify-code.submit')->middleware('auth');
 
 // Route for user profile view
 Route::get('/profile/{id}', [AuthController::class, 'show'])->name('user.profile');

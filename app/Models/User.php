@@ -20,6 +20,7 @@ class User extends Authenticatable
         'address',
         'contact_number',
         'email',
+        'email_verified_at',
         'password',
         'profile_picture',
     ];

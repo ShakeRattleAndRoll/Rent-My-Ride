@@ -109,7 +109,7 @@
                             <label class="text-[10px] uppercase tracking-widest text-white font-bold">Middle Name</label>
                             <input
                                 name="middle_name"
-                                placeholder="Smith (N/A if none)"
+                                placeholder="Smith (optional)"
                                 autocomplete="off"
                                 spellcheck="false"
                                 value="{{ old('middle_name') }}"
@@ -287,7 +287,7 @@
                         class="w-full py-3 rounded-md font-black text-black bg-lime-400 uppercase tracking-wide
                         hover:bg-lime-300 active:scale-95 transition duration-200"
                     >
-                        CREATE ACCOUNT
+                        SEND VERIFICATION CODE
                     </button>
 
                 </form>
