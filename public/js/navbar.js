@@ -67,8 +67,28 @@ function closeDeleteNotifModal() {
     modal.classList.remove('flex');
 }
 
+function openAuthRequiredModal() {
+    const modal = document.getElementById('auth-required-modal');
+
+    if (!modal) return;
+
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+}
+
+function closeAuthRequiredModal() {
+    const modal = document.getElementById('auth-required-modal');
+
+    if (!modal) return;
+
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+}
+
 window.openDeleteNotifModal = openDeleteNotifModal;
 window.closeDeleteNotifModal = closeDeleteNotifModal;
+window.openAuthRequiredModal = openAuthRequiredModal;
+window.closeAuthRequiredModal = closeAuthRequiredModal;
 
 async function refreshRentRideNotifications() {
     const unreadBadges = document.querySelectorAll('[data-unread-messages-badge]');
@@ -152,6 +172,21 @@ if (!rentRideNavbar.bound) {
     rentRideNavbar.bound = true;
 
     document.addEventListener('click', (event) => {
+        const authRequiredTarget = event.target.closest('[data-auth-required]');
+
+        if (authRequiredTarget) {
+            event.preventDefault();
+            event.stopPropagation();
+            openAuthRequiredModal();
+            return;
+        }
+
+        if (event.target.closest('[data-auth-modal-close]') || event.target.id === 'auth-required-modal') {
+            event.preventDefault();
+            closeAuthRequiredModal();
+            return;
+        }
+
         const link = event.target.closest('[data-nav-navigate]');
 
         if (!link || event.defaultPrevented || !window.Livewire?.navigate) return;
@@ -172,7 +207,15 @@ if (!rentRideNavbar.bound) {
     document.addEventListener('submit', async (event) => {
         const form = event.target.closest('[data-livewire-form]');
 
-        if (!form || event.defaultPrevented || !window.Livewire?.navigate) return;
+        if (!form || event.defaultPrevented) return;
+
+        if (form.hasAttribute('data-auth-required')) {
+            event.preventDefault();
+            openAuthRequiredModal();
+            return;
+        }
+
+        if (!window.Livewire?.navigate) return;
 
         event.preventDefault();
 
@@ -251,6 +294,7 @@ if (!rentRideNavbar.bound) {
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {
             closeDeleteNotifModal();
+            closeAuthRequiredModal();
         }
     });
 

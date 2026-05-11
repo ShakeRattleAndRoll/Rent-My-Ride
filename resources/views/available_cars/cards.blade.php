@@ -82,7 +82,7 @@
             </div>
 
         @else
-            <form action="/cart/add" method="POST" data-livewire-form>
+            <form action="/cart/add" method="POST" data-livewire-form @guest data-auth-required @endguest>
                 @csrf
                 <input type="hidden" name="car_id" value="{{ $car->id }}">
                 <button type="submit"

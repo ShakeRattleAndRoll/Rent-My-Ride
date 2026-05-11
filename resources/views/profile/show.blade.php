@@ -86,7 +86,7 @@
                     <div class="flex flex-col gap-6 min-w-[200px]">
 
                         @if(auth()->id() !== $user->id)
-                            <a href="{{ route('messages.index', $user->id) }}" wire:navigate
+                            <a href="{{ route('messages.index', $user->id) }}" wire:navigate data-message-navigate @guest data-auth-required @endguest
                                 class="flex items-center justify-center gap-2 px-6 py-3 bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-black rounded-full uppercase tracking-widest transition shadow-lg shadow-yellow-400/10">
                                 <i class="fa-solid fa-paper-plane"></i>
                                 Send Message

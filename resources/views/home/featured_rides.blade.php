@@ -56,7 +56,7 @@
                 <i class="fa-solid fa-car text-lime-400 text-3xl mb-4"></i>
                 <h3 class="text-white font-black text-xl mb-2">No featured cars yet</h3>
                 <p class="text-gray-400 mb-6">Be the first to add a car to the marketplace.</p>
-                <a href="/garage/post-car" wire:navigate class="inline-flex items-center justify-center rounded-lg bg-lime-400 px-6 py-3 text-sm font-black uppercase text-black hover:bg-lime-300 transition">
+                <a href="/garage/post-car" wire:navigate data-nav-navigate @guest data-auth-required @endguest class="inline-flex items-center justify-center rounded-lg bg-lime-400 px-6 py-3 text-sm font-black uppercase text-black hover:bg-lime-300 transition">
                     Post Your Car
                 </a>
             </div>

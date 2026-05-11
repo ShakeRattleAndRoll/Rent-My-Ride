@@ -93,6 +93,44 @@
         {{ $slot }}
     </main>
 
+    @guest
+        <div
+            id="auth-required-modal"
+            class="fixed inset-0 z-[120] hidden items-center justify-center bg-black/75 px-4 backdrop-blur-sm"
+            style="font-family: 'Montserrat', sans-serif;"
+            aria-modal="true"
+            role="dialog"
+        >
+            <div class="w-full max-w-md rounded-2xl border border-white/10 bg-[#111] p-7 text-center shadow-2xl">
+                <div class="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-lime-400/10 text-lime-400">
+                    <i class="fa-solid fa-lock text-lg"></i>
+                </div>
+
+                <h2 class="mb-3 text-2xl font-black text-white">Log in or Create an account</h2>
+                <p class="mb-6 text-sm leading-relaxed text-gray-400">
+                    You need an account to continue with this action.
+                </p>
+
+                <div class="flex flex-col gap-3 sm:flex-row">
+                    <a href="{{ route('login') }}" class="flex-1 rounded-lg bg-lime-400 px-5 py-3 text-sm font-black uppercase text-black transition hover:bg-lime-300">
+                        Log In
+                    </a>
+                    <a href="{{ route('register') }}" class="flex-1 rounded-lg border border-lime-400/40 px-5 py-3 text-sm font-black uppercase text-lime-300 transition hover:bg-lime-400 hover:text-black">
+                        Sign Up
+                    </a>
+                </div>
+
+                <button
+                    type="button"
+                    data-auth-modal-close
+                    class="mt-5 text-xs font-bold uppercase tracking-widest text-gray-500 transition hover:text-white"
+                >
+                    Maybe Later
+                </button>
+            </div>
+        </div>
+    @endguest
+
     @livewireScripts
 
     @if (!request()->is('login') && !request()->is('register'))

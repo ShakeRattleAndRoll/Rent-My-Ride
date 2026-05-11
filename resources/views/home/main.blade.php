@@ -79,7 +79,7 @@
                     </div>
                     <h3 class="text-white text-2xl font-black mb-3">For owners</h3>
                     <p class="text-gray-400 mb-6 leading-relaxed">Post your car, manage requests, and keep control of who rents it and when it is available.</p>
-                    <a href="/garage/post-car" wire:navigate class="text-lime-300 font-black uppercase text-sm hover:text-lime-200 transition">
+                    <a href="/garage/post-car" wire:navigate data-nav-navigate @guest data-auth-required @endguest class="text-lime-300 font-black uppercase text-sm hover:text-lime-200 transition">
                         List a car <i class="fa-solid fa-arrow-right ml-2"></i>
                     </a>
                 </div>
@@ -102,7 +102,7 @@
                     <a href="/available" wire:navigate class="px-8 py-3 bg-lime-400 text-black rounded-lg font-black uppercase text-sm hover:bg-lime-300 transition text-center">
                         <i class="fa-solid fa-car mr-2"></i> Browse Cars
                     </a>
-                    <a href="/garage/post-car" wire:navigate class="px-8 py-3 border border-lime-400/40 text-lime-300 rounded-lg font-black uppercase text-sm hover:bg-lime-400 hover:text-black transition text-center">
+                    <a href="/garage/post-car" wire:navigate data-nav-navigate @guest data-auth-required @endguest class="px-8 py-3 border border-lime-400/40 text-lime-300 rounded-lg font-black uppercase text-sm hover:bg-lime-400 hover:text-black transition text-center">
                         <i class="fa-solid fa-plus mr-2"></i> Post a Car
                     </a>
                 </div>

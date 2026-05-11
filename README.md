@@ -97,6 +97,8 @@
 
 #### Added Features & Bug Fixes 5/11/2026
 * Delete modal of notification
+* Log in and Sign up UI improvements
+* Landing page 
 
 ## PARTIALLY DONE
 
@@ -107,7 +109,6 @@
 * Redesign My Listing "Details"
 * Authorization:
     * Email Verification
-    * Log in and Sign up UI improvements
     * "Remember me" and "Forgot Password" feature
 * Not Responsive:
     * Homepage

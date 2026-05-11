@@ -83,7 +83,7 @@
                 {{-- BUTTONS --}}
                 <div class="mt-5 flex gap-3">
                     @if(auth()->id() !== $car->user_id)
-                        <a href="{{ route('messages.index', $car->user->id) }}" wire:navigate data-message-navigate
+                        <a href="{{ route('messages.index', $car->user->id) }}" wire:navigate data-message-navigate @guest data-auth-required @endguest
                         class="flex-1 flex items-center justify-center gap-2 py-2.5 bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-bold rounded-full transition">
                             <i class="fa-solid fa-message"></i>
                             Message Owner
@@ -94,7 +94,7 @@
                         </div>
                     @endif
 
-                    <form method="POST" action="/cart/add" class="flex-1" data-livewire-form>
+                    <form method="POST" action="/cart/add" class="flex-1" data-livewire-form @guest data-auth-required @endguest>
                         @csrf
                         <input type="hidden" name="car_id" value="{{ $car->id }}">
                         <button type="submit"

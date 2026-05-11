@@ -18,16 +18,13 @@ use App\Livewire\Message\ChatManager;
 // cloudflared tunnel --url http://localhost:8000 
 
 Route::get('/', function () {
-    if (Auth::check()) {
-        $featuredCars = Car::with('user')->latest()->take(3)->get();
-        $homeStats = [
-            'cars' => Car::count(),
-            'owners' => Car::distinct('user_id')->count('user_id'),
-        ];
+    $featuredCars = Car::with('user')->latest()->take(3)->get();
+    $homeStats = [
+        'cars' => Car::count(),
+        'owners' => Car::distinct('user_id')->count('user_id'),
+    ];
 
-        return view('home.main', compact('featuredCars', 'homeStats'));
-    }
-    return redirect()->route('login');
+    return view('home.main', compact('featuredCars', 'homeStats'));
 });
 
 // Route for login
@@ -42,7 +39,7 @@ Route::post('/register', [AuthController::class, 'store']);
 Route::post('/logout', [AuthController::class, 'logout']);
 
 // Post a car route
-Route::get('/garage/post-car', [CarController::class, 'create']);
+Route::get('/garage/post-car', [CarController::class, 'create'])->middleware('auth');
 Route::post('/cars', [CarController::class, 'store'])->middleware('auth');
 
 // Route for available cars page
