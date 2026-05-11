@@ -49,6 +49,7 @@
                 </div>
             </div>
 
+            {{-- Auto-Accept --}}
             <div class="flex items-center justify-between gap-6 bg-[#1a1a1a] border border-gray-800 rounded-2xl p-6 mb-8">
                 <div>
                     <h3 class="text-white font-bold text-sm uppercase tracking-wider">Auto-Accept Requests</h3>
@@ -66,8 +67,9 @@
                         onchange="this.form.requestSubmit()"
                         class="bg-[#242424] border border-white/10 text-gray-300 text-[10px] font-bold uppercase tracking-widest rounded-xl px-3 py-2 outline-none focus:border-lime-400">
                         <option value="first_pending" {{ ($car->auto_accept_priority ?? 'first_pending') === 'first_pending' ? 'selected' : '' }}>First Pending</option>
-                        <option value="shortest" {{ ($car->auto_accept_priority ?? 'first_pending') === 'shortest' ? 'selected' : '' }}>Shortest Duration</option>
-                        <option value="longest" {{ ($car->auto_accept_priority ?? 'first_pending') === 'longest' ? 'selected' : '' }}>Longest Duration</option>
+                        <option value="shortest"      {{ ($car->auto_accept_priority ?? 'first_pending') === 'shortest'      ? 'selected' : '' }}>Shortest Duration</option>
+                        <option value="longest"       {{ ($car->auto_accept_priority ?? 'first_pending') === 'longest'       ? 'selected' : '' }}>Longest Duration</option>
+                        <option value="nearest"       {{ ($car->auto_accept_priority ?? 'first_pending') === 'nearest'       ? 'selected' : '' }}>Nearest Start Date</option>
                     </select>
 
                     <label class="relative inline-flex h-6 w-11 cursor-pointer items-center">
@@ -90,27 +92,24 @@
                 <div class="h-px bg-gray-800 flex-1"></div>
             </div>
 
-            <div class="flex items-center gap-2 mb-6">
-                <button onclick="sortTable('fcfs')"
-                    id="btn-fcfs"
-                    class="sort-btn px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-200 bg-yellow-400 text-black">
-                    Earliest Request
-                </button>
-                <button onclick="sortTable('longest')"
-                    id="btn-longest"
-                    class="sort-btn px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-200 bg-[#1a1a1a] text-gray-400 border border-gray-700 hover:border-gray-500">
-                    Longest Duration
-                </button>
-                <button onclick="sortTable('shortest')"
-                    id="btn-shortest"
-                    class="sort-btn px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-200 bg-[#1a1a1a] text-gray-400 border border-gray-700 hover:border-gray-500">
-                    Shortest Duration
-                </button>
-                <button onclick="sortTable('nearest')"
-                    id="btn-nearest"
-                    class="sort-btn px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-200 bg-[#1a1a1a] text-gray-400 border border-gray-700 hover:border-gray-500">
-                    Nearest Start Date
-                </button>
+            {{-- Sort Dropdown --}}
+            <div class="flex items-center gap-3 mb-6">
+                <span class="text-gray-500 text-[10px] font-bold uppercase tracking-widest">Sort by</span>
+                <div class="relative">
+                    <select id="sort-select"
+                        onchange="sortTable(this.value)"
+                        class="appearance-none bg-[#1a1a1a] border border-gray-700 hover:border-gray-500 text-gray-300 text-[10px] font-black uppercase tracking-widest rounded-full px-5 py-2 pr-8 outline-none focus:border-yellow-400 cursor-pointer transition-all duration-200">
+                        <option value="fcfs">Earliest Request</option>
+                        <option value="longest">Longest Duration</option>
+                        <option value="shortest">Shortest Duration</option>
+                        <option value="nearest">Nearest Start Date</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+                        <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </div>
+                </div>
             </div>
 
             {{-- Pending Renters Table --}}
@@ -130,7 +129,8 @@
                         @forelse($preOrders as $order)
                             <tr class="bg-[#1a1a1a] border border-gray-800 text-gray-300 text-[11px] hover:bg-[#222] transition-all group"
                                 data-created="{{ $order->created_at->timestamp }}"
-                                data-days="{{ $order->days }}">
+                                data-days="{{ $order->days }}"
+                                data-start="{{ \Carbon\Carbon::parse($order->start_date)->timestamp }}">
 
                                 <td class="px-6 py-4 first:rounded-l-2xl border-y border-l border-transparent group-hover:border-gray-700">
                                     <a href="{{ route('user.profile', $order->user->id) }}" wire:navigate data-nav-navigate
@@ -223,6 +223,7 @@
                     </tbody>
                 </table>
             </div>
+
         </div>
     </div>
 

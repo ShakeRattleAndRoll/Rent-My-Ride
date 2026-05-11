@@ -18,13 +18,15 @@ return new class extends Migration
             $table->date('date_owned');
             $table->string('brand');
             $table->string('model');
-            $table->decimal('price', 10, 2); 
-            $table->integer('rent_value')->default(1);
+            $table->unsignedInteger('price');
             $table->string('rent_unit')->default('Day');
             $table->string('transmission');
             $table->string('fuel_type');
             $table->text('description')->nullable();
+            $table->boolean('auto_accept')->default(false);
+            $table->string('auto_accept_priority')->default('first_pending');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

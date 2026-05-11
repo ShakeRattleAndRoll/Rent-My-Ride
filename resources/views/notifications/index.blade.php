@@ -15,15 +15,11 @@
             <div class="flex items-center justify-end gap-2 mb-5">
 
                 {{-- Delete All --}}
-                <form action="{{ route('notifications.delete-all') }}" method="POST" data-livewire-form>
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit"
-                        onclick="return confirm('Delete all notifications? This cannot be undone.')"
-                        class="px-5 py-2 rounded-full bg-[#1a1a1a] border border-red-500/20 text-red-400 hover:bg-red-500/10 hover:border-red-500/40 text-[10px] font-black uppercase tracking-widest transition">
-                        Delete All
-                    </button>
-                </form>
+                <button type="button"
+                    onclick="openDeleteNotifModal('{{ route('notifications.delete-all') }}', true)"
+                    class="px-5 py-2 rounded-full bg-[#1a1a1a] border border-red-500/20 text-red-400 hover:bg-red-500/10 hover:border-red-500/40 text-[10px] font-black uppercase tracking-widest transition">
+                    Delete All
+                </button>
 
                 {{-- Mark All Read --}}
                 <form action="{{ route('notifications.read-all') }}" method="POST" data-livewire-form>
@@ -116,15 +112,12 @@
                                 @endif
 
                                 {{-- Delete single --}}
-                                <form action="{{ route('notifications.delete', $notification->id) }}" method="POST" data-livewire-form class="ml-auto">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                        title="Delete notification"
-                                        class="w-8 h-8 flex items-center justify-center rounded-full border border-red-500/20 text-red-400 hover:bg-red-500/10 hover:border-red-500/40 transition">
-                                        <i class="fa-solid fa-trash text-[11px]"></i>
-                                    </button>
-                                </form>
+                                <button type="button"
+                                    onclick="openDeleteNotifModal('{{ route('notifications.delete', $notification->id) }}')"
+                                    title="Delete notification"
+                                    class="ml-auto w-8 h-8 flex items-center justify-center rounded-full border border-red-500/20 text-red-400 hover:bg-red-500/10 hover:border-red-500/40 transition">
+                                    <i class="fa-solid fa-trash text-[11px]"></i>
+                                </button>
 
                             </div>
                         </div>
@@ -145,4 +138,6 @@
             </div>
         </div>
     </div>
+
+    <x-modals.delete_notification />
 </x-layout>

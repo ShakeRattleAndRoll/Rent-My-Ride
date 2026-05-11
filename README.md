@@ -95,14 +95,15 @@
 * Occupied cars not shown in available cars
 * Show Occupied indicator if checking owner profile
 
+#### Added Features & Bug Fixes 5/10/2026
+* Delete modal of notification
+
 ## PARTIALLY DONE
 
 ### FEATURES
+* Auto accept nearest start day -- ikaw ani boi
 * Separate the history of rented cars
 * Pre order History
-* Delete modal of notification
-* Display in Available cars and in profile stalking even active cars
-* Display the occupied until date
 * Redesign My Listing "Details"
 * Authorization:
     * Email Verification
