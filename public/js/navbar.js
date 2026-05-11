@@ -28,6 +28,48 @@ function setBadgeCount(badge, count) {
     badge.classList.toggle('flex', hasCount);
 }
 
+function openDeleteNotifModal(actionUrl, deleteAll = false) {
+    const form = document.getElementById('delete-notification-form');
+    const modal = document.getElementById('delete-notification-modal');
+    const title = document.getElementById('delete-notification-title');
+    const message = document.getElementById('delete-notification-message');
+    const submit = document.getElementById('delete-notification-submit');
+
+    if (!form || !modal) return;
+
+    form.action = actionUrl;
+    form.dataset.deleteAll = deleteAll ? '1' : '0';
+
+    if (title) {
+        title.textContent = deleteAll ? 'Delete All Notifications' : 'Delete Notification';
+    }
+
+    if (message) {
+        message.textContent = deleteAll
+            ? 'All notifications will be removed from your list.'
+            : 'This notification will be removed from your list.';
+    }
+
+    if (submit) {
+        submit.textContent = deleteAll ? 'Delete All' : 'Delete';
+    }
+
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+}
+
+function closeDeleteNotifModal() {
+    const modal = document.getElementById('delete-notification-modal');
+
+    if (!modal) return;
+
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+}
+
+window.openDeleteNotifModal = openDeleteNotifModal;
+window.closeDeleteNotifModal = closeDeleteNotifModal;
+
 async function refreshRentRideNotifications() {
     const unreadBadges = document.querySelectorAll('[data-unread-messages-badge]');
     const contactBadges = document.querySelectorAll('[data-contact-unread-badge]');
@@ -142,6 +184,28 @@ if (!rentRideNavbar.bound) {
 
         const submitButton = event.submitter || form.querySelector('button[type="submit"]');
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+        const preserveScroll = form.hasAttribute('data-preserve-scroll');
+        const scrollPosition = {
+            x: window.scrollX,
+            y: window.scrollY,
+        };
+
+        const navigateAfterSubmit = (url) => {
+            const targetUrl = url || window.location.href;
+
+            if (!preserveScroll) {
+                window.Livewire.navigate(targetUrl, { scroll: false });
+                return;
+            }
+
+            const restoreScroll = () => {
+                window.scrollTo(scrollPosition.x, scrollPosition.y);
+            };
+
+            document.addEventListener('livewire:navigated', restoreScroll, { once: true });
+            window.Livewire.navigate(targetUrl, { scroll: false });
+            requestAnimationFrame(() => requestAnimationFrame(restoreScroll));
+        };
 
         if (submitButton) {
             submitButton.disabled = true;
@@ -157,8 +221,12 @@ if (!rentRideNavbar.bound) {
                 body: new FormData(form),
             });
 
+            if (form.id === 'delete-notification-form') {
+                closeDeleteNotifModal();
+            }
+
             if (response.redirected) {
-                window.Livewire.navigate(response.url, { scroll: (response.url === window.location.href) });
+                navigateAfterSubmit(response.url);
                 return;
             }
 
@@ -166,17 +234,23 @@ if (!rentRideNavbar.bound) {
 
             if (contentType.includes('application/json')) {
                 const data = await response.json();
-                window.Livewire.navigate( data.redirect || window.location.href, { scroll: false });
+                navigateAfterSubmit(data.redirect);
                 return;
             }
 
-            window.Livewire.navigate(window.location.href, { scroll: false });
+            navigateAfterSubmit(window.location.href);
         } catch (error) {
             form.submit();
         } finally {
             if (submitButton) {
                 submitButton.disabled = false;
             }
+        }
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            closeDeleteNotifModal();
         }
     });
 

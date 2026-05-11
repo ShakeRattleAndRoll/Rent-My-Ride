@@ -67,7 +67,7 @@
     {{-- Price + Actions --}}
     <div class="flex flex-col items-end gap-2 shrink-0">
 
-        <form action="{{ route('car.toggle-auto-accept', $car->id) }}" method="POST" data-livewire-form
+        <form action="{{ route('car.toggle-auto-accept', $car->id) }}" method="POST" data-livewire-form data-preserve-scroll
               class="flex items-center justify-end gap-2 mb-1">
             @csrf
             @method('PATCH')

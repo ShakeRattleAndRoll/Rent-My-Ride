@@ -82,21 +82,35 @@ class NotificationController extends Controller
         return $notification->url ?: route('notifications.index');
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         RentalNotification::where('user_id', Auth::id())->findOrFail($id)->delete();
 
-        return request()->expectsJson()
-            ? response()->json(['success' => true])
-            : redirect()->back();
+        if ($request->expectsJson()) {
+            session()->flash('success', 'Notification deleted.');
+
+            return response()->json([
+                'success' => true,
+                'redirect' => route('notifications.index'),
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Notification deleted.');
     }
 
-    public function destroyAll()
+    public function destroyAll(Request $request)
     {
         RentalNotification::where('user_id', Auth::id())->delete();
 
-        return request()->expectsJson()
-            ? response()->json(['success' => true])
-            : redirect()->back()->with('success', 'All notifications deleted.');
+        if ($request->expectsJson()) {
+            session()->flash('success', 'All notifications deleted.');
+
+            return response()->json([
+                'success' => true,
+                'redirect' => route('notifications.index'),
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'All notifications deleted.');
     }
 }

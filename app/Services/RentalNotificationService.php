@@ -137,11 +137,20 @@ class RentalNotificationService
 
     private function createOnce(int $userId, Rental $rental, string $type, string $title, string $body, ?string $url = null): void
     {
-        RentalNotification::firstOrCreate([
+        $existing = RentalNotification::withTrashed()->where([
             'user_id'   => $userId,
             'rental_id' => $rental->id,
             'type'      => $type,
-        ], [
+        ])->first();
+
+        if ($existing) {
+            return;
+        }
+
+        RentalNotification::create([
+            'user_id' => $userId,
+            'rental_id' => $rental->id,
+            'type' => $type,
             'car_id' => $rental->car_id,
             'title'  => $title,
             'body'   => $body,

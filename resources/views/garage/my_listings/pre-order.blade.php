@@ -56,7 +56,7 @@
                     <p class="text-gray-500 text-[10px] mt-1">When enabled, pending and new requests are accepted by priority if their dates are still available.</p>
                 </div>
 
-                <form action="{{ route('car.toggle-auto-accept', $car->id) }}" method="POST" data-livewire-form
+                <form action="{{ route('car.toggle-auto-accept', $car->id) }}" method="POST" data-livewire-form data-preserve-scroll
                       class="flex items-center justify-end gap-4">
                     @csrf
                     @method('PATCH')
