@@ -97,6 +97,8 @@
 
 #### Added Features & Bug Fixes 5/11/2026
 * Delete modal of notification
+* Post a car & Edit post UI Changes
+* You can now see what your available cars look now when posting a car and editing
 * Log in and Sign up UI improvements
 * Landing page 
 
