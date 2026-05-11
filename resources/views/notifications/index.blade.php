@@ -1,13 +1,31 @@
 <x-layout>
     <div class="bg-[#121212] min-h-screen" style="font-family: 'Montserrat', sans-serif;">
+
+        <x-back_button/>
+
         <x-garage_header
             active="notifications"
             title="Notifications"
             subtitle="Rental updates, reminders, and automatic decisions"
         />
 
-        <div class="px-10 pb-12 max-w-5xl mx-auto">
-            <div class="flex justify-end mb-5">
+        <div class="px-4 sm:px-10 pb-12 max-w-5xl mx-auto">
+
+            {{-- TOP ACTION BAR --}}
+            <div class="flex items-center justify-end gap-2 mb-5">
+
+                {{-- Delete All --}}
+                <form action="{{ route('notifications.delete-all') }}" method="POST" data-livewire-form>
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit"
+                        onclick="return confirm('Delete all notifications? This cannot be undone.')"
+                        class="px-5 py-2 rounded-full bg-[#1a1a1a] border border-red-500/20 text-red-400 hover:bg-red-500/10 hover:border-red-500/40 text-[10px] font-black uppercase tracking-widest transition">
+                        Delete All
+                    </button>
+                </form>
+
+                {{-- Mark All Read --}}
                 <form action="{{ route('notifications.read-all') }}" method="POST" data-livewire-form>
                     @csrf
                     @method('PATCH')
@@ -22,19 +40,40 @@
                 @forelse ($items as $notification)
                     @php
                         $isUnread = is_null($notification->read_at);
-                        $color = match ($notification->type) {
-                            'rental_accepted', 'owner_rental_accepted' => 'text-lime-400 bg-lime-400/10 border-lime-400/30',
-                            'rental_denied', 'rental_expired' => 'text-red-400 bg-red-600/10 border-red-600/30',
-                            'rental_ending_soon' => 'text-yellow-400 bg-yellow-400/10 border-yellow-400/30',
-                            default => 'text-blue-400 bg-blue-500/10 border-blue-500/30',
+
+                        $isEndingType = in_array($notification->type, [
+                            'rental_ending_soon',
+                            'rental_ending_15min',
+                            'rental_ending_1hour',
+                            'rental_ending_1day',
+                        ]);
+
+                        $color = match (true) {
+                            in_array($notification->type, ['rental_accepted', 'owner_rental_accepted'])
+                                => 'text-lime-400 bg-lime-400/10 border-lime-400/30',
+                            in_array($notification->type, ['rental_denied', 'rental_expired'])
+                                => 'text-red-400 bg-red-600/10 border-red-600/30',
+                            $isEndingType
+                                => 'text-yellow-400 bg-yellow-400/10 border-yellow-400/30',
+                            default
+                                => 'text-blue-400 bg-blue-500/10 border-blue-500/30',
                         };
+
+                        $icon = $isEndingType
+                            ? 'fa-clock'
+                            : (in_array($notification->type, ['rental_denied', 'rental_expired'])
+                                ? 'fa-circle-exclamation'
+                                : 'fa-bell');
                     @endphp
 
                     <div class="bg-[#1a1a1a] border {{ $isUnread ? 'border-lime-400/40' : 'border-gray-800' }} rounded-2xl p-5 flex items-start gap-4">
+
+                        {{-- Icon --}}
                         <div class="w-10 h-10 rounded-full border flex items-center justify-center shrink-0 {{ $color }}">
-                            <i class="fa-solid {{ $notification->type === 'rental_ending_soon' ? 'fa-clock' : ($notification->type === 'rental_denied' || $notification->type === 'rental_expired' ? 'fa-circle-exclamation' : 'fa-bell') }} text-sm"></i>
+                            <i class="fa-solid {{ $icon }} text-sm"></i>
                         </div>
 
+                        {{-- Content --}}
                         <div class="flex-1 min-w-0">
                             <div class="flex items-start justify-between gap-4">
                                 <div>
@@ -46,7 +85,10 @@
                                 </span>
                             </div>
 
+                            {{-- Actions --}}
                             <div class="flex items-center gap-2 mt-4">
+
+                                {{-- Open --}}
                                 @if ($notification->url)
                                     <form action="{{ route('notifications.read', $notification->id) }}" method="POST" data-livewire-form>
                                         @csrf
@@ -59,6 +101,7 @@
                                     </form>
                                 @endif
 
+                                {{-- Mark Read / Read label --}}
                                 @if ($isUnread)
                                     <form action="{{ route('notifications.read', $notification->id) }}" method="POST" data-livewire-form>
                                         @csrf
@@ -71,6 +114,18 @@
                                 @else
                                     <span class="text-gray-600 text-[10px] font-bold uppercase tracking-widest">Read</span>
                                 @endif
+
+                                {{-- Delete single --}}
+                                <form action="{{ route('notifications.delete', $notification->id) }}" method="POST" data-livewire-form class="ml-auto">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                        title="Delete notification"
+                                        class="w-8 h-8 flex items-center justify-center rounded-full border border-red-500/20 text-red-400 hover:bg-red-500/10 hover:border-red-500/40 transition">
+                                        <i class="fa-solid fa-trash text-[11px]"></i>
+                                    </button>
+                                </form>
+
                             </div>
                         </div>
                     </div>

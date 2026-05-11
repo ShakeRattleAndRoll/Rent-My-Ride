@@ -107,7 +107,7 @@
             <div class="flex items-center gap-2 mt-1">
                 @if ($isDeclined)
                     <p class="text-gray-500 text-[10px] italic text-center leading-tight px-1">
-                        This request is no longer available because it has been denied or the listing has been updated.
+                        Rental request declined due to availability or updated rental details.
                     </p>
                 @endif
                 <button onclick="document.getElementById('delete-modal-{{ $rental->id }}').classList.remove('hidden')"

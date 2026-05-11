@@ -98,7 +98,12 @@
 ## PARTIALLY DONE
 
 ### FEATURES
-* Pre order conflict schedules
+* Separate the history of rented cars
+* Pre order History
+* Delete modal of notification
+* Display in Available cars and in profile stalking even active cars
+* Display the occupied until date
+* Redesign My Listing "Details"
 * Authorization:
     * Email Verification
     * Log in and Sign up UI improvements

@@ -77,6 +77,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/notifications/count', [NotificationController::class, 'count'])->name('notifications.count');
     Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
     Route::patch('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
+    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.delete');
+    Route::delete('/notifications', [NotificationController::class, 'destroyAll'])->name('notifications.delete-all');   
 });
 
 // Routes for garage listing

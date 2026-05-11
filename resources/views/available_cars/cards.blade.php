@@ -4,12 +4,10 @@
 
 <div
     x-data="{ open: false, profileOpen: false}"
-    class="relative car-card bg-[#1e1e1e] rounded-2xl overflow-hidden border border-white/5 {{ $isOccupied ? 'opacity-75' : 'hover:border-yellow-400/40' }} transition-all shadow-lg flex flex-col h-full"
+    class="relative car-card bg-[#1e1e1e] rounded-2xl overflow-hidden border border-white/5 hover:border-yellow-400/40 transition-all shadow-lg flex flex-col h-full"
 >
-    {{-- Clickable overlay --}}
-    @unless($isOccupied)
-        <div @click="open = true" class="absolute inset-0 z-10 block cursor-pointer" aria-label="View Details"></div>
-    @endunless
+    {{-- Clickable overlay — covers image + details only, stops before the button strip --}}
+    <div @click="open = true" class="absolute inset-x-0 top-0 bottom-[64px] z-10 block cursor-pointer" aria-label="View Details"></div>
 
     {{-- Car Image --}}
     <div class="relative w-full h-48 bg-[#2a2a2a] overflow-hidden">
@@ -25,9 +23,9 @@
             </div>
         @endif
 
+        {{-- Occupied badge — always shown when occupied, no dark overlay --}}
         @if($isOccupied)
-            <div class="absolute inset-0 bg-black/45"></div>
-            <div class="absolute top-3 left-3 px-3 py-1 rounded-full bg-red-600 text-white text-[10px] font-black uppercase tracking-widest">
+            <div class="absolute top-3 left-3 px-3 py-1 rounded-full bg-red-600 text-white text-[10px] font-black uppercase tracking-widest z-10">
                 Occupied
             </div>
         @endif
@@ -65,13 +63,7 @@
     </div>
 
     <div class="mt-auto p-4 pt-0 relative z-20" style="font-family: 'Montserrat', sans-serif;">
-        @if($isOccupied)
-            <div class="w-full py-3 bg-red-600/10 border border-red-600/30 text-red-400 text-[10px] font-bold uppercase tracking-widest rounded-xl text-center flex items-center justify-center gap-2">
-                <i class="fa-solid fa-lock"></i>
-                Currently Occupied
-            </div>
-
-        @elseif(Auth::check() && $car->user_id === Auth::id())
+        @if(Auth::check() && $car->user_id === Auth::id())
             <a href="/garage/my-listing" wire:navigate data-nav-navigate
             class="w-full block py-3 bg-gray-800 border border-white/5 text-gray-400 text-[10px] font-bold uppercase tracking-widest rounded-xl text-center">
                 You Own This
@@ -89,7 +81,7 @@
                 Already in Cart
             </div>
 
-        @else 
+        @else
             <form action="/cart/add" method="POST" data-livewire-form>
                 @csrf
                 <input type="hidden" name="car_id" value="{{ $car->id }}">
@@ -102,8 +94,6 @@
         @endif
     </div>
 
-    @unless($isOccupied)
-        <x-modals.car_modal :car="$car" />
-    @endunless
+    <x-modals.car_modal :car="$car" />
 
 </div>
