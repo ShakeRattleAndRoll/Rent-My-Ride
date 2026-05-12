@@ -54,7 +54,11 @@
                             <div class="flex flex-col gap-2">
                                 <label class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Unique Username</label>
                                 <input type="text" name="username" required value="{{ old('username', auth()->user()?->username) }}"
-                                    class="w-full bg-[#242424] text-white px-5 py-4 rounded-2xl border border-white/5 outline-none focus:border-yellow-400 transition-all font-semibold">
+                                    class="w-full bg-[#242424] text-white px-5 py-4 rounded-2xl border outline-none font-semibold transition-all
+                                    {{ $errors->has('username') ? 'border-red-500 focus:border-red-500' : 'border-white/5 focus:border-yellow-400' }}">
+                                @error('username')
+                                    <p class="text-red-400 text-[10px] font-bold uppercase tracking-widest mt-1">{{ $message }}</p>
+                                @enderror
                             </div>
 
                             {{-- Full Name --}}
@@ -113,7 +117,11 @@
                                 <div class="flex flex-col gap-2">
                                     <label class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Email</label>
                                     <input type="email" name="email" required value="{{ old('email', auth()->user()?->email) }}"
-                                        class="w-full bg-[#242424] text-white p-4 rounded-2xl border border-white/5 outline-none focus:border-yellow-400 font-semibold">
+                                        class="w-full bg-[#242424] text-white p-4 rounded-2xl border outline-none font-semibold transition-all
+                                        {{ $errors->has('email') ? 'border-red-500 focus:border-red-500' : 'border-white/5 focus:border-yellow-400' }}">
+                                    @error('email')
+                                        <p class="text-red-400 text-[10px] font-bold uppercase tracking-widest mt-1">{{ $message }}</p>
+                                    @enderror
                                 </div>
                             </div>
                         </div>

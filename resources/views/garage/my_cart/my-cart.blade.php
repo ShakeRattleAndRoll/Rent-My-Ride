@@ -21,12 +21,12 @@
         </div>
     @endif
 
-    <div class="px-10 pb-10 space-y-4">
+    <div class="grid grid-cols-1 gap-4 px-4 pb-10 sm:grid-cols-2 sm:px-6 lg:grid-cols-3 xl:grid-cols-4 lg:px-10">
 
         @forelse ($carts as $cart)
             @include('garage.my_cart.cards', ['cart' => $cart])
         @empty
-        <div class="flex flex-col items-center justify-center py-24 text-center">
+        <div class="col-span-full flex flex-col items-center justify-center py-24 text-center">
             <a href="/available" wire:navigate>
                 <div class="w-16 h-16 rounded-full bg-[#1a1a1a] border border-gray-700 flex items-center justify-center mb-4">
                     <i class="fa-solid fa-cart-shopping text-gray-600 text-2xl"></i>

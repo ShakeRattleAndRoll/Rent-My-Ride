@@ -1,6 +1,6 @@
-<div class="w-1/3 md:w-80 bg-[#1a1a1a] rounded-3xl border border-white/5 flex flex-col shadow-2xl overflow-hidden">
+<div class="w-full max-h-80 bg-[#1a1a1a] rounded-3xl border border-white/5 flex flex-col shadow-2xl overflow-hidden lg:w-80 lg:max-h-none">
 
-    <div class="p-8 bg-[#242424]/50 border-b border-white/5 flex items-center justify-between">
+    <div class="p-5 sm:p-8 bg-[#242424]/50 border-b border-white/5 flex items-center justify-between">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-yellow-400 to-lime-400 p-[2px]">
                 <a href='/profile' wire:navigate>

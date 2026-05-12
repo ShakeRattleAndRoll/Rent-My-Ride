@@ -1,12 +1,15 @@
 var rentRideRentals = window.rentRideRentals || (window.rentRideRentals = {});
 
 function initRentRideRentals() {
-    const rows = document.querySelectorAll('[data-rental-row]');
+    const refreshRoot = document.querySelector('[data-rentals-live-refresh]');
+    const rows = refreshRoot?.querySelectorAll('[data-rental-row]') || [];
 
     if (rentRideRentals.statusTimer) {
         clearInterval(rentRideRentals.statusTimer);
         rentRideRentals.statusTimer = null;
     }
+
+    if (!refreshRoot) return;
 
     if (rows.length === 0) return;
 
@@ -21,7 +24,7 @@ function initRentRideRentals() {
     };
 
     const refreshRentalStatuses = async () => {
-        const currentRows = document.querySelectorAll('[data-rental-row]');
+        const currentRows = refreshRoot.querySelectorAll('[data-rental-row]');
         if (currentRows.length === 0) return;
 
         try {
@@ -37,7 +40,7 @@ function initRentRideRentals() {
             (data.rentals || []).forEach((rental) => {
                 activeIds.add(String(rental.id));
 
-                const row = document.querySelector(`[data-rental-row="${rental.id}"]`);
+                const row = refreshRoot.querySelector(`[data-rental-row="${rental.id}"]`);
                 if (!row || row.dataset.rentalStatus === rental.status_key) return;
 
                 row.dataset.rentalStatus = rental.status_key;

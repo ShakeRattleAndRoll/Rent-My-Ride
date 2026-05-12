@@ -87,10 +87,6 @@
                             <p class="text-[10px] font-black uppercase tracking-widest text-yellow-300">Vehicle Details</p>
                             <h1 class="mt-1 text-2xl font-black uppercase tracking-tight">Edit Listing</h1>
                         </div>
-                        <a href="/garage/my-listing" wire:navigate data-nav-navigate class="inline-flex items-center justify-center gap-2 rounded-lg border border-white/10 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-gray-300 transition hover:border-white/30 hover:text-white">
-                            <i class="fa-solid fa-arrow-left text-[11px]"></i>
-                            Cancel
-                        </a>
                     </div>
 
                     <div class="grid grid-cols-1 gap-5 p-5 md:grid-cols-2">

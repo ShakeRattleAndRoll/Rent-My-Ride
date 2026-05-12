@@ -121,6 +121,7 @@ Route::post('/rent', [RentalController::class, 'store'])->middleware('auth');
 Route::get('/rentals/notifications', [RentalController::class, 'notifications'])->name('rentals.notifications')->middleware('auth');
 Route::get('/rentals/my-statuses', [RentalController::class, 'myStatuses'])->name('rentals.my-statuses')->middleware('auth');
 Route::get('/garage/my-rental', [RentalController::class, 'index'])->middleware('auth');
+Route::get('/garage/my-rental/history', [RentalController::class, 'history'])->middleware('auth');
 Route::get('/car/pre-order/{id}', [RentalController::class, 'showPreOrders'])->middleware('auth');
 Route::post('/rental/{id}/accept', [RentalController::class, 'accept'])->middleware('auth');
 Route::post('/rental/{id}/deny', [RentalController::class, 'deny'])->middleware('auth');

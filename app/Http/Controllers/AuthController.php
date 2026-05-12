@@ -42,7 +42,7 @@ class AuthController extends Controller
             'password'  => $request->password,
         ];
 
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+        if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             return redirect('/');
         }
@@ -383,6 +383,10 @@ class AuthController extends Controller
         $user->sex            = $request->sex;
         $user->address        = $request->address;
         $user->contact_number = $request->contact_number;
+
+        if (!$emailChanged) {
+            $user->email = $request->email;
+        }
 
         $user->save();
 

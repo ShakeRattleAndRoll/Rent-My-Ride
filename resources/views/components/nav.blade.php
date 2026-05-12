@@ -145,7 +145,7 @@
                         {{ $totalPendingOrders > 99 ? '99+' : $totalPendingOrders }}
                     </span>
                 </a>
-                <a href="/garage/my-rental" wire:navigate data-nav-navigate @guest data-auth-required @endguest class="px-2 py-1 rounded-lg {{ request()->is('garage/my-rental') ? 'bg-lime-400 text-black' : 'text-gray-400 hover:text-lime-400' }} transition-colors">My Rental</a>
+                <a href="/garage/my-rental" wire:navigate data-nav-navigate @guest data-auth-required @endguest class="px-2 py-1 rounded-lg {{ request()->is('garage/my-rental*') ? 'bg-lime-400 text-black' : 'text-gray-400 hover:text-lime-400' }} transition-colors">My Rental</a>
                 <a href="/garage/my-cart" wire:navigate data-nav-navigate @guest data-auth-required @endguest class="px-2 py-1 rounded-lg {{ request()->is('garage/my-cart') ? 'bg-lime-400 text-black' : 'text-gray-400 hover:text-lime-400' }} transition-colors">My Cart</a>
             </div>
         </div>

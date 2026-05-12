@@ -167,10 +167,35 @@ class RentalController extends Controller
         $rentals = Rental::with('car')
             ->where('user_id', Auth::id())
             ->where('hidden_by_renter', false)
+            ->where(function ($query) {
+                $query->where('status', 'pending')
+                    ->orWhere(function ($query) {
+                        $query->where('status', 'accepted')
+                            ->where('end_date', '>=', now());
+                    });
+            })
             ->latest()
             ->get();
 
         return view('garage.my_rentals.my-rental', compact('rentals'));
+    }
+
+    public function history()
+    {
+        $rentals = Rental::with('car')
+            ->where('user_id', Auth::id())
+            ->where('hidden_by_renter', false)
+            ->where(function ($query) {
+                $query->where('status', 'denied')
+                    ->orWhere(function ($query) {
+                        $query->where('status', 'accepted')
+                            ->where('end_date', '<', now());
+                    });
+            })
+            ->latest()
+            ->get();
+
+        return view('garage.my_rentals.history', compact('rentals'));
     }
 
     public function myStatuses()
@@ -178,6 +203,13 @@ class RentalController extends Controller
         $rentals = Rental::with('car.user')
             ->where('user_id', Auth::id())
             ->where('hidden_by_renter', false)
+            ->where(function ($query) {
+                $query->where('status', 'pending')
+                    ->orWhere(function ($query) {
+                        $query->where('status', 'accepted')
+                            ->where('end_date', '>=', now());
+                    });
+            })
             ->latest()
             ->get();
 
