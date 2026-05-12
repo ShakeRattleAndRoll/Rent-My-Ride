@@ -103,20 +103,24 @@
 * Landing page 
 * Authorization:
     * Email Verification
-    * "Remember me" and "Forgot Password" feature
+    * "Forgot Password" feature
+
+#### Added Features & Bug Fixes 5/13/2026
+* Separate the history of rented cars
+* Message not appearing after action fixed
+* Available Page, My Listings, My Rentals and My Cart
+        * Details (Listings and Rentals)
+        * Cards improvement
 
 ## PARTIALLY DONE
 
 ### FEATURES
-* Auto accept nearest start day -- ikaw ani boi
-* Separate the history of rented cars
+* Auto accept nearest start day
+* Livewire some pages of receiving code -- ikaw ani duha palihog
+
 * Pre order History
-* Redesign My Listing "Details"
 * Not Responsive:
     * Homepage
         * Background
-    * Available Page, My Listings, My Rentals and My Cart
-        * Details (Listings and Rentals)
-        * Cards improvement
     * Messages
         * Improvement

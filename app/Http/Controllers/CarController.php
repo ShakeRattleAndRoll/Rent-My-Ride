@@ -258,7 +258,7 @@ class CarController extends Controller
             $car->update($carAttributes);
         });
 
-        return redirect('/garage/my-listing')->with('feedback', 'Car updated successfully!');
+        return redirect('/garage/my-listing')->with('success', 'Car updated successfully!');
     }
 
     public function show(Car $car)

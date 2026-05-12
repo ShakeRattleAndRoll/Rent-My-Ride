@@ -123,18 +123,7 @@
                         </div>
                     </div>
 
-                    <div class="flex items-center justify-between gap-4 text-xs">
-                        <label class="flex items-center gap-2 text-gray-300">
-                            <input
-                                type="checkbox"
-                                name="remember"
-                                value="1"
-                                {{ old('remember') ? 'checked' : '' }}
-                                class="rounded border-white/10 bg-black text-lime-400 focus:ring-lime-400"
-                            >
-                            Remember me
-                        </label>
-
+                    <div class="flex justify-end text-xs">
                         <a href="{{ route('password.request') }}" class="font-semibold text-lime-400 hover:text-lime-300 transition">
                             Forgot password?
                         </a>

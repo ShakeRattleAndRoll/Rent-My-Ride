@@ -1,5 +1,5 @@
 <x-layout title="Messages">
-    <div class="bg-[#121212] min-h-screen text-white p-6 md:p-10" style="font-family: 'Montserrat', sans-serif;">
+    <div class="bg-[#121212] min-h-screen text-white p-4 sm:p-6 md:p-10" style="font-family: 'Montserrat', sans-serif;">
         <div class="max-w-6xl mx-auto flex flex-col gap-6">
 
             {{-- Search Bar --}}
@@ -99,8 +99,8 @@
                                 </template>
                             </div>
                             <div class="flex flex-col min-w-0">
-                                <span class="text-white text-sm font-semibold truncate" x-text="user.name || user.username"></span>
-                                <span class="text-gray-500 text-xs truncate" x-text="`@${user.username}`"></span>
+                                <span class="text-white text-sm font-semibold truncate" x-text="`@${user.username}`"></span>
+                                <span class="text-gray-500 text-xs truncate" x-text="user.name || user.full_name"></span>
                             </div>
                         </a>
                     </template>
@@ -119,7 +119,7 @@
             </div>
 
             {{-- Main Chat Area --}}
-            <div class="flex gap-6 h-[85vh]">
+            <div class="flex h-auto min-h-[85vh] flex-col gap-4 lg:h-[85vh] lg:flex-row lg:gap-6">
                 @include('message.sidebar')
                 @include('message.chat_panel')
             </div>
