@@ -217,9 +217,12 @@
                                 pattern="^[^@]+@[^@]+\.[a-zA-Z]{2,}$"
                                 title="Email must be in the format: example@domain.com"
                                 class="w-full px-3 py-3 rounded-md bg-black border border-white/10 text-white placeholder-gray-500
-                                focus:outline-none focus:ring-2 focus:ring-lime-400 focus:border-lime-400/60
+                                focus:outline-none focus:ring-2 {{ $errors->has('email') ? 'focus:ring-red-500 border-red-500' : 'focus:ring-lime-400 focus:border-lime-400/60' }}
                                 transition autofill:bg-black autofill:text-white"
                             >
+                            @error('email')
+                                <p class="text-red-400 text-xs px-1 italic">{{ $message }}</p>
+                            @enderror
                         </div>
 
                     </div>

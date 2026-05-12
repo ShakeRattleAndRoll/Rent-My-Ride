@@ -64,7 +64,7 @@
                     class="mx-auto mb-10 w-64"
                 >
 
-                <form method="POST" action="/login" class="space-y-3">
+                <form method="POST" action="/login" class="space-y-3" autocomplete="off">
 
                     @csrf
 
@@ -90,6 +90,9 @@
                             name="email"
                             value="{{ old('email') }}"
                             placeholder="Enter email or username"
+                            autocomplete="off"
+                            autocapitalize="none"
+                            spellcheck="false"
                             class="w-full p-3 rounded-md bg-black border border-white/10 text-white placeholder-gray-500
                             focus:outline-none focus:ring-2 focus:ring-lime-400 focus:border-lime-400/60 transition"
                         >
@@ -108,6 +111,9 @@
                                 name="password"
                                 id="password"
                                 placeholder="Enter password"
+                                autocomplete="new-password"
+                                readonly
+                                onfocus="this.removeAttribute('readonly')"
                                 class="w-full p-3 rounded-md bg-black border border-white/10 text-white placeholder-gray-500
                                 pr-12 focus:outline-none focus:ring-2 focus:ring-lime-400 focus:border-lime-400/60 transition"
                             >
