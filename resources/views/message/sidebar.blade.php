@@ -1,8 +1,8 @@
-<div class="w-full max-h-80 bg-[#1a1a1a] rounded-3xl border border-white/5 flex flex-col shadow-2xl overflow-hidden lg:w-80 lg:max-h-none">
+<div class="{{ $activeContact ? 'hidden lg:flex' : 'flex' }} w-full min-w-0 shrink-0 rounded-2xl bg-[#1a1a1a] border-white/5 flex-col overflow-hidden shadow-2xl lg:w-80 lg:rounded-3xl lg:border">
 
     <div class="p-5 sm:p-8 bg-[#242424]/50 border-b border-white/5 flex items-center justify-between">
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-yellow-400 to-lime-400 p-[2px]">
+            <div class="w-10 h-10 rounded-full bg-lime-400 p-[2px]">
                 <a href='/profile' wire:navigate>
                     <img src="{{ auth()->user()->profile_picture ? asset('storage/' . auth()->user()->profile_picture) : 'https://ui-avatars.com/api/?name=' . auth()->user()->username }}" 
                          class="w-full h-full rounded-full object-cover border-2 border-[#1a1a1a]">

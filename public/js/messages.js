@@ -33,12 +33,12 @@ function initMessages() {
     `;
 
     const formHtml = () => `
-        <div class="p-6 bg-[#1a1a1a] border-t border-white/5" data-chat-form-wrap>
-            <form id="chat-form" action="${chatComposer.dataset.storeUrl}" method="POST" class="flex items-center gap-3">
+        <div class="p-3 lg:p-6 bg-[#1a1a1a] border-t border-white/5" data-chat-form-wrap>
+            <form id="chat-form" action="${chatComposer.dataset.storeUrl}" method="POST" class="flex items-center gap-2 lg:gap-3">
                 <input type="hidden" id="receiver_id" name="receiver_id" value="${chatComposer.dataset.receiverId}">
                 <input type="text" id="message_body" name="body" placeholder="Write your message..."
-                    class="flex-1 bg-[#242424] text-white px-6 py-3.5 rounded-2xl border border-white/5 outline-none focus:border-yellow-400 transition-all font-medium text-sm">
-                <button type="submit" class="w-11 h-11 bg-yellow-400 text-black rounded-2xl flex items-center justify-center shadow-lg shadow-yellow-400/20 hover:bg-yellow-300 transition">
+                    class="min-w-0 flex-1 bg-[#242424] text-white px-4 py-3 lg:px-6 lg:py-3.5 rounded-2xl border border-white/5 outline-none focus:border-lime-400 transition-all font-medium text-sm">
+                <button type="submit" class="w-11 h-11 shrink-0 bg-lime-400 text-black rounded-2xl flex items-center justify-center shadow-lg shadow-lime-400/20 hover:bg-lime-300 transition">
                     <i class="fa-solid fa-paper-plane"></i>
                 </button>
             </form>
@@ -169,13 +169,13 @@ function createMessageElement(message, authId) {
     const isMine = Number(message.sender_id) === authId;
     const wrapper = document.createElement("div");
     wrapper.dataset.messageId = message.id;
-    wrapper.className = `flex flex-col ${isMine ? "items-end ml-auto" : "items-start"} max-w-[70%] mt-6`;
+    wrapper.className = `flex min-w-0 flex-col ${isMine ? "items-end ml-auto" : "items-start"} max-w-[84%] lg:max-w-[70%] mt-4 lg:mt-6`;
 
     const bubble = document.createElement("div");
-    bubble.className = `p-4 rounded-2xl shadow-md ${isMine ? "bg-yellow-400 text-black rounded-tr-none" : "bg-[#242424] text-gray-300 rounded-tl-none border border-white/5"}`;
+    bubble.className = `max-w-full px-4 py-3 lg:p-4 rounded-2xl shadow-md ${isMine ? "bg-lime-400 text-black rounded-tr-none" : "bg-[#242424] text-gray-300 rounded-tl-none border border-white/5"}`;
 
     const body = document.createElement("p");
-    body.className = "text-sm leading-relaxed";
+    body.className = "text-sm leading-relaxed break-words [overflow-wrap:anywhere]";
     body.textContent = message.body;
 
     const time = document.createElement("span");

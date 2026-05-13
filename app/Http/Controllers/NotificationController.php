@@ -9,6 +9,14 @@ use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
 {
+    private const TIMELINE_TYPES = [
+        'rental_ending_soon',
+        'rental_ending_15min',
+        'rental_ending_1hour',
+        'rental_ending_1day',
+        'rental_expired',
+    ];
+
     public function index(RentalNotificationService $notifications)
     {
         $notifications->generateTimelineNotifications(Auth::user());
@@ -67,14 +75,14 @@ class NotificationController extends Controller
         if (
             $notification->car &&
             $notification->user_id === $notification->car->user_id &&
-            in_array($notification->type, ['owner_rental_accepted', 'rental_ending_soon', 'rental_expired'], true)
+            in_array($notification->type, array_merge(['owner_rental_accepted'], self::TIMELINE_TYPES), true)
         ) {
             return url("/garage/details/{$notification->car_id}");
         }
 
         if (
             $notification->rental_id &&
-            in_array($notification->type, ['rental_accepted', 'rental_denied', 'rental_ending_soon', 'rental_expired'], true)
+            in_array($notification->type, array_merge(['rental_accepted', 'rental_denied'], self::TIMELINE_TYPES), true)
         ) {
             return url("/garage/my-rental?rental={$notification->rental_id}");
         }

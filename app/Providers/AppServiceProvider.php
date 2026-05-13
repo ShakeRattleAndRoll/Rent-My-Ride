@@ -9,6 +9,7 @@ use App\Models\Message;
 use App\Models\Rental;
 use App\Models\RentalNotification;
 use App\Models\UserRelation;
+use App\Services\RentalNotificationService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -35,6 +36,8 @@ class AppServiceProvider extends ServiceProvider
                     })
                     ->where('status', 'pending')
                     ->count();
+
+                app(RentalNotificationService::class)->generateTimelineNotifications(Auth::user());
 
                 $totalUnreadNotifications = RentalNotification::where('user_id', Auth::id())
                     ->whereNull('read_at')

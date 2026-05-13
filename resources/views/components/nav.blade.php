@@ -1,9 +1,9 @@
-<nav class="flex items-center justify-between px-10 py-5 bg-black h-20 relative"
+<nav class="flex items-center justify-between gap-12 px-5 py-5 bg-black h-20 relative sm:px-8 lg:px-10"
     style="font-family: 'Montserrat', sans-serif; letter-spacing: -0.02em;">
 
     {{-- LEFT --}}
-    <div class="flex items-center gap-4">
-        <button onclick="toggleSidebar()" class="md:hidden w-8 h-8 rounded-full bg-white text-black flex items-center justify-center">
+    <div class="flex shrink-0 items-center gap-4">
+        <button onclick="toggleSidebar()" class="lg:hidden w-8 h-8 rounded-full bg-white text-black flex items-center justify-center">
             <i class="fa-solid fa-bars text-sm"></i>
         </button>
 
@@ -31,7 +31,7 @@
         @endauth
 
         @guest
-            <div class="hidden md:flex items-center gap-3 text-[12px] uppercase tracking-wider font-bold">
+            <div class="hidden lg:flex items-center gap-3 text-[12px] uppercase tracking-wider font-bold">
                 <a href="{{ route('login') }}" class="px-5 py-2 rounded-full border border-white/20 text-white hover:border-lime-400 hover:text-lime-400 transition">
                     Log In
                 </a>
@@ -41,13 +41,13 @@
             </div>
         @endguest
 
-        <a href="/" wire:navigate data-nav-navigate>
-            <img src="{{ asset('images/Rent-My-Ride-Logo.png') }}" class="w-24 cursor-pointer shrink-0" alt="Logo">
+        <a href="/" wire:navigate data-nav-navigate class="shrink-0">
+            <img src="{{ asset('images/Rent-My-Ride-Logo.png') }}" class="w-24 cursor-pointer" alt="Logo">
         </a>
     </div>
 
     {{-- DESKTOP MENU --}}
-    <div class="hidden md:flex items-center gap-1 text-[12px] uppercase tracking-wider font-bold">
+    <div class="ml-12 hidden flex-1 items-center justify-end gap-1 text-[12px] uppercase tracking-wider font-bold lg:flex">
 
         <a href="/" wire:navigate data-nav-navigate class="px-4 py-2 rounded-full {{ request()->is('/') ? 'bg-lime-400 text-black' : 'text-white hover:text-lime-400' }}">
             Homepage

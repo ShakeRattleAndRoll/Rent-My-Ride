@@ -61,10 +61,17 @@ class RentalNotificationService
         );
     }
 
+    public function generateTimelineNotification(User $user): void
+    {
+        $this->generateTimelineNotifications($user);
+    }
+
     public function generateTimelineNotifications(User $user): void
     {
         $rentals = Rental::with('car')
             ->where('status', 'accepted')
+            ->whereNotNull('start_date')
+            ->whereNotNull('end_date')
             ->where(function ($query) use ($user) {
                 $query->where('user_id', $user->id)
                     ->orWhereHas('car', fn ($carQuery) => $carQuery->where('user_id', $user->id));
@@ -72,6 +79,10 @@ class RentalNotificationService
             ->get();
 
         foreach ($rentals as $rental) {
+            if (! $rental->car) {
+                continue;
+            }
+
             $end     = Carbon::parse($rental->end_date);
             $start   = Carbon::parse($rental->start_date);
             $isOwner = $rental->car->user_id === $user->id;
