@@ -15,9 +15,61 @@
 }
 
 #car-viewer canvas {
-    cursor: grab;
+    cursor: default;
+    height: 100% !important;
+    touch-action: auto;
+    width: 100% !important;
 }
 
 #car-viewer canvas:active {
-    cursor: grabbing;
+    cursor: default;
+}
+
+.car-hero-grid {
+    background-image:
+        linear-gradient(rgba(15, 23, 42, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15, 23, 42, 0.08) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.75), transparent 68%);
+}
+
+.car-showcase-controls {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    border: 1px solid rgba(15, 23, 42, 0.1);
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.78);
+    box-shadow: 0 18px 60px rgba(15, 23, 42, 0.16);
+    padding: 0.9rem;
+    backdrop-filter: blur(14px);
+}
+
+.car-range-field {
+    display: grid;
+    grid-template-columns: 4.25rem 1fr;
+    align-items: center;
+    gap: 0.75rem;
+    color: #0f172a;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.car-range-field span {
+    color: rgba(15, 23, 42, 0.62);
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.car-range-field input {
+    width: 100%;
+    accent-color: #a3e635;
+    cursor: pointer;
+}
+
+@media (min-width: 768px) {
+    .car-showcase-controls {
+        grid-template-columns: 1fr 1fr;
+    }
 }
