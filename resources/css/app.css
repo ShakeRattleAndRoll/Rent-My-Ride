@@ -13,3 +13,11 @@
 [x-cloak] { 
     display: none !important; 
 }
+
+#car-viewer canvas {
+    cursor: grab;
+}
+
+#car-viewer canvas:active {
+    cursor: grabbing;
+}
