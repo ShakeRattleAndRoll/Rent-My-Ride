@@ -64,7 +64,7 @@
                 >
 
                 {{-- FORM --}}
-                <form method="POST" action="/register" class="space-y-3" id="registerForm">
+                <form method="POST" action="/register" class="space-y-3" id="registerForm" data-livewire-form>
 
                     @csrf
 
@@ -288,7 +288,7 @@
                     {{-- BUTTON --}}
                     <button
                         class="w-full py-3 rounded-md font-black text-black bg-lime-400 uppercase tracking-wide
-                        hover:bg-lime-300 active:scale-95 transition duration-200"
+                        hover:bg-lime-300 active:scale-95 transition duration-200" 
                     >
                         SEND VERIFICATION CODE
                     </button>
@@ -298,7 +298,7 @@
                 {{-- LOGIN --}}
                 <p class="text-gray-400 mt-3 text-sm text-center">
                     Already have an account?
-                    <a href="/login" class="text-lime-400 hover:text-lime-300 font-semibold transition">Log in</a>
+                    <a href="/login" wire:navigate class="text-lime-400 hover:text-lime-300 font-semibold transition">Log in</a>
                 </p>
 
             </div>

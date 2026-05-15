@@ -21,11 +21,23 @@ class NotificationController extends Controller
     {
         $notifications->generateTimelineNotifications(Auth::user());
 
-        $items = RentalNotification::where('user_id', Auth::id())
-            ->latest()
-            ->paginate(15);
+        $items = $this->notificationItems();
 
         return view('notifications.index', compact('items'));
+    }
+
+    public function items(RentalNotificationService $notifications)
+    {
+        $notifications->generateTimelineNotifications(Auth::user());
+
+        $items = $this->notificationItems();
+
+        return response()->json([
+            'html' => view('notifications.partials.list', compact('items'))->render(),
+            'unread_notifications' => RentalNotification::where('user_id', Auth::id())
+                ->whereNull('read_at')
+                ->count(),
+        ]);
     }
 
     public function count(RentalNotificationService $notifications)
@@ -120,5 +132,13 @@ class NotificationController extends Controller
         }
 
         return redirect()->back()->with('success', 'All notifications deleted.');
+    }
+
+    private function notificationItems()
+    {
+        return RentalNotification::where('user_id', Auth::id())
+            ->latest()
+            ->paginate(15)
+            ->withPath(route('notifications.index'));
     }
 }

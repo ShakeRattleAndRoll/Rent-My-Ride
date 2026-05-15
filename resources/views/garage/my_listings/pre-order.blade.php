@@ -50,13 +50,18 @@
             </div>
 
             {{-- Auto-Accept --}}
-            <div class="flex items-center justify-between gap-6 bg-[#1a1a1a] border border-gray-800 rounded-2xl p-6 mb-8">
+            <div data-auto-accept-panel class="flex items-center justify-between gap-6 bg-[#1a1a1a] border border-gray-800 rounded-2xl p-6 mb-8">
                 <div>
-                    <h3 class="text-white font-bold text-sm uppercase tracking-wider">Auto-Accept Requests</h3>
+                    <div class="flex items-center gap-2">
+                        <h3 data-auto-accept-title class="{{ $car->auto_accept ? 'text-lime-400' : 'text-white' }} font-bold text-sm uppercase tracking-wider">Auto-Accept Requests</h3>
+                        <span data-auto-accept-status class="rounded-full border border-white/10 px-2 py-0.5 text-[8px] font-black uppercase tracking-widest {{ $car->auto_accept ? 'text-lime-300' : 'text-gray-500' }}">
+                            {{ $car->auto_accept ? 'On' : 'Off' }}
+                        </span>
+                    </div>
                     <p class="text-gray-500 text-[10px] mt-1">When enabled, pending and new requests are accepted by priority if their dates are still available.</p>
                 </div>
 
-                <form action="{{ route('car.toggle-auto-accept', $car->id) }}" method="POST" data-livewire-form data-preserve-scroll
+                <form action="{{ route('car.toggle-auto-accept', $car->id) }}" method="POST" data-livewire-form data-stay-on-submit data-auto-accept-form
                       class="flex items-center justify-end gap-4">
                     @csrf
                     @method('PATCH')

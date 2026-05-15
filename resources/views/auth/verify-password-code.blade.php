@@ -35,7 +35,7 @@
                 </p>
             </div>
 
-            <form method="POST" action="{{ route('password.verify-code.submit') }}" class="space-y-4">
+            <form method="POST" action="{{ route('password.verify-code.submit') }}" class="space-y-4" data-livewire-form>
                 @csrf
 
                 <div class="space-y-1">

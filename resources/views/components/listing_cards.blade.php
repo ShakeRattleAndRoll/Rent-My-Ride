@@ -49,6 +49,18 @@
 
             {{-- Status + Details --}}
             <div class="flex flex-wrap items-center gap-2">
+                @if (($car->approval_status ?? 'approved') === 'pending')
+                    <span class="rounded-full bg-yellow-400 px-2.5 py-1 text-[11px] font-bold text-black">Pending Approval</span>
+                @endif
+
+                @if (($car->approval_status ?? 'approved') === 'approved')
+                    @if ($car->is_available)
+                        <span class="rounded-full bg-lime-500 px-2.5 py-1 text-[11px] font-bold text-black">Visible</span>
+                    @else
+                        <span class="rounded-full bg-red-500 px-2.5 py-1 text-[11px] font-bold text-white">Hidden</span>
+                    @endif
+                @endif
+
                 @if ($IsOccupied)
                     <span class="rounded-full bg-green-500 px-2.5 py-1 text-[11px] font-bold text-white">Occupied</span>
                 @else
@@ -64,26 +76,77 @@
 
         {{-- Price + Actions --}}
         <div class="mt-auto flex flex-col gap-2.5 pt-4">
-            <form action="{{ route('car.toggle-auto-accept', $car->id) }}" method="POST" data-livewire-form data-preserve-scroll
-                  class="flex items-center justify-between gap-2">
+            <form action="{{ route('garage.availability', $car->id) }}" method="POST" data-livewire-form data-preserve-scroll
+                  class="flex items-center justify-between gap-2 rounded-lg border border-white/5 bg-black/20 px-3 py-2">
                 @csrf
                 @method('PATCH')
-                <input type="hidden" name="auto_accept" value="0">
-                <input type="hidden" name="auto_accept_priority" value="{{ $car->auto_accept_priority ?? 'first_pending' }}">
-                <span class="text-[9px] font-black uppercase tracking-widest {{ $car->auto_accept ? 'text-lime-400' : 'text-gray-500' }}">
-                    Auto Accept
+                <input type="hidden" name="is_available" value="0">
+                <span class="text-[9px] font-black uppercase tracking-widest {{ $car->is_available ? 'text-lime-400' : 'text-gray-500' }}">
+                    Show on Website
                 </span>
                 <label class="relative inline-flex h-5 w-10 cursor-pointer items-center">
                     <input type="checkbox"
-                        name="auto_accept"
+                        name="is_available"
                         value="1"
                         class="peer sr-only"
                         onchange="this.form.requestSubmit()"
-                        {{ $car->auto_accept ? 'checked' : '' }}>
+                        {{ $car->is_available ? 'checked' : '' }}>
                     <span class="absolute inset-0 rounded-full bg-gray-700 transition-colors duration-200 peer-checked:bg-lime-500"></span>
                     <span class="relative ml-1 inline-block h-3.5 w-3.5 rounded-full bg-white transition-transform duration-200 peer-checked:translate-x-5"></span>
                 </label>
             </form>
+
+            <details data-auto-accept-panel class="group relative rounded-lg border border-white/5 bg-black/20 px-3 py-2 open:z-30">
+                <summary class="flex cursor-pointer list-none items-center justify-between gap-2">
+                    <span class="flex items-center gap-2">
+                        <span data-auto-accept-title class="text-[9px] font-black uppercase tracking-widest {{ $car->auto_accept ? 'text-lime-400' : 'text-gray-500' }}">
+                            Auto Accept
+                        </span>
+                        <span data-auto-accept-status class="rounded-full border border-white/10 px-2 py-0.5 text-[8px] font-black uppercase tracking-widest {{ $car->auto_accept ? 'text-lime-300' : 'text-gray-500' }}">
+                            {{ $car->auto_accept ? 'On' : 'Off' }}
+                        </span>
+                    </span>
+
+                    <span class="flex items-center gap-2">
+                        <span class="text-[8px] font-black uppercase tracking-widest text-gray-500 group-open:hidden">Settings</span>
+                        <span class="hidden text-[8px] font-black uppercase tracking-widest text-gray-500 group-open:inline">Hide</span>
+                        <i class="fa-solid fa-chevron-down text-[10px] text-gray-500 transition group-open:rotate-180"></i>
+                    </span>
+                </summary>
+
+                <form action="{{ route('car.toggle-auto-accept', $car->id) }}" method="POST" data-livewire-form data-stay-on-submit data-auto-accept-form
+                      class="absolute left-0 right-0 top-full z-30 mt-1 rounded-lg border border-white/10 bg-[#171717] p-3 shadow-2xl shadow-black/60">
+                @csrf
+                @method('PATCH')
+                <input type="hidden" name="auto_accept" value="0">
+
+                <div class="mb-2 flex items-center justify-between gap-2">
+                    <span class="text-[9px] font-black uppercase tracking-widest {{ $car->auto_accept ? 'text-lime-400' : 'text-gray-500' }}">
+                        Auto Accept
+                    </span>
+                    <label class="relative inline-flex h-5 w-10 cursor-pointer items-center">
+                        <input type="checkbox"
+                            name="auto_accept"
+                            value="1"
+                            class="peer sr-only"
+                            onchange="this.form.requestSubmit()"
+                            {{ $car->auto_accept ? 'checked' : '' }}>
+                        <span class="absolute inset-0 rounded-full bg-gray-700 transition-colors duration-200 peer-checked:bg-lime-500"></span>
+                        <span class="relative ml-1 inline-block h-3.5 w-3.5 rounded-full bg-white transition-transform duration-200 peer-checked:translate-x-5"></span>
+                    </label>
+                </div>
+
+                <label class="mb-1 block text-[8px] font-black uppercase tracking-widest text-gray-500">Priority</label>
+                <select name="auto_accept_priority"
+                    onchange="this.form.requestSubmit()"
+                    class="w-full rounded-lg border border-white/10 bg-[#242424] px-2.5 py-2 text-[10px] font-bold uppercase tracking-widest text-gray-300 outline-none transition focus:border-lime-400">
+                    <option value="first_pending" {{ ($car->auto_accept_priority ?? 'first_pending') === 'first_pending' ? 'selected' : '' }}>First Pending</option>
+                    <option value="shortest" {{ ($car->auto_accept_priority ?? 'first_pending') === 'shortest' ? 'selected' : '' }}>Shortest Duration</option>
+                    <option value="longest" {{ ($car->auto_accept_priority ?? 'first_pending') === 'longest' ? 'selected' : '' }}>Longest Duration</option>
+                    <option value="nearest" {{ ($car->auto_accept_priority ?? 'first_pending') === 'nearest' ? 'selected' : '' }}>Nearest Start Date</option>
+                </select>
+                </form>
+            </details>
 
             <p class="text-sm font-bold text-white">
                 &#8369;{{ number_format($car->price, 0) }}

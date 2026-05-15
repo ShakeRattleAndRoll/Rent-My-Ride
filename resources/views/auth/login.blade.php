@@ -130,7 +130,7 @@
                     </div>
 
                     <div class="flex justify-end text-xs">
-                        <a href="{{ route('password.request') }}" class="font-semibold text-lime-400 hover:text-lime-300 transition">
+                        <a href="{{ route('password.request') }}" wire:navigate class="font-semibold text-lime-400 hover:text-lime-300 transition">
                             Forgot password?
                         </a>
                     </div>
@@ -149,7 +149,7 @@
                 {{-- REGISTER --}}
                 <p class="text-gray-400 mt-4 text-sm">
                     Don't have account?
-                    <a href="/register" class="text-lime-400 hover:text-lime-300 font-semibold transition">
+                    <a href="/register" wire:navigate class="text-lime-400 hover:text-lime-300 font-semibold transition">
                         Sign Up
                     </a>
                 </p>

@@ -28,6 +28,46 @@ function setBadgeCount(badge, count) {
     badge.classList.toggle('flex', hasCount);
 }
 
+window.setRentRideBadgeCount = setBadgeCount;
+
+function restoreRentRideSubmitScroll() {
+    let saved = null;
+
+    try {
+        saved = JSON.parse(sessionStorage.getItem('rentRideScrollAfterSubmit') || 'null');
+    } catch (error) {
+        saved = null;
+    }
+
+    if (!saved) return;
+
+    if (saved.url === window.location.href) {
+        requestAnimationFrame(() => window.scrollTo(saved.x || 0, saved.y || 0));
+    }
+
+    sessionStorage.removeItem('rentRideScrollAfterSubmit');
+}
+
+function updateAutoAcceptCard(form, enabled) {
+    const panel = form.closest('[data-auto-accept-panel]') || form.closest('details');
+    const title = panel?.querySelector('[data-auto-accept-title]');
+    const status = panel?.querySelector('[data-auto-accept-status]');
+    const toggleLabel = form.querySelector('div span');
+
+    [title, toggleLabel].forEach((element) => {
+        if (!element) return;
+
+        element.classList.toggle('text-lime-400', enabled);
+        element.classList.toggle('text-gray-500', !enabled);
+    });
+
+    if (status) {
+        status.textContent = enabled ? 'On' : 'Off';
+        status.classList.toggle('text-lime-300', enabled);
+        status.classList.toggle('text-gray-500', !enabled);
+    }
+}
+
 function openDeleteNotifModal(actionUrl, deleteAll = false) {
     const form = document.getElementById('delete-notification-form');
     const modal = document.getElementById('delete-notification-modal');
@@ -96,8 +136,9 @@ async function refreshRentRideNotifications() {
     const pendingOrderBadges = document.querySelectorAll('[data-pending-orders-badge]');
     const carPendingOrderBadges = document.querySelectorAll('[data-car-pending-orders-badge]');
     const notificationBadges = document.querySelectorAll('[data-unread-notifications-badge]');
+    const adminApprovalBadges = document.querySelectorAll('[data-admin-pending-approvals-badge]');
 
-    if (unreadBadges.length === 0 && contactBadges.length === 0 && pendingOrderBadges.length === 0 && carPendingOrderBadges.length === 0 && notificationBadges.length === 0) return;
+    if (unreadBadges.length === 0 && contactBadges.length === 0 && pendingOrderBadges.length === 0 && carPendingOrderBadges.length === 0 && notificationBadges.length === 0 && adminApprovalBadges.length === 0) return;
 
     if (unreadBadges.length > 0 || contactBadges.length > 0) {
         try {
@@ -155,6 +196,21 @@ async function refreshRentRideNotifications() {
             console.error('Unable to refresh notifications.', error);
         }
     }
+
+    if (adminApprovalBadges.length > 0) {
+        try {
+            const response = await fetch('/admin/cars/pending/items', {
+                headers: { Accept: 'application/json' },
+            });
+
+            if (!response.ok) return;
+
+            const data = await response.json();
+            adminApprovalBadges.forEach((badge) => setBadgeCount(badge, Number(data.count || 0)));
+        } catch (error) {
+            console.error('Unable to refresh admin approval notifications.', error);
+        }
+    }
 }
 
 function initRentRideNavbar() {
@@ -162,6 +218,7 @@ function initRentRideNavbar() {
         clearInterval(rentRideNavbar.notificationTimer);
     }
 
+    restoreRentRideSubmitScroll();
     refreshRentRideNotifications();
     rentRideNavbar.notificationTimer = setInterval(refreshRentRideNotifications, 2000);
 }
@@ -236,18 +293,19 @@ if (!rentRideNavbar.bound) {
         const navigateAfterSubmit = (url) => {
             const targetUrl = url || window.location.href;
 
-            if (!preserveScroll) {
-                window.Livewire.navigate(targetUrl, { scroll: false });
-                return;
+            if (preserveScroll) {
+                try {
+                    sessionStorage.setItem('rentRideScrollAfterSubmit', JSON.stringify({
+                        url: targetUrl,
+                        x: scrollPosition.x,
+                        y: scrollPosition.y,
+                    }));
+                } catch (error) {
+                    // Ignore storage failures; the redirect still needs to happen.
+                }
             }
 
-            const restoreScroll = () => {
-                window.scrollTo(scrollPosition.x, scrollPosition.y);
-            };
-
-            document.addEventListener('livewire:navigated', restoreScroll, { once: true });
-            window.Livewire.navigate(targetUrl, { scroll: false });
-            requestAnimationFrame(() => requestAnimationFrame(restoreScroll));
+            window.location.replace(targetUrl);
         };
 
         if (submitButton) {
@@ -268,19 +326,37 @@ if (!rentRideNavbar.bound) {
                 closeDeleteNotifModal();
             }
 
-            if (response.redirected) {
-                navigateAfterSubmit(response.url);
-                return;
-            }
-
             const contentType = response.headers.get('content-type') || '';
 
             if (contentType.includes('application/json')) {
                 const data = await response.json();
+                document.dispatchEvent(new CustomEvent('rentride:form-submitted', { detail: { form, data } }));
+
+                if (form.hasAttribute('data-stay-on-submit')) {
+                    if (form.hasAttribute('data-auto-accept-form')) {
+                        updateAutoAcceptCard(form, Boolean(data.auto_accept));
+                    }
+
+                    window.refreshRentRideNotifications?.();
+                    return;
+                }
+
                 navigateAfterSubmit(data.redirect);
                 return;
             }
 
+            if (!response.ok) {
+                form.submit();
+                return;
+            }
+
+            if (response.redirected) {
+                document.dispatchEvent(new CustomEvent('rentride:form-submitted', { detail: { form } }));
+                navigateAfterSubmit(response.url);
+                return;
+            }
+
+            document.dispatchEvent(new CustomEvent('rentride:form-submitted', { detail: { form } }));
             navigateAfterSubmit(window.location.href);
         } catch (error) {
             form.submit();

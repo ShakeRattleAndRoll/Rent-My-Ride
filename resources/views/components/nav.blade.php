@@ -1,5 +1,8 @@
 <nav class="flex items-center justify-between gap-12 px-5 py-5 bg-black h-20 relative sm:px-8 lg:px-10"
     style="font-family: 'Montserrat', sans-serif; letter-spacing: -0.02em;">
+    @php
+        $isAdmin = auth()->check() && auth()->user()->is_admin;
+    @endphp
 
     {{-- LEFT --}}
     <div class="flex shrink-0 items-center gap-4">
@@ -20,22 +23,24 @@
                 @endif
             </a>
 
-            <a href="/notifications" wire:navigate data-nav-navigate
-               class="relative w-10 h-10 rounded-full bg-[#242424] border border-white/10 flex items-center justify-center shrink-0 text-gray-300 hover:text-lime-400 hover:border-lime-400 transition-colors {{ request()->is('notifications*') ? 'border-lime-400 text-lime-400' : '' }}"
-               title="Notifications">
-                <i class="fa-solid fa-bell text-sm"></i>
-                <span data-unread-notifications-badge class="absolute -top-1 -right-1 w-4 h-4 bg-red-600 rounded-full text-white text-[9px] {{ $totalUnreadNotifications > 0 ? 'flex' : 'hidden' }} items-center justify-center font-black animate-pulse">
-                    {{ $totalUnreadNotifications > 99 ? '99+' : $totalUnreadNotifications }}
-                </span>
-            </a>
+            @unless($isAdmin)
+                <a href="/notifications" wire:navigate data-nav-navigate
+                   class="relative w-10 h-10 rounded-full bg-[#242424] border border-white/10 flex items-center justify-center shrink-0 text-gray-300 hover:text-lime-400 hover:border-lime-400 transition-colors {{ request()->is('notifications*') ? 'border-lime-400 text-lime-400' : '' }}"
+                   title="Notifications">
+                    <i class="fa-solid fa-bell text-sm"></i>
+                    <span data-unread-notifications-badge class="absolute -top-1 -right-1 w-4 h-4 bg-red-600 rounded-full text-white text-[9px] {{ $totalUnreadNotifications > 0 ? 'flex' : 'hidden' }} items-center justify-center font-black animate-pulse">
+                        {{ $totalUnreadNotifications > 99 ? '99+' : $totalUnreadNotifications }}
+                    </span>
+                </a>
+            @endunless
         @endauth
 
         @guest
             <div class="hidden lg:flex items-center gap-3 text-[12px] uppercase tracking-wider font-bold">
-                <a href="{{ route('login') }}" class="px-5 py-2 rounded-full border border-white/20 text-white hover:border-lime-400 hover:text-lime-400 transition">
+                <a href="{{ route('login') }}" wire:navigate data-nav-navigate class="px-5 py-2 rounded-full border border-white/20 text-white hover:border-lime-400 hover:text-lime-400 transition">
                     Log In
                 </a>
-                <a href="{{ route('register') }}" class="px-5 py-2 rounded-full bg-lime-400 text-black hover:bg-lime-300 transition">
+                <a href="{{ route('register') }}" wire:navigate data-nav-navigate class="px-5 py-2 rounded-full bg-lime-400 text-black hover:bg-lime-300 transition">
                     Sign Up
                 </a>
             </div>
@@ -49,46 +54,59 @@
     {{-- DESKTOP MENU --}}
     <div class="ml-12 hidden flex-1 items-center justify-end gap-1 text-[12px] uppercase tracking-wider font-bold lg:flex">
 
-        <a href="/" wire:navigate data-nav-navigate class="px-4 py-2 rounded-full {{ request()->is('/') ? 'bg-lime-400 text-black' : 'text-white hover:text-lime-400' }}">
-            Homepage
-        </a>
+        @unless($isAdmin)
+            <a href="/" wire:navigate data-nav-navigate class="px-4 py-2 rounded-full {{ request()->is('/') ? 'bg-lime-400 text-black' : 'text-white hover:text-lime-400' }}">
+                Homepage
+            </a>
 
-        <a href="/available" wire:navigate data-nav-navigate class="px-4 py-2 rounded-full {{ request()->is('available') ? 'bg-lime-400 text-black' : 'text-white hover:text-lime-400' }}">
-            Available Cars
-        </a>
+            <a href="/available" wire:navigate data-nav-navigate class="px-4 py-2 rounded-full {{ request()->is('available') ? 'bg-lime-400 text-black' : 'text-white hover:text-lime-400' }}">
+                Available Cars
+            </a>
 
-        {{-- Garage with pending orders badge --}}
-        <div class="relative group">
-            <button @guest data-auth-required @endguest class="relative flex items-center gap-1 px-4 py-2 rounded-full uppercase tracking-wider font-bold transition-all {{ request()->is('garage*') || request()->is('car/pre-order*') ? 'bg-lime-400 text-black' : 'text-white hover:text-lime-400' }}"
-                    style="font-family: inherit; letter-spacing: inherit;">
-                Garage
-                <svg class="w-3 h-3 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path>
-                </svg>
-                <span data-pending-orders-badge class="absolute -top-1 -right-1 w-4 h-4 bg-red-600 rounded-full text-white text-[9px] {{ $totalPendingOrders > 0 ? 'flex' : 'hidden' }} items-center justify-center font-black animate-pulse">
-                    {{ $totalPendingOrders > 99 ? '99+' : $totalPendingOrders }}
-                </span>
-            </button>
-
-            <div class="absolute left-0 mt-2 w-48 bg-[#111] border border-white/10 rounded-xl shadow-2xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                <a href="/garage/post-car" wire:navigate data-nav-navigate @guest data-auth-required @endguest class="block px-5 py-3 text-white hover:bg-lime-400 hover:text-black transition text-[11px]" style="font-family: inherit;">
-                    Post a Car
-                </a>
-                {{-- My Listings with badge --}}
-                <a href="/garage/my-listing" wire:navigate data-nav-navigate @guest data-auth-required @endguest class="relative flex items-center justify-between px-5 py-3 text-white hover:bg-lime-400 hover:text-black transition text-[11px]" style="font-family: inherit;">
-                    My Listings
-                    <span data-pending-orders-badge class="w-4 h-4 bg-red-600 rounded-full text-white text-[9px] {{ $totalPendingOrders > 0 ? 'flex' : 'hidden' }} items-center justify-center font-black">
+            {{-- Garage with pending orders badge --}}
+            <div class="relative group">
+                <button @guest data-auth-required @endguest class="relative flex items-center gap-1 px-4 py-2 rounded-full uppercase tracking-wider font-bold transition-all {{ request()->is('garage*') || request()->is('car/pre-order*') ? 'bg-lime-400 text-black' : 'text-white hover:text-lime-400' }}"
+                        style="font-family: inherit; letter-spacing: inherit;">
+                    Garage
+                    <svg class="w-3 h-3 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                    <span data-pending-orders-badge class="absolute -top-1 -right-1 w-4 h-4 bg-red-600 rounded-full text-white text-[9px] {{ $totalPendingOrders > 0 ? 'flex' : 'hidden' }} items-center justify-center font-black animate-pulse">
                         {{ $totalPendingOrders > 99 ? '99+' : $totalPendingOrders }}
                     </span>
-                </a>
-                <a href="/garage/my-rental" wire:navigate data-nav-navigate @guest data-auth-required @endguest class="block px-5 py-3 text-white hover:bg-lime-400 hover:text-black transition text-[11px]" style="font-family: inherit;">
-                    My Rental
-                </a>
-                <a href="/garage/my-cart" wire:navigate data-nav-navigate @guest data-auth-required @endguest class="block px-5 py-3 text-white hover:bg-lime-400 hover:text-black transition text-[11px]" style="font-family: inherit;">
-                    My Cart
-                </a>
+                </button>
+
+                <div class="absolute left-0 mt-2 w-48 bg-[#111] border border-white/10 rounded-xl shadow-2xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                    <a href="/garage/post-car" wire:navigate data-nav-navigate @guest data-auth-required @endguest class="block px-5 py-3 text-white hover:bg-lime-400 hover:text-black transition text-[11px]" style="font-family: inherit;">
+                        Post a Car
+                    </a>
+                    {{-- My Listings with badge --}}
+                    <a href="/garage/my-listing" wire:navigate data-nav-navigate @guest data-auth-required @endguest class="relative flex items-center justify-between px-5 py-3 text-white hover:bg-lime-400 hover:text-black transition text-[11px]" style="font-family: inherit;">
+                        My Listings
+                        <span data-pending-orders-badge class="w-4 h-4 bg-red-600 rounded-full text-white text-[9px] {{ $totalPendingOrders > 0 ? 'flex' : 'hidden' }} items-center justify-center font-black">
+                            {{ $totalPendingOrders > 99 ? '99+' : $totalPendingOrders }}
+                        </span>
+                    </a>
+                    <a href="/garage/my-rental" wire:navigate data-nav-navigate @guest data-auth-required @endguest class="block px-5 py-3 text-white hover:bg-lime-400 hover:text-black transition text-[11px]" style="font-family: inherit;">
+                        My Rental
+                    </a>
+                    <a href="/garage/my-cart" wire:navigate data-nav-navigate @guest data-auth-required @endguest class="block px-5 py-3 text-white hover:bg-lime-400 hover:text-black transition text-[11px]" style="font-family: inherit;">
+                        My Cart
+                    </a>
+                </div>
             </div>
-        </div>
+        @endunless
+
+        @auth
+            @if(auth()->user()->is_admin)
+                <a href="{{ route('admin.cars.pending') }}" wire:navigate data-nav-navigate class="relative px-4 py-2 rounded-full {{ request()->is('admin/cars*') ? 'bg-lime-400 text-black' : 'text-white hover:text-lime-400' }}">
+                    Admin panel
+                    <span data-admin-pending-approvals-badge class="absolute -top-1 -right-1 w-4 h-4 bg-red-600 rounded-full text-white text-[9px] {{ $totalPendingCarApprovals > 0 ? 'flex' : 'hidden' }} items-center justify-center font-black animate-pulse">
+                        {{ $totalPendingCarApprovals > 99 ? '99+' : $totalPendingCarApprovals }}
+                    </span>
+                </a>
+            @endif
+        @endauth
 
         {{-- Messages with unread badge --}}
         <a href="/messages" wire:navigate data-nav-navigate @guest data-auth-required @endguest class="relative px-4 py-2 rounded-full {{ request()->is('messages*') ? 'bg-lime-400 text-black' : 'text-white hover:text-lime-400' }}">
@@ -119,11 +137,12 @@
 
     <div class="flex flex-col gap-4 text-sm tracking-wider font-bold">
 
-        <a href="/" wire:navigate data-nav-navigate class="px-2 py-1 rounded-lg {{ request()->is('/') ? 'bg-lime-400 text-black' : 'hover:text-lime-400' }}">Homepage</a>
-        <a href="/available" wire:navigate data-nav-navigate class="px-2 py-1 rounded-lg {{ request()->is('available') ? 'bg-lime-400 text-black' : 'hover:text-lime-400' }}">Available Cars</a>
+        @unless($isAdmin)
+            <a href="/" wire:navigate data-nav-navigate class="px-2 py-1 rounded-lg {{ request()->is('/') ? 'bg-lime-400 text-black' : 'hover:text-lime-400' }}">Homepage</a>
+            <a href="/available" wire:navigate data-nav-navigate class="px-2 py-1 rounded-lg {{ request()->is('available') ? 'bg-lime-400 text-black' : 'hover:text-lime-400' }}">Available Cars</a>
 
-        {{-- Garage Dropdown --}}
-        <div>
+            {{-- Garage Dropdown --}}
+            <div>
             <button onclick="toggleGarageDropdown()" class="relative w-full flex items-center justify-between px-2 py-1 rounded-lg {{ request()->is('garage*') || request()->is('car/pre-order*') ? 'bg-lime-400 text-black' : 'hover:text-lime-400' }} transition-colors">
                 <span class="flex items-center gap-2">
                     Garage
@@ -148,7 +167,8 @@
                 <a href="/garage/my-rental" wire:navigate data-nav-navigate @guest data-auth-required @endguest class="px-2 py-1 rounded-lg {{ request()->is('garage/my-rental*') ? 'bg-lime-400 text-black' : 'text-gray-400 hover:text-lime-400' }} transition-colors">My Rental</a>
                 <a href="/garage/my-cart" wire:navigate data-nav-navigate @guest data-auth-required @endguest class="px-2 py-1 rounded-lg {{ request()->is('garage/my-cart') ? 'bg-lime-400 text-black' : 'text-gray-400 hover:text-lime-400' }} transition-colors">My Cart</a>
             </div>
-        </div>
+            </div>
+        @endunless
 
         {{-- Messages with unread badge --}}
         <a href="/messages" wire:navigate data-nav-navigate @guest data-auth-required @endguest class="relative flex items-center justify-between px-2 py-1 rounded-lg {{ request()->is('messages*') ? 'bg-lime-400 text-black' : 'hover:text-lime-400' }}">
@@ -159,18 +179,29 @@
         </a>
 
         @auth
-            <a href="/notifications" wire:navigate data-nav-navigate class="relative flex items-center justify-between px-2 py-1 rounded-lg {{ request()->is('notifications*') ? 'bg-lime-400 text-black' : 'hover:text-lime-400' }}">
-                Notifications
-                <span data-unread-notifications-badge class="w-4 h-4 bg-red-600 rounded-full text-white text-[9px] {{ $totalUnreadNotifications > 0 ? 'flex' : 'hidden' }} items-center justify-center font-black animate-pulse">
-                    {{ $totalUnreadNotifications > 99 ? '99+' : $totalUnreadNotifications }}
-                </span>
-            </a>
+            @if(auth()->user()->is_admin)
+                <a href="{{ route('admin.cars.pending') }}" wire:navigate data-nav-navigate class="relative flex items-center justify-between px-2 py-1 rounded-lg {{ request()->is('admin/cars*') ? 'bg-lime-400 text-black' : 'hover:text-lime-400' }}">
+                    Admin
+                    <span data-admin-pending-approvals-badge class="w-4 h-4 bg-red-600 rounded-full text-white text-[9px] {{ $totalPendingCarApprovals > 0 ? 'flex' : 'hidden' }} items-center justify-center font-black animate-pulse">
+                        {{ $totalPendingCarApprovals > 99 ? '99+' : $totalPendingCarApprovals }}
+                    </span>
+                </a>
+            @endif
+
+            @unless($isAdmin)
+                <a href="/notifications" wire:navigate data-nav-navigate class="relative flex items-center justify-between px-2 py-1 rounded-lg {{ request()->is('notifications*') ? 'bg-lime-400 text-black' : 'hover:text-lime-400' }}">
+                    Notifications
+                    <span data-unread-notifications-badge class="w-4 h-4 bg-red-600 rounded-full text-white text-[9px] {{ $totalUnreadNotifications > 0 ? 'flex' : 'hidden' }} items-center justify-center font-black animate-pulse">
+                        {{ $totalUnreadNotifications > 99 ? '99+' : $totalUnreadNotifications }}
+                    </span>
+                </a>
+            @endunless
 
             <a href="/profile" wire:navigate data-nav-navigate class="px-2 py-1 rounded-lg {{ request()->is('profile*') ? 'bg-lime-400 text-black' : 'hover:text-lime-400' }}">Profile</a>
         @else
             <div class="grid grid-cols-2 gap-3 pt-2">
-                <a href="{{ route('login') }}" class="rounded-lg border border-white/20 px-3 py-2 text-center text-xs uppercase text-white hover:border-lime-400 hover:text-lime-400 transition">Log In</a>
-                <a href="{{ route('register') }}" class="rounded-lg bg-lime-400 px-3 py-2 text-center text-xs uppercase text-black hover:bg-lime-300 transition">Sign Up</a>
+                <a href="{{ route('login') }}" wire:navigate class="rounded-lg border border-white/20 px-3 py-2 text-center text-xs uppercase text-white hover:border-lime-400 hover:text-lime-400 transition">Log In</a>
+                <a href="{{ route('register') }}" wire:navigate class="rounded-lg bg-lime-400 px-3 py-2 text-center text-xs uppercase text-black hover:bg-lime-300 transition">Sign Up</a>
             </div>
         @endauth
 

@@ -15,6 +15,10 @@ class CartController extends Controller
     {
         $car = Car::findOrFail($request->car_id);
 
+        if ($car->approval_status !== 'approved' || ! $car->is_available) {
+            return redirect()->back()->with('error', 'This car is not available right now.');
+        }
+
         if ($car->user_id === Auth::id()) {
             if ($request->expectsJson()) {
                 session()->flash('error', 'You cannot add your own car to the cart!');
@@ -57,6 +61,10 @@ class CartController extends Controller
             ->where('id', $id)
             ->where('user_id', Auth::id())
             ->firstOrFail();
+
+        if ($cartItem->car->approval_status !== 'approved' || ! $cartItem->car->is_available) {
+            return redirect()->back()->with('error', 'This car is not available right now.');
+        }
 
         $rental = app(RentalAutoAcceptService::class)->createRental($cartItem->car, [
             'user_id'     => Auth::id(),
