@@ -112,10 +112,10 @@
                 </p>
 
                 <div class="flex flex-col gap-3 sm:flex-row">
-                    <a href="{{ route('login') }}" class="flex-1 rounded-lg bg-lime-400 px-5 py-3 text-sm font-black uppercase text-black transition hover:bg-lime-300">
+                    <a href="{{ route('login') }}" wire:navigate class="flex-1 rounded-lg bg-lime-400 px-5 py-3 text-sm font-black uppercase text-black transition hover:bg-lime-300">
                         Log In
                     </a>
-                    <a href="{{ route('register') }}" class="flex-1 rounded-lg border border-lime-400/40 px-5 py-3 text-sm font-black uppercase text-lime-300 transition hover:bg-lime-400 hover:text-black">
+                    <a href="{{ route('register') }}" wire:navigate class="flex-1 rounded-lg border border-lime-400/40 px-5 py-3 text-sm font-black uppercase text-lime-300 transition hover:bg-lime-400 hover:text-black">
                         Sign Up
                     </a>
                 </div>
@@ -130,6 +130,56 @@
             </div>
         </div>
     @endguest
+
+    @if(session('car_submitted_for_approval'))
+        <div
+            x-data="{ show: true }"
+            x-show="show"
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            @keydown.escape.window="show = false"
+            class="fixed inset-0 z-[130] flex items-center justify-center bg-black/75 px-4 backdrop-blur-sm"
+            style="font-family: 'Montserrat', sans-serif;"
+        >
+            <div
+                x-show="show"
+                x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 scale-95 translate-y-2"
+                x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                class="relative w-full max-w-md rounded-2xl border border-white/10 bg-[#111] p-7 text-center shadow-2xl"
+            >
+                <button
+                    type="button"
+                    @click="show = false"
+                    class="absolute -right-3 -top-3 flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-[#1e1e1e] text-white transition hover:text-red-400"
+                    title="Close"
+                >
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+                <div class="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-xl bg-yellow-400/10 text-yellow-400">
+                    <i class="fa-solid fa-car-side text-xl"></i>
+                </div>
+
+                <h2 class="mb-3 text-2xl font-black text-white">Car Uploaded</h2>
+                <p class="mb-6 text-sm leading-relaxed text-gray-400">
+                    Your car post is waiting for admin approval. You will get a notification once it is accepted.
+                </p>
+
+                <button
+                    type="button"
+                    @click="show = false"
+                    class="w-full rounded-lg bg-yellow-400 px-5 py-3 text-sm font-black uppercase text-black transition hover:bg-yellow-300"
+                >
+                    Got It
+                </button>
+            </div>
+        </div>
+    @endif
 
     @livewireScripts
 

@@ -30,6 +30,13 @@ class Rental extends Model
         'snap_date_owned',
     ];
 
+    protected $casts = [
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
+        'hidden_by_renter' => 'boolean',
+        'hidden_by_owner' => 'boolean',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);

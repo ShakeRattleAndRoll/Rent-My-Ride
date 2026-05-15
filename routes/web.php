@@ -6,6 +6,7 @@ use App\Http\Controllers\CarController;
 use App\Models\Car;
 use App\Http\Controllers\RentalController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\AdminCarApprovalController;
 use App\Models\Cart;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\MessageController;
@@ -18,10 +19,10 @@ use App\Livewire\Message\ChatManager;
 // cloudflared tunnel --url http://localhost:8000 
 
 Route::get('/', function () {
-    $featuredCars = Car::with('user')->latest()->take(3)->get();
+    $featuredCars = Car::publiclyVisible()->with('user')->latest()->take(3)->get();
     $homeStats = [
-        'cars' => Car::count(),
-        'owners' => Car::distinct('user_id')->count('user_id'),
+        'cars' => Car::publiclyVisible()->count(),
+        'owners' => Car::publiclyVisible()->distinct('user_id')->count('user_id'),
     ];
 
     return view('home.main', compact('featuredCars', 'homeStats'));
@@ -86,8 +87,13 @@ Route::post('/messages/mute/{targetId}', [MessageController::class, 'toggleMute'
 Route::post('/messages/block/{targetId}', [MessageController::class, 'toggleBlock'])->name('messages.block')->middleware('auth');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/admin/cars/pending', [AdminCarApprovalController::class, 'index'])->name('admin.cars.pending');
+    Route::get('/admin/cars/pending/items', [AdminCarApprovalController::class, 'items'])->name('admin.cars.pending.items');
+    Route::patch('/admin/cars/{car}/approve', [AdminCarApprovalController::class, 'approve'])->name('admin.cars.approve');
+
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::get('/notifications/count', [NotificationController::class, 'count'])->name('notifications.count');
+    Route::get('/notifications/items', [NotificationController::class, 'items'])->name('notifications.items');
     Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
     Route::patch('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
     Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.delete');
@@ -106,6 +112,7 @@ Route::middleware('auth')->group(function () {
     // Edit and update listing routes
     Route::get('/garage/edit/{id}', [CarController::class, 'edit']);
     Route::patch('/garage/update/{id}', [CarController::class, 'update']);
+    Route::patch('/garage/availability/{id}', [CarController::class, 'toggleAvailability'])->name('garage.availability');
     Route::patch('/car/{id}/toggle-auto-accept', [RentalController::class, 'toggleAutoAccept'])->name('car.toggle-auto-accept');
 
     // Route for car details page

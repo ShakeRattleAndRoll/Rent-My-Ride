@@ -34,7 +34,7 @@
                 </p>
             </div>
 
-            <form method="POST" action="{{ route('password.email') }}" class="space-y-4">
+            <form method="POST" action="{{ route('password.email') }}" class="space-y-4" data-livewire-form>
                 @csrf
 
                 <div class="space-y-1">
@@ -65,7 +65,7 @@
 
             <p class="text-gray-400 mt-5 text-sm text-center">
                 Remembered it?
-                <a href="{{ route('login') }}" class="text-lime-400 hover:text-lime-300 font-semibold transition">Log in</a>
+                <a href="{{ route('login') }}" wire:navigate class="text-lime-400 hover:text-lime-300 font-semibold transition">Log in</a>
             </p>
         </div>
 

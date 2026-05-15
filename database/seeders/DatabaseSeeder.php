@@ -21,14 +21,13 @@ class DatabaseSeeder extends Seeder
             'last_name' => 'Account',
             'email' => 'test@example.com',
             'password' => bcrypt('password'),
+            'is_admin' => true,
         ]);
 
         $Users = \App\Models\User::factory(5)->create();
 
-        $allUsers = $Users->concat([$admin]);
-
         \App\Models\Car::factory(50)->create([
-            'user_id' => fn() => $allUsers->random()->id,
+            'user_id' => fn() => $Users->random()->id,
         ]);
     }
 }

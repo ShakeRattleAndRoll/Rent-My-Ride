@@ -586,6 +586,10 @@ class AuthController extends Controller
         }
 
         $cars = Car::where('user_id', $id)
+            ->when(
+                ! Auth::check() || (Auth::id() !== $user->id && ! Auth::user()->is_admin),
+                fn ($query) => $query->publiclyVisible()
+            )
             ->withExists(['rentals as is_occupied' => function ($query) {
                 $query->where('status', 'accepted')
                     ->where('start_date', '<=', now())

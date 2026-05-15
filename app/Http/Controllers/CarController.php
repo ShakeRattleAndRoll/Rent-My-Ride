@@ -21,10 +21,12 @@ class CarController extends Controller
     // GET ALL CARS and search filter
     public function index(Request $request)
     {
-        $brands = Car::select('brand')->distinct()->orderBy('brand')->pluck('brand');
-        $models = Car::select('model')->distinct()->orderBy('model')->pluck('model');
+        $brands = Car::publiclyVisible()->select('brand')->distinct()->orderBy('brand')->pluck('brand');
+        $models = Car::publiclyVisible()->select('model')->distinct()->orderBy('model')->pluck('model');
 
         $query = Car::query()
+            ->publiclyVisible()
+            ->with('user')
             ->withExists(['rentals as is_occupied' => function ($rentalQuery) {
                 $rentalQuery->where('status', 'accepted')
                     ->where('start_date', '<=', now())
@@ -114,10 +116,16 @@ class CarController extends Controller
         }
 
         $attributes['user_id'] = Auth::id();
+        $attributes['approval_status'] = 'pending';
+        $attributes['is_available'] = true;
+        $attributes['approved_at'] = null;
+        $attributes['approved_by'] = null;
 
         Car::create($attributes);
 
-        return redirect('/garage/my-listing')->with('success', 'Car Added Successfully!');
+        return redirect('/garage/my-listing')
+            ->with('success', 'Car submitted for admin approval.')
+            ->with('car_submitted_for_approval', true);
     }
 
     // MY LISTINGS
@@ -132,6 +140,25 @@ class CarController extends Controller
             ->get();
 
         return view('garage.my_listings.my-listing', ['listings' => $myCars]);
+    }
+
+    public function toggleAvailability(Request $request, $id)
+    {
+        $car = Car::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        $available = $request->boolean('is_available');
+
+        $car->update([
+            'is_available' => $available,
+        ]);
+
+        $message = $available
+            ? 'Your car is now visible on the website.'
+            : 'Your car is now hidden from the website.';
+
+        return redirect()->back()->with('success', $message);
     }
 
     // EDIT POST
@@ -263,6 +290,13 @@ class CarController extends Controller
 
     public function show(Car $car)
     {
+        if (
+            ($car->approval_status !== 'approved' || ! $car->is_available)
+            && (! Auth::check() || (Auth::id() !== $car->user_id && ! Auth::user()->is_admin))
+        ) {
+            abort(404);
+        }
+
         if (Auth::check() && Auth::id() !== $car->user_id && $this->hasBlockRelationWith($car->user_id)) {
             return response()
                 ->view('profile.blocked', ['user' => $car->user], 403);

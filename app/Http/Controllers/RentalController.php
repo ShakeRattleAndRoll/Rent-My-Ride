@@ -27,6 +27,10 @@ class RentalController extends Controller
         $cart = Cart::with('car')->findOrFail($request->cart_id);
         $car  = $cart->car;
 
+        if ($car->approval_status !== 'approved' || ! $car->is_available) {
+            return redirect()->back()->with('error', 'This car is not available right now.');
+        }
+
         if ($car->user_id === Auth::id()) {
             return redirect()->back()->with('error', 'You cannot rent your own car!');
         }

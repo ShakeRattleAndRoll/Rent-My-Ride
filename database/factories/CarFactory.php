@@ -37,6 +37,9 @@ class CarFactory extends Factory
             'transmission' => fake()->randomElement(['Automatic', 'Manual']),
             'fuel_type' => fake()->randomElement(['Gasoline', 'Diesel', 'Electric']),
             'description' => fake()->sentence(),
+            'approval_status' => 'approved',
+            'is_available' => true,
+            'approved_at' => now(),
         ];
     }
 }

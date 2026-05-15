@@ -23,6 +23,10 @@ class Car extends Model
         'transmission',
         'fuel_type',
         'description',
+        'approval_status',
+        'is_available',
+        'approved_at',
+        'approved_by',
         'auto_accept',
         'auto_accept_priority',
     ];
@@ -49,8 +53,34 @@ class Car extends Model
         'created_at' => 'datetime',
         'date_owned' => 'date',
         'price' => 'integer',
+        'is_available' => 'boolean',
+        'approved_at' => 'datetime',
         'auto_accept' => 'boolean',
     ];
+
+    public function approver()
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    public function scopeApproved($query)
+    {
+        return $query->where('approval_status', 'approved');
+    }
+
+    public function scopePubliclyVisible($query)
+    {
+        return $query->approved()->where('is_available', true);
+    }
+
+    public function approve(User $admin): void
+    {
+        $this->update([
+            'approval_status' => 'approved',
+            'approved_at' => now(),
+            'approved_by' => $admin->id,
+        ]);
+    }
 
     /* Helper: Occupied Status*/
 

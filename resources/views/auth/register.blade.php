@@ -64,7 +64,7 @@
                 >
 
                 {{-- FORM --}}
-                <form method="POST" action="/register" class="space-y-3" id="registerForm">
+                <form method="POST" action="/register" class="space-y-3" id="registerForm" data-livewire-form>
 
                     @csrf
 
@@ -217,9 +217,12 @@
                                 pattern="^[^@]+@[^@]+\.[a-zA-Z]{2,}$"
                                 title="Email must be in the format: example@domain.com"
                                 class="w-full px-3 py-3 rounded-md bg-black border border-white/10 text-white placeholder-gray-500
-                                focus:outline-none focus:ring-2 focus:ring-lime-400 focus:border-lime-400/60
+                                focus:outline-none focus:ring-2 {{ $errors->has('email') ? 'focus:ring-red-500 border-red-500' : 'focus:ring-lime-400 focus:border-lime-400/60' }}
                                 transition autofill:bg-black autofill:text-white"
                             >
+                            @error('email')
+                                <p class="text-red-400 text-xs px-1 italic">{{ $message }}</p>
+                            @enderror
                         </div>
 
                     </div>
@@ -285,7 +288,7 @@
                     {{-- BUTTON --}}
                     <button
                         class="w-full py-3 rounded-md font-black text-black bg-lime-400 uppercase tracking-wide
-                        hover:bg-lime-300 active:scale-95 transition duration-200"
+                        hover:bg-lime-300 active:scale-95 transition duration-200" 
                     >
                         SEND VERIFICATION CODE
                     </button>
@@ -295,7 +298,7 @@
                 {{-- LOGIN --}}
                 <p class="text-gray-400 mt-3 text-sm text-center">
                     Already have an account?
-                    <a href="/login" class="text-lime-400 hover:text-lime-300 font-semibold transition">Log in</a>
+                    <a href="/login" wire:navigate class="text-lime-400 hover:text-lime-300 font-semibold transition">Log in</a>
                 </p>
 
             </div>

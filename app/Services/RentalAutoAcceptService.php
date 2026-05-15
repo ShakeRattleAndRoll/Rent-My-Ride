@@ -12,11 +12,13 @@ class RentalAutoAcceptService
     public const PRIORITY_FIRST = 'first_pending';
     public const PRIORITY_SHORTEST = 'shortest';
     public const PRIORITY_LONGEST = 'longest';
+    public const PRIORITY_NEAREST = 'nearest';
 
     public const PRIORITIES = [
         self::PRIORITY_FIRST,
         self::PRIORITY_SHORTEST,
         self::PRIORITY_LONGEST,
+        self::PRIORITY_NEAREST,
     ];
 
     public function createRental(Car $car, array $attributes): Rental
@@ -60,6 +62,7 @@ class RentalAutoAcceptService
             match ($priority) {
                 self::PRIORITY_SHORTEST => $query->orderBy('days')->orderBy('created_at'),
                 self::PRIORITY_LONGEST => $query->orderByDesc('days')->orderBy('created_at'),
+                self::PRIORITY_NEAREST => $query->orderBy('start_date')->orderBy('created_at'),
                 default => $query->orderBy('created_at'),
             };
 

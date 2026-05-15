@@ -45,7 +45,7 @@
                 </div>
 
                 {{-- Logout Button --}}
-                <form action="/logout" method="POST" class="w-full mt-6">
+                <form action="/logout" method="POST" class="w-full mt-6" data-livewire-form>
                     @csrf
                     <button type="submit" class="w-full py-3 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-xl font-bold text-xs transition uppercase tracking-widest">
                         Log Out Account
@@ -133,7 +133,7 @@
                     </button>
 
                     <div x-show="open" x-transition class="border-t border-white/5 p-6">
-                        <form method="POST" action="{{ route('profile.password.send-code') }}">
+                        <form method="POST" action="{{ route('profile.password.send-code') }}" data-livewire-form>
                             @csrf
                             @method('PATCH')
                             <button

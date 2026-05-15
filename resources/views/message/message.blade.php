@@ -1,6 +1,6 @@
 <x-layout title="Messages">
-    <div class="bg-[#121212] min-h-screen text-white p-4 sm:p-6 md:p-10" style="font-family: 'Montserrat', sans-serif;">
-        <div class="max-w-6xl mx-auto flex flex-col gap-6">
+    <div class="bg-[#121212] min-h-screen text-white p-0 lg:p-10" style="font-family: 'Montserrat', sans-serif;">
+        <div class="max-w-6xl mx-auto flex flex-col gap-0 lg:gap-6">
 
             {{-- Search Bar --}}
             <div
@@ -46,7 +46,7 @@
                     },
                 }"
                 @click.outside="open = false"
-                class="relative w-full"
+                class="relative w-full px-3 py-3 lg:px-0 lg:py-0 {{ $activeContact ? 'hidden lg:block' : '' }}"
             >
                 <div class="relative">
                     <input
@@ -58,14 +58,14 @@
                         @keydown.escape="open = false"
                         @keydown.enter.prevent="search()"
                         placeholder="Search users by name or username..."
-                        class="w-full bg-[#1a1a1a] border border-gray-800 text-white text-sm rounded-2xl py-4 px-6 pr-24 focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none transition-all"
+                        class="w-full bg-[#1a1a1a] border border-gray-800 text-white text-sm rounded-2xl py-3.5 px-5 pr-16 focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none transition-all lg:py-4 lg:px-6 lg:pr-24"
                     >
 
                     <button
                         type="button"
                         @click="query.trim() ? search() : $refs.searchInput.focus()"
                         aria-label="Search users"
-                        class="absolute right-3 top-1/2 -translate-y-1/2 bg-yellow-400 p-2 rounded-xl text-black hover:bg-yellow-300 transition-colors"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 bg-lime-400 p-2 rounded-xl text-black hover:bg-lime-300 transition-colors"
                     >
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -90,12 +90,12 @@
                             @click.prevent="goToUser(user.id)"
                             class="flex items-center gap-3 px-5 py-3 hover:bg-white/5 transition-colors border-b border-gray-800/60 last:border-0"
                         >
-                            <div class="w-9 h-9 rounded-full bg-yellow-400/10 border border-yellow-400/20 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                            <div class="w-9 h-9 rounded-full bg-lime-400/10 border border-lime-400/20 flex items-center justify-center flex-shrink-0 overflow-hidden">
                                 <template x-if="user.avatar">
                                     <img :src="user.avatar" :alt="user.name" class="w-full h-full object-cover">
                                 </template>
                                 <template x-if="!user.avatar">
-                                    <span class="text-yellow-400 text-xs font-bold uppercase" x-text="(user.name || user.username || 'U').charAt(0)"></span>
+                                    <span class="text-lime-400 text-xs font-bold uppercase" x-text="(user.name || user.username || 'U').charAt(0)"></span>
                                 </template>
                             </div>
                             <div class="flex flex-col min-w-0">
@@ -119,13 +119,23 @@
             </div>
 
             {{-- Main Chat Area --}}
-            <div class="flex h-auto min-h-[85vh] flex-col gap-4 lg:h-[85vh] lg:flex-row lg:gap-6">
-                @include('message.sidebar')
-                @include('message.chat_panel')
+            <div class="px-3 pb-3 lg:px-0 lg:pb-2">
+                <div class="flex {{ $activeContact ? 'h-[calc(100dvh-5.25rem)]' : 'h-[calc(100dvh-9.5rem)]' }} min-h-0 flex-row gap-0 lg:h-[85vh] lg:min-h-[620px] lg:gap-6">
+                    @include('message.sidebar')
+                    @include('message.chat_panel')
+                </div>
             </div>
 
         </div>
     </div>
+
+    <style>
+        @media (max-width: 1023px) {
+            .message-chat-header > p {
+                display: none;
+            }
+        }
+    </style>
 
     <script src="{{ asset('js/user-search.js') }}"></script>
     <script src="{{ asset('js/messages.js') }}"></script>

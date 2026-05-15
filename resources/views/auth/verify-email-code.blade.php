@@ -35,7 +35,7 @@
                 </p>
             </div>
 
-            <form method="POST" action="{{ route('register.verify-email.submit') }}" class="space-y-4">
+            <form method="POST" action="{{ route('register.verify-email.submit') }}" class="space-y-4" data-livewire-form>
                 @csrf
 
                 <div class="space-y-1">
@@ -68,7 +68,7 @@
                 </button>
             </form>
 
-            <form method="POST" action="{{ route('register.resend-code') }}" class="mt-4">
+            <form method="POST" action="{{ route('register.resend-code') }}" class="mt-4" data-livewire-form data-preserve-scroll>
                 @csrf
                 <button
                     type="submit"

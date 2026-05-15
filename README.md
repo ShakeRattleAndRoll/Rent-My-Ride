@@ -112,11 +112,18 @@
         * Details (Listings and Rentals)
         * Cards improvement
 
+#### Added Features & Bug Fixes 5/15/2026
+* Added admin panel
+* Added an option to show car optionally in my listing
+* Fix when clicking certain action it fully reload
+* Make notification dont need to fully reload to see new content
+* Fix ayto accept nearest start day not working
+* Auto accept in my listing UI change
+* Fix the bug when doing certain action and clicking the back, the action you did is redo
+
 ## PARTIALLY DONE
 
 ### FEATURES
-* Auto accept nearest start day
-* Livewire some pages of receiving code -- ikaw ani duha palihog
 
 * Pre order History
 * Not Responsive:
