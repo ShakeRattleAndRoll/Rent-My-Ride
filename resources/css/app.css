@@ -14,6 +14,21 @@
     display: none !important; 
 }
 
+.input-action-button {
+    align-items: center;
+    display: inline-flex;
+    justify-content: center;
+    line-height: 1;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.fixed-center-x {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
 #car-viewer canvas {
     cursor: default;
     height: 100% !important;

@@ -9,10 +9,6 @@ function initRentRideRentals() {
         rentRideRentals.statusTimer = null;
     }
 
-    if (!refreshRoot) return;
-
-    if (rows.length === 0) return;
-
     const openRequestedRentalDetails = () => {
         const rentalId = new URLSearchParams(window.location.search).get('rental');
         if (!rentalId) return;
@@ -20,8 +16,19 @@ function initRentRideRentals() {
         const modal = document.getElementById(`details-modal-${rentalId}`);
         if (modal) {
             modal.classList.remove('hidden');
+            rentRideRentals.openedRentalId = rentalId;
+
+            const url = new URL(window.location.href);
+            url.searchParams.delete('rental');
+            window.history.replaceState({}, '', url);
         }
     };
+
+    openRequestedRentalDetails();
+
+    if (!refreshRoot) return;
+
+    if (rows.length === 0) return;
 
     const refreshRentalStatuses = async () => {
         const currentRows = refreshRoot.querySelectorAll('[data-rental-row]');
@@ -53,13 +60,14 @@ function initRentRideRentals() {
                 }
             });
 
-            openRequestedRentalDetails();
+            if (!rentRideRentals.openedRentalId) {
+                openRequestedRentalDetails();
+            }
         } catch (error) {
             console.error('Unable to refresh rental statuses.', error);
         }
     };
 
-    openRequestedRentalDetails();
     refreshRentalStatuses();
     rentRideRentals.statusTimer = setInterval(refreshRentalStatuses, 2000);
 }

@@ -121,7 +121,7 @@
                             <button
                                 type="button"
                                 onclick="togglePassword('password', 'eyeIcon')"
-                                class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition"
+                                class="input-action-button right-4 text-gray-400 hover:text-white transition"
                             >
                                 <i id="eyeIcon" class="fa fa-eye-slash"></i>
                             </button>

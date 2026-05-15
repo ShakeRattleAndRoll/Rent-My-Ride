@@ -33,7 +33,7 @@
     
     <button 
         @click.stop.prevent="menuOpen = !menuOpen"
-        class="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full hover:bg-white/10 transition {{ isset($activeContact) && $activeContact->id == $contact->id ? 'text-black hover:bg-black/10' : 'text-gray-500' }}">
+        class="input-action-button right-3 p-2 rounded-full hover:bg-white/10 transition {{ isset($activeContact) && $activeContact->id == $contact->id ? 'text-black hover:bg-black/10' : 'text-gray-500' }}">
         <i class="fa-solid fa-ellipsis-vertical"></i>
     </button>
 

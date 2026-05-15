@@ -66,7 +66,7 @@
                     {{-- Checkout --}}
                     <button type="button"
                             onclick="openRentModal({{ $cart->id }}, '{{ $cart->car->rent_unit }}', {{ $cart->car->price }})"
-                            class="bg-lime-400 hover:bg-lime-300 text-black text-xs font-bold px-4 py-2 rounded-full transition-all duration-200 w-full text-center">
+                            class="flex min-h-9 w-full items-center justify-center rounded-lg bg-lime-400 px-3 py-2 text-center text-[11px] font-black uppercase tracking-widest text-black transition-all duration-200 hover:bg-lime-300">
                         Rent Now
                     </button>
 
@@ -75,7 +75,7 @@
                         @csrf
                         @method('DELETE')
                         <button type="submit"
-                                class="bg-[#2a2a2a] hover:bg-red-500 border border-gray-700 hover:border-red-500 text-gray-400 hover:text-white text-xs font-bold px-4 py-2 rounded-full w-full">
+                                class="flex min-h-9 w-full items-center justify-center rounded-lg bg-red-500 px-3 py-2 text-center text-[11px] font-black uppercase tracking-widest text-white transition-all duration-200 hover:bg-red-400">
                             Remove
                         </button>
                     </form>

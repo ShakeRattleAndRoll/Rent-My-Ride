@@ -27,7 +27,7 @@
 
     {{-- Pwede ni himoan og blade --}}
     {{-- Uses alpine.js --}}
-    <div class="fixed top-5 left-1/2 -translate-x-1/2 z-[100] w-full max-w-md px-4 pointer-events-none">
+    <div class="fixed-center-x fixed top-5 z-[100] w-full max-w-md px-4 pointer-events-none">
     {{-- Success Alert --}}
         @if(session('success'))
             <div 

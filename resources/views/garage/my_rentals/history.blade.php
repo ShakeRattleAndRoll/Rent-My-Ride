@@ -55,4 +55,5 @@
 
     </div>
 </div>
+<script src="{{ asset('js/rentals.js') }}"></script>
 </x-layout>

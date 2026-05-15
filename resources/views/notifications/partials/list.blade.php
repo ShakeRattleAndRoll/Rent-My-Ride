@@ -10,29 +10,49 @@
                 'rental_ending_1day',
             ]);
 
+            $isTimelineType = $isEndingType;
+            $usesActorAvatar = in_array($notification->type, ['rental_requested', 'rental_cancelled'], true);
+            $actor = $usesActorAvatar ? $notification->rental?->user : null;
+            $actorInitials = $actor
+                ? Illuminate\Support\Str::upper(Illuminate\Support\Str::substr($actor->username ?? 'User', 0, 2))
+                : null;
+
             $color = match (true) {
                 in_array($notification->type, ['rental_accepted', 'owner_rental_accepted'])
                     || $notification->type === 'car_post_approved'
                     => 'text-lime-400 bg-lime-400/10 border-lime-400/30',
+                $isTimelineType
+                    => 'text-yellow-300 bg-yellow-400/10 border-yellow-400/30',
                 in_array($notification->type, ['rental_denied', 'rental_expired'])
                     => 'text-red-400 bg-red-600/10 border-red-600/30',
-                $isEndingType
-                    => 'text-lime-400 bg-lime-400/10 border-lime-400/30',
                 default
                     => 'text-blue-400 bg-blue-500/10 border-blue-500/30',
             };
 
-            $icon = $isEndingType
-                ? 'fa-clock'
+            $icon = $isTimelineType
+                ? 'fa-bell'
                 : (in_array($notification->type, ['rental_denied', 'rental_expired'])
                     ? 'fa-circle-exclamation'
                     : ($notification->type === 'car_post_approved' ? 'fa-car-side' : 'fa-bell'));
         @endphp
 
         <div class="bg-[#1a1a1a] border {{ $isUnread ? 'border-lime-400/40' : 'border-gray-800' }} rounded-2xl p-5 flex items-start gap-4" data-notification-row="{{ $notification->id }}">
-            <div class="w-10 h-10 rounded-full border flex items-center justify-center shrink-0 {{ $color }}">
-                <i class="fa-solid {{ $icon }} text-sm"></i>
-            </div>
+            @if ($usesActorAvatar && $actor)
+                <a href="{{ route('user.profile', $actor->id) }}" wire:navigate data-nav-navigate
+                    class="w-10 h-10 rounded-full border border-white/10 bg-[#242424] flex items-center justify-center shrink-0 overflow-hidden text-white text-xs font-black uppercase">
+                    @if ($actor->profile_picture)
+                        <img src="{{ asset('storage/' . $actor->profile_picture) }}"
+                            alt="{{ $actor->username }} profile picture"
+                            class="w-full h-full object-cover">
+                    @else
+                        {{ $actorInitials }}
+                    @endif
+                </a>
+            @else
+                <div class="w-10 h-10 rounded-full border flex items-center justify-center shrink-0 {{ $color }}">
+                    <i class="fa-solid {{ $icon }} text-sm"></i>
+                </div>
+            @endif
 
             <div class="flex-1 min-w-0">
                 <div class="flex items-start justify-between gap-4">

@@ -65,7 +65,7 @@
                         type="button"
                         @click="query.trim() ? search() : $refs.searchInput.focus()"
                         aria-label="Search users"
-                        class="absolute right-3 top-1/2 -translate-y-1/2 bg-lime-400 p-2 rounded-xl text-black hover:bg-lime-300 transition-colors"
+                        class="input-action-button right-3 bg-lime-400 p-2 rounded-xl text-black hover:bg-lime-300 transition-colors"
                     >
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

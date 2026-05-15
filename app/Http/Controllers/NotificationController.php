@@ -85,6 +85,20 @@ class NotificationController extends Controller
         $notification->loadMissing('car');
 
         if (
+            $notification->rental_id &&
+            (
+                $notification->type === 'rental_denied' ||
+                (
+                    $notification->type === 'rental_expired' &&
+                    $notification->car &&
+                    $notification->user_id !== $notification->car->user_id
+                )
+            )
+        ) {
+            return url("/garage/my-rental/history?rental={$notification->rental_id}");
+        }
+
+        if (
             $notification->car &&
             $notification->user_id === $notification->car->user_id &&
             in_array($notification->type, array_merge(['owner_rental_accepted'], self::TIMELINE_TYPES), true)
@@ -94,7 +108,7 @@ class NotificationController extends Controller
 
         if (
             $notification->rental_id &&
-            in_array($notification->type, array_merge(['rental_accepted', 'rental_denied'], self::TIMELINE_TYPES), true)
+            in_array($notification->type, array_merge(['rental_accepted'], self::TIMELINE_TYPES), true)
         ) {
             return url("/garage/my-rental?rental={$notification->rental_id}");
         }
@@ -137,6 +151,7 @@ class NotificationController extends Controller
     private function notificationItems()
     {
         return RentalNotification::where('user_id', Auth::id())
+            ->with(['rental.user', 'car.user'])
             ->latest()
             ->paginate(15)
             ->withPath(route('notifications.index'));

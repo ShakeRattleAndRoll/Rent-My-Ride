@@ -79,6 +79,34 @@
                             </label>
                         </div>
                     </div>
+
+                    <div class="mt-4 rounded-lg border border-white/10 bg-[#1a1a1a] p-4">
+                        <div class="mb-3 flex items-start justify-between gap-3">
+                            <div>
+                                <p class="text-[10px] font-black uppercase tracking-widest text-lime-300">Listing Visibility</p>
+                                <p class="mt-1 text-xs leading-relaxed text-gray-500">
+                                    Control whether renters can see this car on the website.
+                                </p>
+                            </div>
+                            <span class="rounded-full px-2.5 py-1 text-[10px] font-bold uppercase {{ $car->is_available ? 'bg-lime-500 text-black' : 'bg-red-500 text-white' }}">
+                                {{ $car->is_available ? 'Visible' : 'Hidden' }}
+                            </span>
+                        </div>
+
+                        <div class="flex items-center justify-between gap-2 rounded-lg border border-white/5 bg-black/20 px-3 py-2">
+                            <span class="text-[9px] font-black uppercase tracking-widest {{ $car->is_available ? 'text-lime-400' : 'text-gray-500' }}">
+                                Show on Website
+                            </span>
+                            <label class="relative inline-flex h-6 w-11 cursor-pointer items-center">
+                                <input type="checkbox"
+                                    class="peer sr-only"
+                                    onchange="document.getElementById('availability-value').value = this.checked ? '1' : '0'; document.getElementById('availability-form').requestSubmit();"
+                                    {{ $car->is_available ? 'checked' : '' }}>
+                                <span class="absolute inset-0 rounded-full bg-gray-700 transition-colors duration-200 peer-checked:bg-lime-500"></span>
+                                <span class="absolute left-1 top-1 h-4 w-4 rounded-full bg-white transition-all duration-200 peer-checked:left-6"></span>
+                            </label>
+                        </div>
+                    </div>
                 </aside>
 
                 <section class="rounded-lg border border-white/10 bg-[#1a1a1a] shadow-2xl">
@@ -155,6 +183,12 @@
                         </button>
                     </div>
                 </section>
+            </form>
+
+            <form id="availability-form" action="{{ route('garage.availability', $car->id) }}" method="POST" data-livewire-form data-preserve-scroll class="hidden">
+                @csrf
+                @method('PATCH')
+                <input id="availability-value" type="hidden" name="is_available" value="{{ $car->is_available ? '1' : '0' }}">
             </form>
         </div>
     </div>

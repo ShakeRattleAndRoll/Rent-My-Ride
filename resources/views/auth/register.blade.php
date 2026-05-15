@@ -246,7 +246,7 @@
                                 <button
                                     type="button"
                                     onclick="togglePassword('password', 'eyeIcon1')"
-                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition"
+                                    class="input-action-button right-3 text-gray-400 hover:text-white transition"
                                 >
                                     <i id="eyeIcon1" class="fa fa-eye-slash text-xs"></i>
                                 </button>
@@ -270,7 +270,7 @@
                                 <button
                                     type="button"
                                     onclick="togglePassword('password_confirmation', 'eyeIcon2')"
-                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition"
+                                    class="input-action-button right-3 text-gray-400 hover:text-white transition"
                                 >
                                     <i id="eyeIcon2" class="fa fa-eye-slash text-xs"></i>
                                 </button>

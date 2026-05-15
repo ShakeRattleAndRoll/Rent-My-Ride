@@ -125,10 +125,10 @@
 * UI changes
 * Livewire modals
 * Pre order conflict schedule fixed
+* Notification open bug fixed
 
 ## PARTIALLY DONE
 
 ### FEATURES
-* Pre order History
 * Homepage backgroung with responsive
    

@@ -85,7 +85,7 @@
                             onchange="this.form.requestSubmit()"
                             {{ $car->auto_accept ? 'checked' : '' }}>
                         <span class="absolute inset-0 rounded-full bg-gray-700 transition-colors duration-200 peer-checked:bg-lime-500"></span>
-                        <span class="relative ml-1 inline-block h-4 w-4 rounded-full bg-white transition-transform duration-200 peer-checked:translate-x-5"></span>
+                        <span class="absolute left-1 top-1 h-4 w-4 rounded-full bg-white transition-all duration-200 peer-checked:left-6"></span>
                     </label>
                 </form>
             </div>
