@@ -20,7 +20,7 @@
         <input type="date" name="date_owned"
             value="{{ old('date_owned', isset($car->date_owned) ? \Carbon\Carbon::parse($car->date_owned)->format('Y-m-d') : '') }}"
             {{ $car ? 'disabled' : '' }}
-            class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5 outline-none focus:border-yellow-400 {{ $car ? 'opacity-50 cursor-not-allowed' : '' }}">
+            class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5 outline-none focus:border-lime-400 {{ $car ? 'opacity-50 cursor-not-allowed' : '' }}">
     </div>
 </div>
 
@@ -32,7 +32,7 @@
                value="{{ old('brand', $car->brand ?? '') }}"
                placeholder="e.g. Toyota"
                {{ $car ? 'disabled' : '' }}
-               class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5 outline-none focus:border-yellow-400 {{ $car ? 'opacity-50 cursor-not-allowed' : '' }}">
+               class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5 outline-none focus:border-lime-400 {{ $car ? 'opacity-50 cursor-not-allowed' : '' }}">
     </div>
 
     <div class="flex flex-col gap-2">
@@ -41,7 +41,7 @@
                value="{{ old('model', $car->model ?? '') }}"
                placeholder="e.g. Corolla"
                {{ $car ? 'disabled' : '' }}
-               class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5 outline-none focus:border-yellow-400 {{ $car ? 'opacity-50 cursor-not-allowed' : '' }}">
+               class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5 outline-none focus:border-lime-400 {{ $car ? 'opacity-50 cursor-not-allowed' : '' }}">
     </div>
 
     <div class="flex flex-col gap-2">
@@ -54,13 +54,13 @@
             value="{{ old('price', isset($car->price) ? floor($car->price) : '') }}"
             placeholder="₱ Enter Amount"
             oninput="if(this.value.length > 6) this.value = this.value.slice(0, 6)"
-            class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5 outline-none focus:border-yellow-400">
+            class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5 outline-none focus:border-lime-400">
     </div>
 
     <div class="flex flex-col gap-2">
         <label class="text-sm text-gray-400 font-semibold">Rent Duration</label>
         <select name="rent_unit"
-                class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5 outline-none focus:border-yellow-400">
+                class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5 outline-none focus:border-lime-400">
             <option value="Hour" {{ old('rent_unit', $car->rent_unit ?? '') == 'Hour' ? 'selected' : '' }}>Per Hour</option>
             <option value="Day"  {{ old('rent_unit', $car->rent_unit ?? '') == 'Day'  ? 'selected' : '' }}>Per Day</option>
             <option value="Week" {{ old('rent_unit', $car->rent_unit ?? '') == 'Week' ? 'selected' : '' }}>Per Week</option>
@@ -93,6 +93,6 @@
         <label class="text-sm text-gray-400 font-semibold">Description</label>
         <textarea name="description" rows="6"
                   placeholder="Enter description ..."
-                  class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5 outline-none focus:border-yellow-400">{{ old('description', $car->description ?? '') }}</textarea>
+                  class="w-full bg-[#242424] text-white p-4 rounded-xl border border-white/5 outline-none focus:border-lime-400">{{ old('description', $car->description ?? '') }}</textarea>
     </div>
 </div>

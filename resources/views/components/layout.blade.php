@@ -182,6 +182,7 @@
     @endif
 
     @livewireScripts
+    <script src="{{ asset('js/navbar.js') }}"></script>
 
     @if (!request()->is('login') && !request()->is('register') && !request()->is('register/verify-email') && !request()->is('forgot-password*') && !request()->is('reset-password*'))
         <x-footer />

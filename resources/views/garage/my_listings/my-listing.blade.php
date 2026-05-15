@@ -22,7 +22,7 @@
             <p class="text-gray-400 text-sm font-medium">No listings yet</p>
             <p class="text-gray-600 text-xs mt-1 mb-5">Cars you post for rent will appear here</p>
             <a href="/garage/post-car" wire:navigate
-               class="px-10 py-3 bg-yellow-400 text-black rounded-full font-bold hover:bg-yellow-300 transition text-center">
+               class="px-10 py-3 bg-lime-400 text-black rounded-full font-bold hover:bg-lime-300 transition text-center">
                 Post a Car
             </a>
         </div>

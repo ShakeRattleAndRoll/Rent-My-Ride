@@ -29,33 +29,35 @@
                 {{ $isPending ? $rental->car->model : $rental->snap_model }}
             </p>
 
-            {{-- Car Specs --}}
-            <div class="mb-3 flex flex-wrap gap-x-3 gap-y-1.5 text-[11px] text-gray-400">
-                <span class="flex items-center gap-1.5">
-                    <i class="fa-regular fa-calendar text-gray-500"></i>
-                    {{ \Carbon\Carbon::parse($isPending ? $rental->car->date_owned : $rental->snap_date_owned)->format('M j, Y') }}
-                </span>
-                <span class="flex items-center gap-1.5">
-                    <i class="fa-solid fa-gas-pump text-gray-500"></i>
-                    {{ $isPending ? $rental->car->fuel_type : $rental->snap_fuel_type }}
-                </span>
-                <span class="flex items-center gap-1.5">
-                    <i class="fa-solid fa-gear text-gray-500"></i>
-                    {{ $isPending ? $rental->car->transmission : $rental->snap_transmission }}
-                </span>
-            </div>
+            @if ($isPending || $isUpcoming || $isActive)
+                {{-- Car Specs --}}
+                <div class="mb-3 flex flex-wrap gap-x-3 gap-y-1.5 text-[11px] text-gray-400">
+                    <span class="flex items-center gap-1.5">
+                        <i class="fa-regular fa-calendar text-gray-500"></i>
+                        {{ \Carbon\Carbon::parse($isPending ? $rental->car->date_owned : $rental->snap_date_owned)->format('M j, Y') }}
+                    </span>
+                    <span class="flex items-center gap-1.5">
+                        <i class="fa-solid fa-gas-pump text-gray-500"></i>
+                        {{ $isPending ? $rental->car->fuel_type : $rental->snap_fuel_type }}
+                    </span>
+                    <span class="flex items-center gap-1.5">
+                        <i class="fa-solid fa-gear text-gray-500"></i>
+                        {{ $isPending ? $rental->car->transmission : $rental->snap_transmission }}
+                    </span>
+                </div>
 
-            {{-- Duration + Total --}}
-            <div class="mt-1 flex flex-wrap gap-2">
-                <span class="flex items-center gap-1.5 bg-[#242424] border border-white/5 rounded-lg px-2.5 py-1 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                    <i class="fa-regular fa-clock text-gray-500"></i>
-                    {{ $rental->days }} {{ $isPending ? $rental->car->rent_unit : $rental->snap_rent_unit }}(s)
-                </span>
-                <span class="flex items-center gap-1.5 bg-lime-400/10 border border-lime-400/20 rounded-lg px-2.5 py-1 text-[10px] font-bold text-lime-400 uppercase tracking-widest">
-                    <i class="fa-solid fa-peso-sign text-[9px]"></i>
-                    Total: &#8369;{{ number_format($rental->total_price, 0) }}
-                </span>
-            </div>
+                {{-- Duration + Total --}}
+                <div class="mt-1 flex flex-wrap gap-2">
+                    <span class="flex items-center gap-1.5 bg-[#242424] border border-white/5 rounded-lg px-2.5 py-1 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                        <i class="fa-regular fa-clock text-gray-500"></i>
+                        {{ $rental->days }} {{ $isPending ? $rental->car->rent_unit : $rental->snap_rent_unit }}(s)
+                    </span>
+                    <span class="flex items-center gap-1.5 bg-lime-400/10 border border-lime-400/20 rounded-lg px-2.5 py-1 text-[10px] font-bold text-lime-400 uppercase tracking-widest">
+                        <i class="fa-solid fa-peso-sign text-[9px]"></i>
+                        Total: &#8369;{{ number_format($rental->total_price, 0) }}
+                    </span>
+                </div>
+            @endif
         </div>
 
         {{-- Price + Status --}}

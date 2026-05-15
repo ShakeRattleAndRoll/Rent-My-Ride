@@ -34,7 +34,7 @@
             </a>
             <p class="text-gray-400 text-sm font-medium">Your cart is empty</p>
             <p class="text-gray-600 text-xs mt-1 mb-5">Cars you save will appear here</p>
-            <a href="/available" wire:navigate class="px-10 py-3 bg-yellow-400 text-black rounded-full font-bold hover:bg-yellow-300 transition text-center">
+            <a href="/available" wire:navigate class="px-10 py-3 bg-lime-400 text-black rounded-full font-bold hover:bg-lime-300 transition text-center">
                 Browse Cars
             </a>
         </div>

@@ -78,7 +78,7 @@
 
                         <div class="px-4 pb-4">
                             <label for="car_image"
-                                   class="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-yellow-400 py-3 text-[10px] font-bold uppercase tracking-widest text-black transition hover:bg-yellow-300">
+                                   class="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-lime-400 py-3 text-[10px] font-bold uppercase tracking-widest text-black transition hover:bg-lime-300">
                                 <i class="fa-solid fa-image"></i>
                                 Choose Car Photo
                             </label>
@@ -104,7 +104,7 @@
                             <input id="brand" type="text" name="brand" value="{{ old('brand') }}" required
                                    placeholder="Toyota"
                                    data-preview-source="brand"
-                                   class="w-full rounded-lg border border-white/[0.08] bg-[#242424] px-4 py-[0.9rem] text-white outline-none transition placeholder:text-gray-600 focus:border-yellow-400/75 focus:shadow-[0_0_0_3px_rgba(250,204,21,0.08)]">
+                                   class="w-full rounded-lg border border-white/[0.08] bg-[#242424] px-4 py-[0.9rem] text-white outline-none transition placeholder:text-gray-600 focus:border-lime-400/75 focus:shadow-[0_0_0_3px_rgba(163,230,53,0.08)]">
                             @error('brand')<p class="text-xs font-semibold text-red-400">{{ $message }}</p>@enderror
                         </div>
 
@@ -114,7 +114,7 @@
                             <input id="model" type="text" name="model" value="{{ old('model') }}" required
                                    placeholder="Corolla"
                                    data-preview-source="model"
-                                   class="w-full rounded-lg border border-white/[0.08] bg-[#242424] px-4 py-[0.9rem] text-white outline-none transition placeholder:text-gray-600 focus:border-yellow-400/75 focus:shadow-[0_0_0_3px_rgba(250,204,21,0.08)]">
+                                   class="w-full rounded-lg border border-white/[0.08] bg-[#242424] px-4 py-[0.9rem] text-white outline-none transition placeholder:text-gray-600 focus:border-lime-400/75 focus:shadow-[0_0_0_3px_rgba(163,230,53,0.08)]">
                             @error('model')<p class="text-xs font-semibold text-red-400">{{ $message }}</p>@enderror
                         </div>
 
@@ -123,7 +123,7 @@
                             <label for="date_owned" class="text-[11px] font-black uppercase tracking-[0.08em] text-gray-400">Date Owned</label>
                             <input id="date_owned" type="date" name="date_owned" value="{{ old('date_owned') }}" required
                                    data-preview-source="date"
-                                   class="w-full rounded-lg border border-white/[0.08] bg-[#242424] px-4 py-[0.9rem] text-white [color-scheme:dark] outline-none transition focus:border-yellow-400/75 focus:shadow-[0_0_0_3px_rgba(250,204,21,0.08)]">
+                                   class="w-full rounded-lg border border-white/[0.08] bg-[#242424] px-4 py-[0.9rem] text-white [color-scheme:dark] outline-none transition focus:border-lime-400/75 focus:shadow-[0_0_0_3px_rgba(163,230,53,0.08)]">
                             @error('date_owned')<p class="text-xs font-semibold text-red-400">{{ $message }}</p>@enderror
                         </div>
 
@@ -135,14 +135,14 @@
                                        value="{{ old('price') }}" required placeholder="1500"
                                        oninput="if(this.value.length > 6) this.value = this.value.slice(0, 6)"
                                        data-preview-source="price"
-                                       class="w-full rounded-lg border border-white/[0.08] bg-[#242424] px-4 py-[0.9rem] text-white outline-none transition placeholder:text-gray-600 focus:border-yellow-400/75 focus:shadow-[0_0_0_3px_rgba(250,204,21,0.08)]">
+                                       class="w-full rounded-lg border border-white/[0.08] bg-[#242424] px-4 py-[0.9rem] text-white outline-none transition placeholder:text-gray-600 focus:border-lime-400/75 focus:shadow-[0_0_0_3px_rgba(163,230,53,0.08)]">
                                 @error('price')<p class="text-xs font-semibold text-red-400">{{ $message }}</p>@enderror
                             </div>
                             <div class="flex flex-col gap-2">
                                 <label for="rent_unit" class="text-[11px] font-black uppercase tracking-[0.08em] text-gray-400">Unit</label>
                                 <select id="rent_unit" name="rent_unit" required
                                         data-preview-source="unit"
-                                        class="w-full rounded-lg border border-white/[0.08] bg-[#242424] px-4 py-[0.9rem] text-white outline-none transition focus:border-yellow-400/75 focus:shadow-[0_0_0_3px_rgba(250,204,21,0.08)]">
+                                        class="w-full rounded-lg border border-white/[0.08] bg-[#242424] px-4 py-[0.9rem] text-white outline-none transition focus:border-lime-400/75 focus:shadow-[0_0_0_3px_rgba(163,230,53,0.08)]">
                                     <option value="Hour"  {{ old('rent_unit') === 'Hour'  ? 'selected' : '' }}>Hour</option>
                                     <option value="Day"   {{ old('rent_unit', 'Day') === 'Day' ? 'selected' : '' }}>Day</option>
                                     <option value="Week"  {{ old('rent_unit') === 'Week'  ? 'selected' : '' }}>Week</option>
@@ -156,7 +156,7 @@
                             <label for="transmission" class="text-[11px] font-black uppercase tracking-[0.08em] text-gray-400">Transmission</label>
                             <select id="transmission" name="transmission" required
                                     data-preview-source="transmission"
-                                    class="w-full rounded-lg border border-white/[0.08] bg-[#242424] px-4 py-[0.9rem] text-white outline-none transition focus:border-yellow-400/75 focus:shadow-[0_0_0_3px_rgba(250,204,21,0.08)]">
+                                    class="w-full rounded-lg border border-white/[0.08] bg-[#242424] px-4 py-[0.9rem] text-white outline-none transition focus:border-lime-400/75 focus:shadow-[0_0_0_3px_rgba(163,230,53,0.08)]">
                                 <option value="Automatic" {{ old('transmission', 'Automatic') === 'Automatic' ? 'selected' : '' }}>Automatic</option>
                                 <option value="Manual"    {{ old('transmission') === 'Manual' ? 'selected' : '' }}>Manual</option>
                             </select>
@@ -168,7 +168,7 @@
                             <label for="fuel_type" class="text-[11px] font-black uppercase tracking-[0.08em] text-gray-400">Fuel Type</label>
                             <select id="fuel_type" name="fuel_type" required
                                     data-preview-source="fuel"
-                                    class="w-full rounded-lg border border-white/[0.08] bg-[#242424] px-4 py-[0.9rem] text-white outline-none transition focus:border-yellow-400/75 focus:shadow-[0_0_0_3px_rgba(250,204,21,0.08)]">
+                                    class="w-full rounded-lg border border-white/[0.08] bg-[#242424] px-4 py-[0.9rem] text-white outline-none transition focus:border-lime-400/75 focus:shadow-[0_0_0_3px_rgba(163,230,53,0.08)]">
                                 <option value="Gasoline" {{ old('fuel_type', 'Gasoline') === 'Gasoline' ? 'selected' : '' }}>Gasoline</option>
                                 <option value="Diesel"   {{ old('fuel_type') === 'Diesel' ? 'selected' : '' }}>Diesel</option>
                                 <option value="Electric" {{ old('fuel_type') === 'Electric' ? 'selected' : '' }}>Electric</option>
@@ -181,7 +181,7 @@
                             <label for="description" class="text-[11px] font-black uppercase tracking-[0.08em] text-gray-400">Description</label>
                             <textarea id="description" name="description" rows="6"
                                       placeholder="Clean interior, pickup notes, availability, or house rules."
-                                      class="w-full resize-y rounded-lg border border-white/[0.08] bg-[#242424] px-4 py-[0.9rem] text-white outline-none transition placeholder:text-gray-600 focus:border-yellow-400/75 focus:shadow-[0_0_0_3px_rgba(250,204,21,0.08)]">{{ old('description') }}</textarea>
+                                      class="w-full resize-y rounded-lg border border-white/[0.08] bg-[#242424] px-4 py-[0.9rem] text-white outline-none transition placeholder:text-gray-600 focus:border-lime-400/75 focus:shadow-[0_0_0_3px_rgba(163,230,53,0.08)]">{{ old('description') }}</textarea>
                             @error('description')<p class="text-xs font-semibold text-red-400">{{ $message }}</p>@enderror
                         </div>
                     </div>
@@ -193,7 +193,7 @@
                             Cancel
                         </a>
                         <button type="submit"
-                                class="inline-flex items-center justify-center gap-2 rounded-xl bg-yellow-400 px-7 py-3 text-[11px] font-bold uppercase tracking-widest text-black transition hover:bg-yellow-300">
+                                class="inline-flex items-center justify-center gap-2 rounded-xl bg-lime-400 px-7 py-3 text-[11px] font-bold uppercase tracking-widest text-black transition hover:bg-lime-300">
                             <i class="fa-solid fa-plus text-xs"></i>
                             Post Listing
                         </button>

@@ -92,8 +92,8 @@
                 </div>
 
                 <div class="bg-[#2a2a2a] border border-white/5 rounded-xl p-4 flex items-start gap-3">
-                    <div class="p-2 bg-yellow-400/10 rounded-lg shrink-0">
-                        <i class="fa-solid fa-triangle-exclamation text-yellow-400 text-xs"></i>
+                    <div class="p-2 bg-lime-400/10 rounded-lg shrink-0">
+                        <i class="fa-solid fa-triangle-exclamation text-lime-400 text-xs"></i>
                     </div>
                     <div>
                         <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">Note</p>

@@ -23,7 +23,7 @@
                 <div class="flex flex-col gap-5 p-4 sm:p-5">
                     <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                         <div class="min-w-0">
-                            <p class="text-[10px] font-black uppercase tracking-widest text-yellow-300">Vehicle</p>
+                            <p class="text-[10px] font-black uppercase tracking-widest text-lime-300">Vehicle</p>
                             <h2 class="mt-1 truncate text-2xl font-black leading-tight">{{ $car->brand }}</h2>
                             <p class="truncate text-sm text-gray-400">{{ $car->model }}</p>
                         </div>
@@ -64,7 +64,7 @@
             <section class="mt-8">
                 <div class="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
                     <div>
-                        <p class="text-[10px] font-black uppercase tracking-widest text-yellow-300">Rental History</p>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-lime-300">Rental History</p>
                         <h3 class="text-lg font-black">Accepted renters</h3>
                     </div>
                     <p class="text-xs font-medium text-gray-500">Only accepted rentals are shown here.</p>

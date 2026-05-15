@@ -100,7 +100,7 @@
         @auth
             @if(auth()->user()->is_admin)
                 <a href="{{ route('admin.cars.pending') }}" wire:navigate data-nav-navigate class="relative px-4 py-2 rounded-full {{ request()->is('admin/cars*') ? 'bg-lime-400 text-black' : 'text-white hover:text-lime-400' }}">
-                    Admin panel
+                    Pending Approvals
                     <span data-admin-pending-approvals-badge class="absolute -top-1 -right-1 w-4 h-4 bg-red-600 rounded-full text-white text-[9px] {{ $totalPendingCarApprovals > 0 ? 'flex' : 'hidden' }} items-center justify-center font-black animate-pulse">
                         {{ $totalPendingCarApprovals > 99 ? '99+' : $totalPendingCarApprovals }}
                     </span>
@@ -223,5 +223,3 @@
     </div>
 
 </div>
-
-<script src="{{ asset('js/navbar.js') }}"></script>

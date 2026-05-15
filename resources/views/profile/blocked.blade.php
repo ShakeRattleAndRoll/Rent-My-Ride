@@ -22,7 +22,7 @@
                 <button
                     type="button"
                     onclick="history.back()"
-                    class="px-6 py-3 rounded-full bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-black uppercase tracking-widest transition"
+                    class="px-6 py-3 rounded-full bg-lime-400 hover:bg-lime-300 text-black text-xs font-black uppercase tracking-widest transition"
                 >
                     Go Back
                 </button>

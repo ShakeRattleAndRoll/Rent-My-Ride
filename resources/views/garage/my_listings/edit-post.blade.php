@@ -35,7 +35,7 @@
                                 @endif
                             </div>
                             <div class="absolute inset-0 flex items-center justify-center bg-black/0 transition group-hover:bg-black/45">
-                                <span class="translate-y-2 rounded-full bg-yellow-400 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-black opacity-0 transition group-hover:translate-y-0 group-hover:opacity-100">
+                                <span class="translate-y-2 rounded-full bg-lime-400 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-black opacity-0 transition group-hover:translate-y-0 group-hover:opacity-100">
                                     Change Photo
                                 </span>
                             </div>
@@ -73,7 +73,7 @@
                         </div>
 
                         <div class="px-4 pb-4">
-                            <label for="car_image" class="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-yellow-400 py-3 text-[10px] font-bold uppercase tracking-widest text-black transition hover:bg-yellow-300">
+                            <label for="car_image" class="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-lime-400 py-3 text-[10px] font-bold uppercase tracking-widest text-black transition hover:bg-lime-300">
                                 <i class="fa-solid fa-image"></i>
                                 Change Car Photo
                             </label>
@@ -84,7 +84,7 @@
                 <section class="rounded-lg border border-white/10 bg-[#1a1a1a] shadow-2xl">
                     <div class="flex flex-col gap-4 border-b border-white/10 px-5 py-5 sm:flex-row sm:items-center sm:justify-between">
                         <div>
-                            <p class="text-[10px] font-black uppercase tracking-widest text-yellow-300">Vehicle Details</p>
+                            <p class="text-[10px] font-black uppercase tracking-widest text-lime-300">Vehicle Details</p>
                             <h1 class="mt-1 text-2xl font-black uppercase tracking-tight">Edit Listing</h1>
                         </div>
                     </div>
@@ -149,7 +149,7 @@
                         <a href="/garage/my-listing" wire:navigate data-nav-navigate class="inline-flex items-center justify-center rounded-lg px-5 py-3 text-[11px] font-black uppercase tracking-widest text-gray-400 transition hover:text-white">
                             Cancel
                         </a>
-                        <button type="button" onclick="document.getElementById('confirm-update-modal').classList.remove('hidden')" class="inline-flex items-center justify-center gap-2 rounded-xl bg-yellow-400 px-7 py-3 text-[11px] font-bold uppercase tracking-widest text-black transition hover:bg-yellow-300">
+                        <button type="button" onclick="document.getElementById('confirm-update-modal').classList.remove('hidden')" class="inline-flex items-center justify-center gap-2 rounded-xl bg-lime-400 px-7 py-3 text-[11px] font-bold uppercase tracking-widest text-black transition hover:bg-lime-300">
                             <i class="fa-solid fa-check text-xs"></i>
                             Update Listing
                         </button>

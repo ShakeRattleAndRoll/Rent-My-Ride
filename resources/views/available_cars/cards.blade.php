@@ -4,9 +4,9 @@
 
 <div
     x-data="{ open: false, profileOpen: false}"
-    class="relative car-card bg-[#1e1e1e] rounded-2xl overflow-hidden border border-white/5 hover:border-yellow-400/40 transition-all shadow-lg flex flex-col h-full"
+    class="relative car-card bg-[#1e1e1e] rounded-2xl overflow-hidden border border-white/5 hover:border-lime-400/40 transition-all shadow-lg flex flex-col h-full"
 >
-    {{-- Clickable overlay — covers image + details only, stops before the button strip --}}
+    {{-- Clickable overlay - covers image + details only, stops before the button strip --}}
     <div @click="open = true" class="absolute inset-x-0 top-0 bottom-[64px] z-10 block cursor-pointer" aria-label="View Details"></div>
 
     {{-- Car Image --}}
@@ -23,7 +23,7 @@
             </div>
         @endif
 
-        {{-- Occupied badge — always shown when occupied, no dark overlay --}}
+        {{-- Occupied badge - always shown when occupied, no dark overlay --}}
         @if($isOccupied)
             <div class="absolute top-3 left-3 px-3 py-1 rounded-full bg-red-600 text-white text-[10px] font-black uppercase tracking-widest z-10">
                 Occupied
@@ -39,7 +39,7 @@
                 <p class="text-gray-400 text-sm">{{ $car->model }}</p>
             </div>
             <p class="text-white font-bold text-sm text-right">
-                ₱{{ number_format($car->price) }}
+                &#8369;{{ number_format($car->price) }}
                 <span class="text-gray-400 font-normal block text-[10px]">/per {{ $car->rent_unit }}</span>
             </p>
         </div>
@@ -70,13 +70,13 @@
             </a>
 
         @elseif(Auth::check() && in_array($car->id, $pendingRequests))
-            <div class="w-full py-3 bg-orange-500/10 border border-orange-500/20 text-orange-400 text-[10px] font-bold uppercase rounded-xl text-center flex items-center justify-center gap-2">
+            <div class="w-full py-3 bg-yellow-400/10 border border-yellow-400/30 text-yellow-400 text-[10px] font-bold uppercase rounded-xl text-center flex items-center justify-center gap-2">
                 <i class="fa-solid fa-spinner animate-spin"></i>
                 Pending Approval
             </div>
 
         @elseif(Auth::check() && $carts->contains('car_id', $car->id))
-            <div class="w-full py-3 bg-[#242424] border border-yellow-400/20 text-yellow-400 text-[10px] font-bold uppercase tracking-widest rounded-xl text-center flex items-center justify-center gap-2">
+            <div class="w-full py-3 bg-[#242424] border border-lime-400/20 text-lime-400 text-[10px] font-bold uppercase tracking-widest rounded-xl text-center flex items-center justify-center gap-2">
                 <i class="fa-solid fa-check"></i>
                 Already in Cart
             </div>
@@ -86,7 +86,7 @@
                 @csrf
                 <input type="hidden" name="car_id" value="{{ $car->id }}">
                 <button type="submit"
-                        class="w-full py-3 bg-yellow-400 hover:bg-yellow-300 text-black text-[10px] font-bold uppercase tracking-widest rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2">
+                        class="w-full py-3 bg-lime-400 hover:bg-lime-300 text-black text-[10px] font-bold uppercase tracking-widest rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2">
                     <i class="fa-solid fa-cart-plus"></i>
                     Add to Cart
                 </button>

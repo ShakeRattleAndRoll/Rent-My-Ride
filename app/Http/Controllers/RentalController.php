@@ -60,16 +60,48 @@ class RentalController extends Controller
     {
         $car = Car::findOrFail($id);
 
-        $preOrders = Rental::where('car_id', $id)
-            ->where('status', 'pending')
-            ->with('user')
-            ->get();
+        app(RentalAutoAcceptService::class)->denyUnavailablePending($car);
+
+        $preOrders = $this->pendingPreOrders($car);
 
         return view('garage.my_listings.pre-order', compact('car', 'preOrders'));
     }
 
+    public function preOrderItems($id)
+    {
+        $car = Car::findOrFail($id);
+
+        if ($car->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        app(RentalAutoAcceptService::class)->denyUnavailablePending($car);
+
+        $preOrders = $this->pendingPreOrders($car);
+
+        return response()->json([
+            'count' => $preOrders->count(),
+            'html' => view('garage.my_listings.partials.pre-order-rows', compact('preOrders'))->render(),
+        ]);
+    }
+
+    private function pendingPreOrders(Car $car)
+    {
+        return Rental::where('car_id', $car->id)
+            ->where('status', 'pending')
+            ->with('user')
+            ->orderBy('created_at')
+            ->orderBy('id')
+            ->get();
+    }
+
     public function notifications()
     {
+        Car::where('user_id', Auth::id())
+            ->whereHas('rentals', fn ($query) => $query->where('status', 'pending'))
+            ->get()
+            ->each(fn (Car $car) => app(RentalAutoAcceptService::class)->denyUnavailablePending($car));
+
         $pendingOrders = Rental::query()
             ->selectRaw('car_id, COUNT(*) as pending_orders_count')
             ->whereHas('car', function ($q) {

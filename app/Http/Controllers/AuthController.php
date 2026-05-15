@@ -114,22 +114,20 @@ class AuthController extends Controller
         $pending = $request->session()->get('pending_registration');
 
         if (!$pending) {
-            return redirect()->route('register');
+            throw ValidationException::withMessages([
+                'code' => 'Please sign up again to request a new verification code.',
+            ]);
         }
 
         if (now()->greaterThan(\Carbon\Carbon::parse($pending['expires_at']))) {
-            $request->session()->forget('pending_registration');
-
             throw ValidationException::withMessages([
-                'code' => 'The verification code has expired. Please sign up again.',
+                'code' => 'The verification code has expired. Please resend the code.',
             ]);
         }
 
         if (($pending['attempts'] ?? 0) >= 5) {
-            $request->session()->forget('pending_registration');
-
             throw ValidationException::withMessages([
-                'code' => 'Too many incorrect attempts. Please sign up again.',
+                'code' => 'Too many incorrect attempts. Please resend the code.',
             ]);
         }
 

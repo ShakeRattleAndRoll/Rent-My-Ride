@@ -274,6 +274,10 @@ if (!rentRideNavbar.bound) {
 
         if (!window.Livewire?.navigate) return;
 
+        if (form.hasAttribute('data-livewire-html')) {
+            return;
+        }
+
         event.preventDefault();
 
         const message = form.dataset.confirm;
@@ -305,7 +309,7 @@ if (!rentRideNavbar.bound) {
                 }
             }
 
-            window.location.replace(targetUrl);
+            window.Livewire.navigate(targetUrl, { scroll: false });
         };
 
         if (submitButton) {

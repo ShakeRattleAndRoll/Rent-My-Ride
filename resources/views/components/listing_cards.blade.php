@@ -1,8 +1,27 @@
 @props(['car'])
 
 @php
-    $ActiveRent = $car->rentals()->where('status', 'accepted')->orderBy('start_date', 'desc')->first();
-    $IsOccupied = !is_null($ActiveRent) && \Carbon\Carbon::parse($ActiveRent->end_date)->timezone('Asia/Manila')->isFuture();
+    $now = now('Asia/Manila');
+    $acceptedRentals = $car->relationLoaded('rentals')
+        ? $car->rentals->where('status', 'accepted')
+        : $car->rentals()->where('status', 'accepted')->get();
+
+    $ActiveRent = $acceptedRentals->first(function ($rental) use ($now) {
+        $start = \Carbon\Carbon::parse($rental->start_date)->timezone('Asia/Manila');
+        $end = \Carbon\Carbon::parse($rental->end_date)->timezone('Asia/Manila');
+
+        return $start->lte($now) && $end->gte($now);
+    });
+
+    $UpcomingRent = $acceptedRentals
+        ->filter(fn ($rental) => \Carbon\Carbon::parse($rental->start_date)->timezone('Asia/Manila')->gt($now))
+        ->sortBy(fn ($rental) => \Carbon\Carbon::parse($rental->start_date)->timestamp)
+        ->first();
+
+    $IsOccupied = ! is_null($ActiveRent);
+    $IsUpcoming = ! $IsOccupied && ! is_null($UpcomingRent);
+    $LocksActions = $IsOccupied || $IsUpcoming;
+    $isPendingApproval = ($car->approval_status ?? 'approved') === 'pending';
 @endphp
 
 <div class="flex h-full flex-col overflow-hidden rounded-xl border border-gray-800 bg-[#1a1a1a] transition-all duration-200 hover:border-gray-600">
@@ -49,11 +68,11 @@
 
             {{-- Status + Details --}}
             <div class="flex flex-wrap items-center gap-2">
-                @if (($car->approval_status ?? 'approved') === 'pending')
+                @if ($isPendingApproval)
                     <span class="rounded-full bg-yellow-400 px-2.5 py-1 text-[11px] font-bold text-black">Pending Approval</span>
                 @endif
 
-                @if (($car->approval_status ?? 'approved') === 'approved')
+                @if (! $isPendingApproval)
                     @if ($car->is_available)
                         <span class="rounded-full bg-lime-500 px-2.5 py-1 text-[11px] font-bold text-black">Visible</span>
                     @else
@@ -62,15 +81,12 @@
                 @endif
 
                 @if ($IsOccupied)
-                    <span class="rounded-full bg-green-500 px-2.5 py-1 text-[11px] font-bold text-white">Occupied</span>
+                    <span class="rounded-full bg-lime-500 px-2.5 py-1 text-[11px] font-bold text-black">Occupied</span>
+                @elseif ($IsUpcoming)
+                    <span class="rounded-full bg-blue-500 px-2.5 py-1 text-[11px] font-bold text-white">Upcoming</span>
                 @else
                     <span class="rounded-full bg-gray-600 px-2.5 py-1 text-[11px] font-bold text-white">Unoccupied</span>
                 @endif
-
-                <a href="/garage/details/{{ $car->id }}" wire:navigate data-nav-navigate
-                   class="rounded-full border border-gray-700 bg-[#2a2a2a] px-3 py-1 text-[11px] font-bold text-gray-300 transition-all duration-200 hover:bg-[#333]">
-                    Details
-                </a>
             </div>
         </div>
 
@@ -153,10 +169,14 @@
                 <span class="text-xs font-normal text-gray-400">/ per {{ $car->rent_unit }}</span>
             </p>
 
-            <div class="grid grid-cols-1 gap-2 min-[420px]:grid-cols-2">
-                {{-- Pre Orders --}}
+            <div class="grid grid-cols-2 gap-2">
+                <a href="/garage/details/{{ $car->id }}" wire:navigate data-nav-navigate
+                   class="flex min-h-9 items-center justify-center rounded-lg border border-gray-700 bg-[#242424] px-3 py-2 text-center text-[11px] font-black uppercase tracking-widest text-gray-300 transition-all duration-200 hover:bg-[#303030] hover:text-white">
+                    Details
+                </a>
+
                 <a href="/car/pre-order/{{ $car->id }}" wire:navigate data-nav-navigate
-                   class="relative w-full rounded-full bg-yellow-400 px-3 py-1.5 text-center text-[11px] font-bold text-black transition-all duration-200 hover:bg-yellow-300">
+                   class="relative flex min-h-9 items-center justify-center rounded-lg bg-lime-400 px-3 py-2 text-center text-[11px] font-black uppercase tracking-widest text-black transition-all duration-200 hover:bg-lime-300">
                     Pre orders
 
                     <span data-car-pending-orders-badge="{{ $car->id }}" class="absolute -right-1 -top-1 h-4 w-4 rounded-full bg-red-500 text-[10px] font-bold text-white {{ isset($car->pending_orders_count) && $car->pending_orders_count > 0 ? 'flex' : 'hidden' }} items-center justify-center">
@@ -164,29 +184,27 @@
                     </span>
                 </a>
 
-                {{-- Edit --}}
-                @if ($IsOccupied)
+                @if ($LocksActions)
                     <button type="button"
-                            class="w-full cursor-not-allowed rounded-full border border-gray-700 bg-gray-800 px-3 py-1.5 text-center text-[11px] font-bold text-gray-500">
+                            class="flex min-h-9 w-full cursor-not-allowed items-center justify-center rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-center text-[11px] font-black uppercase tracking-widest text-gray-500">
                         Edit Post
                     </button>
                 @else
                     <a href="/garage/edit/{{ $car->id }}" wire:navigate data-nav-navigate
-                       class="w-full rounded-full bg-yellow-400 px-3 py-1.5 text-center text-[11px] font-bold text-black transition-all duration-200 hover:bg-yellow-300">
+                       class="flex min-h-9 items-center justify-center rounded-lg bg-lime-400 px-3 py-2 text-center text-[11px] font-black uppercase tracking-widest text-black transition-all duration-200 hover:bg-lime-300">
                         Edit Post
                     </a>
                 @endif
 
-                {{-- DELETE --}}
-                @if ($IsOccupied)
+                @if ($LocksActions)
                     <button type="button"
-                            class="w-full cursor-not-allowed rounded-full border border-gray-700 bg-gray-800 px-3 py-1.5 text-center text-[11px] font-bold text-gray-500 min-[420px]:col-span-2">
+                            class="flex min-h-9 w-full cursor-not-allowed items-center justify-center rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-center text-[11px] font-black uppercase tracking-widest text-gray-500">
                         Delete Post
                     </button>
                 @else
                     <button type="button"
                             onclick="document.getElementById('delete-car-modal-{{ $car->id }}').classList.remove('hidden')"
-                            class="w-full rounded-full bg-red-500 px-3 py-1.5 text-center text-[11px] font-bold text-white transition-all duration-200 hover:bg-red-400 min-[420px]:col-span-2">
+                            class="flex min-h-9 w-full items-center justify-center rounded-lg bg-red-500 px-3 py-2 text-center text-[11px] font-black uppercase tracking-widest text-white transition-all duration-200 hover:bg-red-400">
                         Delete Post
                     </button>
                 @endif

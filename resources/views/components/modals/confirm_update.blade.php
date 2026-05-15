@@ -27,7 +27,7 @@
             </button>
             <button type="button"
                     onclick="document.getElementById('{{ $formId }}').submit()"
-                    class="px-6 py-2.5 rounded-full bg-yellow-400 text-black font-bold text-sm hover:bg-yellow-300 transition">
+                    class="px-6 py-2.5 rounded-full bg-lime-400 text-black font-bold text-sm hover:bg-lime-300 transition">
                 Yes, Update
             </button>
         </div>

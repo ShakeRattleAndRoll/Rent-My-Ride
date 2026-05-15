@@ -95,6 +95,7 @@ class RentalNotificationService
 
             $end     = Carbon::parse($rental->end_date);
             $start   = Carbon::parse($rental->start_date);
+            $now     = now();
             $isOwner = $rental->car->user_id === $user->id;
             $url     = $isOwner
                 ? "/garage/details/{$rental->car_id}"
@@ -103,10 +104,10 @@ class RentalNotificationService
             // Total rental duration in hours
             $durationHours = $start->diffInHours($end);
 
-            if ($end->isFuture()) {
+            if ($end->gt($now)) {
 
                 // Always: alert within 15 minutes regardless of duration
-                if ($end->lte(now()->addMinutes(15))) {
+                if ($end->lte($now->copy()->addMinutes(15))) {
                     $this->createOnce($user->id, $rental, 'rental_ending_15min',
                         'Rental ends within 15 minutes',
                         "{$rental->car->brand} {$rental->car->model} ends on {$end->format('M j, Y g:i A')}.",
@@ -115,7 +116,7 @@ class RentalNotificationService
                 }
 
                 // Only if duration > 1 hour: also alert within 1 hour
-                if ($durationHours > 1 && $end->lte(now()->addHour())) {
+                if ($durationHours > 1 && $end->lte($now->copy()->addHour())) {
                     $this->createOnce($user->id, $rental, 'rental_ending_1hour',
                         'Rental ends within 1 hour',
                         "{$rental->car->brand} {$rental->car->model} ends on {$end->format('M j, Y g:i A')}.",
@@ -124,7 +125,7 @@ class RentalNotificationService
                 }
 
                 // Only if duration > 1 day (24 hours): also alert within 1 day
-                if ($durationHours > 24 && $end->lte(now()->addDay())) {
+                if ($durationHours > 24 && $end->lte($now->copy()->addDay())) {
                     $this->createOnce($user->id, $rental, 'rental_ending_1day',
                         'Rental ends within 1 day',
                         "{$rental->car->brand} {$rental->car->model} ends on {$end->format('M j, Y g:i A')}.",
@@ -133,7 +134,7 @@ class RentalNotificationService
                 }
             }
 
-            if ($end->lte(now())) {
+            if ($end->lte($now)) {
                 $this->createOnce($user->id, $rental, 'rental_expired',
                     'Rental expired',
                     "{$rental->car->brand} {$rental->car->model} ended on {$end->format('M j, Y g:i A')}.",

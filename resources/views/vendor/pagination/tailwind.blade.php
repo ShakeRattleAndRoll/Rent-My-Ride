@@ -23,7 +23,7 @@
                     min="1" 
                     max="{{ $paginator->lastPage() }}" 
                     placeholder="{{ $paginator->currentPage() }}"
-                    class="w-16 bg-[#1a1a1a] border border-white/10 text-white text-sm rounded-lg px-2 py-1 focus:ring-1 focus:ring-yellow-400 outline-none"
+                    class="w-16 bg-[#1a1a1a] border border-white/10 text-white text-sm rounded-lg px-2 py-1 focus:ring-1 focus:ring-lime-400 outline-none"
                 >
 
             </div>
@@ -36,14 +36,14 @@
             @if ($paginator->onFirstPage())
                 <span class="px-3 py-2 text-gray-600 bg-[#1a1a1a] border border-white/10 rounded-l-xl cursor-default">&laquo;&laquo;</span>
             @else
-                <a href="{{ $paginator->url(1) }}" class="px-3 py-2 text-white bg-[#1a1a1a] border border-white/10 rounded-l-xl hover:bg-yellow-400 hover:text-black transition">&laquo;&laquo;</a>
+                <a href="{{ $paginator->url(1) }}" class="px-3 py-2 text-white bg-[#1a1a1a] border border-white/10 rounded-l-xl hover:bg-lime-400 hover:text-black transition">&laquo;&laquo;</a>
             @endif
 
             {{-- PREVIOUS PAGE (<) --}}
             @if ($paginator->onFirstPage())
                 <span class="px-4 py-2 text-gray-600 bg-[#1a1a1a] border-y border-r border-white/10 cursor-default">&laquo;</span>
             @else
-                <a href="{{ $paginator->previousPageUrl() }}" class="px-4 py-2 text-white bg-[#1a1a1a] border-y border-r border-white/10 hover:bg-yellow-400 hover:text-black transition">&laquo;</a>
+                <a href="{{ $paginator->previousPageUrl() }}" class="px-4 py-2 text-white bg-[#1a1a1a] border-y border-r border-white/10 hover:bg-lime-400 hover:text-black transition">&laquo;</a>
             @endif
 
             @foreach ($elements as $element)
@@ -54,7 +54,7 @@
                 @if (is_array($element))
                     @foreach ($element as $page => $url)
                         @if ($page == $paginator->currentPage())
-                            <span class="px-4 py-2 text-black bg-yellow-400 border-y border-r border-yellow-400 font-bold">{{ $page }}</span>
+                            <span class="px-4 py-2 text-black bg-lime-400 border-y border-r border-lime-400 font-bold">{{ $page }}</span>
                         @else
                             <a href="{{ $url }}" class="px-4 py-2 text-white bg-[#1a1a1a] border-y border-r border-white/10 hover:bg-gray-800 transition">{{ $page }}</a>
                         @endif
@@ -64,14 +64,14 @@
 
             {{-- NEXT PAGE (>) --}}
             @if ($paginator->hasMorePages())
-                <a href="{{ $paginator->nextPageUrl() }}" class="px-4 py-2 text-white bg-[#1a1a1a] border-y border-r border-white/10 hover:bg-yellow-400 hover:text-black transition">&raquo;</a>
+                <a href="{{ $paginator->nextPageUrl() }}" class="px-4 py-2 text-white bg-[#1a1a1a] border-y border-r border-white/10 hover:bg-lime-400 hover:text-black transition">&raquo;</a>
             @else
                 <span class="px-4 py-2 text-gray-600 bg-[#1a1a1a] border-y border-r border-white/10 cursor-default">&raquo;</span>
             @endif
 
             {{-- LAST PAGE (>>) --}}
             @if ($paginator->hasMorePages())
-                <a href="{{ $paginator->url($paginator->lastPage()) }}" class="px-3 py-2 text-white bg-[#1a1a1a] border-y border-r border-white/10 rounded-r-xl hover:bg-yellow-400 hover:text-black transition">&raquo;&raquo;</a>
+                <a href="{{ $paginator->url($paginator->lastPage()) }}" class="px-3 py-2 text-white bg-[#1a1a1a] border-y border-r border-white/10 rounded-r-xl hover:bg-lime-400 hover:text-black transition">&raquo;&raquo;</a>
             @else
                 <span class="px-3 py-2 text-gray-600 bg-[#1a1a1a] border-y border-r border-white/10 rounded-r-xl cursor-default">&raquo;&raquo;</span>
             @endif

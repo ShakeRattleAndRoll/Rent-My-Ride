@@ -111,6 +111,8 @@
 * Available Page, My Listings, My Rentals and My Cart
         * Details (Listings and Rentals)
         * Cards improvement
+* Messages UI color update
+* Messages responsive
 
 #### Added Features & Bug Fixes 5/15/2026
 * Added admin panel
@@ -120,14 +122,13 @@
 * Fix ayto accept nearest start day not working
 * Auto accept in my listing UI change
 * Fix the bug when doing certain action and clicking the back, the action you did is redo
+* UI changes
+* Livewire modals
+* Pre order conflict schedule fixed
 
 ## PARTIALLY DONE
 
 ### FEATURES
-
 * Pre order History
-* Not Responsive:
-    * Homepage
-        * Background
-    * Messages
-        * Improvement
+* Homepage backgroung with responsive
+   

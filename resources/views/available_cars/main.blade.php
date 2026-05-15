@@ -23,18 +23,18 @@
                                 name="search" 
                                 value="{{ request('search') }}"
                                 placeholder="Search brand or model..."
-                                class="w-full bg-[#1a1a1a] border border-gray-800 text-white text-sm rounded-2xl py-4 px-6 pr-24 focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none transition-all"
+                                class="w-full bg-[#1a1a1a] border border-gray-800 text-white text-sm rounded-2xl py-4 px-6 pr-24 focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none transition-all"
                             >
                             
                             {{-- Filter Toggle --}}
-                            <button title="Filters" type="button" @click="open = !open" class="absolute right-14 top-1/2 -translate-y-1/2 text-gray-500 hover:text-yellow-400 transition-colors">
+                            <button title="Filters" type="button" @click="open = !open" class="absolute right-14 top-1/2 -translate-y-1/2 text-gray-500 hover:text-lime-400 transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
                                 </svg>
                             </button>
 
                             {{-- Search Submit --}}
-                            <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 bg-yellow-400 p-2 rounded-xl text-black hover:bg-yellow-300 transition-colors">
+                            <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 bg-lime-400 p-2 rounded-xl text-black hover:bg-lime-300 transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
@@ -55,7 +55,7 @@
                                 {{-- Brand --}}
                                 <div class="flex flex-col gap-1">
                                     <label class="text-[10px] uppercase font-bold text-gray-500 ml-1">Brand</label>
-                                    <select name="brand" class="w-full bg-black border border-gray-800 text-white rounded-lg p-2 text-sm focus:border-yellow-400 outline-none">
+                                    <select name="brand" class="w-full bg-black border border-gray-800 text-white rounded-lg p-2 text-sm focus:border-lime-400 outline-none">
                                         <option value="">All Brands</option>
                                         @foreach($brands as $brand)
                                             <option value="{{ $brand }}" {{ request('brand') == $brand ? 'selected' : '' }}>{{ ucfirst($brand) }}</option>
@@ -65,7 +65,7 @@
                                 {{-- Model --}}
                                 <div class="flex flex-col gap-1">
                                     <label class="text-[10px] uppercase font-bold text-gray-500 ml-1">Model</label>
-                                    <select name="model" class="w-full bg-black border border-gray-800 text-white rounded-lg p-2 text-sm focus:border-yellow-400 outline-none">
+                                    <select name="model" class="w-full bg-black border border-gray-800 text-white rounded-lg p-2 text-sm focus:border-lime-400 outline-none">
                                         <option value="">All Models</option>
                                         @foreach($models as $model)
                                             <option value="{{ $model }}" {{ request('model') == $model ? 'selected' : '' }}>{{ ucfirst($model) }}</option>
@@ -110,7 +110,7 @@
                                 <a href="{{ route('cars.index') }}" class="flex-1 text-center py-3 rounded-xl border border-gray-800 text-gray-400 hover:bg-white/5 transition-all text-xs font-bold uppercase tracking-widest leading-loose">
                                     Reset
                                 </a>
-                                <button type="submit" class="flex-[2] bg-yellow-400 text-black py-3 rounded-xl hover:bg-yellow-300 font-bold uppercase tracking-widest transition-all">
+                                <button type="submit" class="flex-[2] bg-lime-400 text-black py-3 rounded-xl hover:bg-lime-300 font-bold uppercase tracking-widest transition-all">
                                     Apply Filters
                                 </button>
                             </div>

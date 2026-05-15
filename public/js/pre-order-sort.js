@@ -1,29 +1,40 @@
 function sortTable(mode) {
-    document.querySelectorAll('.sort-btn').forEach(btn => {
-        btn.classList.remove('bg-yellow-400', 'text-black');
-        btn.classList.add('bg-[#1a1a1a]', 'text-gray-400', 'border', 'border-gray-700');
-    });
-
-    const active = document.getElementById('btn-' + mode);
-    active.classList.add('bg-yellow-400', 'text-black');
-    active.classList.remove('bg-[#1a1a1a]', 'text-gray-400', 'border', 'border-gray-700');
+    const select = document.getElementById('sort-select');
+    if (select && select.value !== mode) {
+        select.value = mode;
+    }
 
     const tbody = document.querySelector('tbody');
+    if (!tbody) return;
+
     const rows = Array.from(tbody.querySelectorAll('tr[data-created]'));
+
+    const numberValue = (row, key) => Number(row.dataset[key] || 0);
+    const byFirstPending = (a, b) =>
+        numberValue(a, 'created') - numberValue(b, 'created') ||
+        numberValue(a, 'id') - numberValue(b, 'id');
 
     rows.sort((a, b) => {
         if (mode === 'fcfs') {
-            return parseInt(a.dataset.created) - parseInt(b.dataset.created);
+            return byFirstPending(a, b);
         } else if (mode === 'longest') {
-            return parseInt(b.dataset.days) - parseInt(a.dataset.days);
+            return numberValue(b, 'duration') - numberValue(a, 'duration') || byFirstPending(a, b);
         } else if (mode === 'shortest') {
-            return parseInt(a.dataset.days) - parseInt(b.dataset.days);
+            return numberValue(a, 'duration') - numberValue(b, 'duration') || byFirstPending(a, b);
         } else if (mode === 'nearest') {
-            return parseInt(a.dataset.startDate) - parseInt(b.dataset.startDate);
+            return numberValue(a, 'start') - numberValue(b, 'start') || byFirstPending(a, b);
         }
+
+        return byFirstPending(a, b);
     });
 
     rows.forEach(row => tbody.appendChild(row));
 }
 
-document.addEventListener('DOMContentLoaded', () => sortTable('fcfs'));
+function initPreOrderSort() {
+    const select = document.getElementById('sort-select');
+    sortTable(select?.value || 'fcfs');
+}
+
+document.addEventListener('DOMContentLoaded', initPreOrderSort);
+document.addEventListener('livewire:navigated', initPreOrderSort);

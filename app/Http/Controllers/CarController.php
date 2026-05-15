@@ -164,7 +164,14 @@ class CarController extends Controller
     // EDIT POST
     public function edit($id)
     {
-        $car = Car::findOrFail($id);
+        $car = Car::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        if ($this->hasActiveOrUpcomingAcceptedRental($car)) {
+            return redirect('/garage/my-listing')
+                ->with('error', 'You cannot edit a listing with an active or upcoming rental.');
+        }
 
         return view('garage.my_listings.edit-post', compact('car'));
     }
@@ -190,6 +197,10 @@ class CarController extends Controller
                   ->where('user_id', Auth::id())
                   ->firstOrFail();
 
+        if ($this->hasActiveOrUpcomingAcceptedRental($car)) {
+            return redirect()->back()->with('error', 'You cannot delete a listing with an active or upcoming rental.');
+        }
+
         DB::transaction(function () use ($car) {
             $pendingRentals = Rental::where('car_id', $car->id)
                 ->where('status', 'pending')
@@ -214,12 +225,12 @@ class CarController extends Controller
         });
 
         if (request()->expectsJson()) {
-            session()->flash('success', 'Car deleted successfully!');
+            session()->flash('success', 'Post deleted successfully!');
 
             return response()->json(['redirect' => url()->previous()]);
         }
 
-        return redirect()->back()->with('success', 'Car deleted successfully!');
+        return redirect()->back()->with('success', 'Post deleted successfully!');
     }
 
     // UPDATE CAR
@@ -228,6 +239,11 @@ class CarController extends Controller
         $car = Car::where('id', $id)
                 ->where('user_id', Auth::id())
                 ->firstOrFail();
+
+        if ($this->hasActiveOrUpcomingAcceptedRental($car)) {
+            return redirect('/garage/my-listing')
+                ->with('error', 'You cannot edit a listing with an active or upcoming rental.');
+        }
 
         $attributes = $request->validate([
             'car_image'      => ['nullable', 'image', 'max:2048'],
@@ -332,6 +348,14 @@ class CarController extends Controller
                         ->where('target_id', Auth::id());
                 });
             })
+            ->exists();
+    }
+
+    private function hasActiveOrUpcomingAcceptedRental(Car $car): bool
+    {
+        return Rental::where('car_id', $car->id)
+            ->where('status', 'accepted')
+            ->where('end_date', '>=', now('Asia/Manila'))
             ->exists();
     }
 }

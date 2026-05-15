@@ -10,7 +10,7 @@
     <div class="px-4 pb-4 sm:px-6 lg:px-10">
         <div class="flex justify-end">
             <a href="/garage/my-rental/history" wire:navigate data-nav-navigate
-               class="inline-flex items-center gap-2 rounded-full border border-gray-700 bg-[#1a1a1a] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-gray-300 transition hover:border-yellow-400/50 hover:text-yellow-300">
+               class="inline-flex items-center gap-2 rounded-full border border-gray-700 bg-[#1a1a1a] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-gray-300 transition hover:border-lime-400/50 hover:text-lime-300">
                 <i class="fa-solid fa-clock-rotate-left"></i>
                 History
             </a>
@@ -47,7 +47,7 @@
                 </a>
                 <p class="text-gray-400 text-sm font-medium">No active rentals</p>
                 <p class="text-gray-600 text-xs mt-1 mb-5">Pending, upcoming, and active rentals will appear here</p>
-                <a href="/available" wire:navigate class="px-10 py-3 bg-yellow-400 text-black rounded-full font-bold hover:bg-yellow-300 transition">
+                <a href="/available" wire:navigate class="px-10 py-3 bg-lime-400 text-black rounded-full font-bold hover:bg-lime-300 transition">
                     Browse Cars
                 </a>
             </div>

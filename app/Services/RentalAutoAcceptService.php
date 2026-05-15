@@ -86,6 +86,35 @@ class RentalAutoAcceptService
         });
     }
 
+    public function denyUnavailablePending(Car $car): int
+    {
+        return DB::transaction(function () use ($car) {
+            $denied = 0;
+            $notifications = app(RentalNotificationService::class);
+
+            Rental::where('car_id', $car->id)
+                ->where('status', 'pending')
+                ->orderBy('created_at')
+                ->get()
+                ->each(function (Rental $rental) use ($car, $notifications, &$denied) {
+                    $reason = $this->pendingDenialReason($car, $rental);
+
+                    if (! $reason) {
+                        return;
+                    }
+
+                    $rental->update(array_merge([
+                        'status' => 'denied',
+                    ], $this->snapshot($car)));
+
+                    $notifications->denied($rental, $reason);
+                    $denied++;
+                });
+
+            return $denied;
+        });
+    }
+
     public function canAccept(Car $car, $startDate, $endDate, ?int $ignoreRentalId = null): bool
     {
         if (! $startDate || ! $endDate) {
@@ -95,11 +124,40 @@ class RentalAutoAcceptService
         $start = Carbon::parse($startDate);
         $end = Carbon::parse($endDate);
 
-        if ($end->lte(now()) || $end->lte($start)) {
+        if ($start->lte(now()) || $end->lte(now()) || $end->lte($start)) {
             return false;
         }
 
-        return ! Rental::where('car_id', $car->id)
+        return ! $this->hasAcceptedConflict($car, $start, $end, $ignoreRentalId);
+    }
+
+    private function pendingDenialReason(Car $car, Rental $rental): ?string
+    {
+        if (! $rental->start_date || ! $rental->end_date) {
+            return 'The schedule is unavailable.';
+        }
+
+        $start = Carbon::parse($rental->start_date);
+        $end = Carbon::parse($rental->end_date);
+
+        if ($start->lte(now())) {
+            return 'The requested start time has already passed.';
+        }
+
+        if ($end->lte($start)) {
+            return 'The requested schedule is invalid.';
+        }
+
+        if ($this->hasAcceptedConflict($car, $start, $end)) {
+            return 'The requested schedule now conflicts with an accepted rental.';
+        }
+
+        return null;
+    }
+
+    private function hasAcceptedConflict(Car $car, Carbon $start, Carbon $end, ?int $ignoreRentalId = null): bool
+    {
+        return Rental::where('car_id', $car->id)
             ->where('status', 'accepted')
             ->when($ignoreRentalId, fn ($query) => $query->where('id', '!=', $ignoreRentalId))
             ->where('start_date', '<', $end)
