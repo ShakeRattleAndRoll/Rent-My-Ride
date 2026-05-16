@@ -64,7 +64,7 @@
                 >
 
                 {{-- FORM --}}
-                <form method="POST" action="/register" class="space-y-3" id="registerForm" data-livewire-form>
+                <form method="POST" action="/register" class="space-y-3" id="registerForm">
 
                     @csrf
 

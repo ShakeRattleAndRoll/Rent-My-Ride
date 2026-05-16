@@ -22,7 +22,7 @@
                 </button>
 
                 {{-- Mark All Read --}}
-                <form action="{{ route('notifications.read-all') }}" method="POST" data-livewire-form>
+                <form action="{{ route('notifications.read-all') }}" method="POST" data-livewire-form data-replace-on-submit>
                     @csrf
                     @method('PATCH')
                     <button type="submit"

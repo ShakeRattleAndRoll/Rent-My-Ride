@@ -42,7 +42,7 @@ class RentalAutoAcceptService
 
             match ($rental->status) {
                 'accepted' => $notifications->accepted($rental, true),
-                'denied' => $notifications->denied($rental, 'The schedule is unavailable or already expired.'),
+                'denied' => $notifications->denied($rental, $this->denialReasonForSchedule($car, $rental->start_date, $rental->end_date)),
                 default => $notifications->requestCreated($rental),
             };
 
@@ -81,7 +81,10 @@ class RentalAutoAcceptService
                     'status' => 'denied',
                 ], $this->snapshot($car)));
 
-                app(RentalNotificationService::class)->denied($rental, 'The schedule is unavailable or already expired.');
+                app(RentalNotificationService::class)->denied(
+                    $rental,
+                    $this->denialReasonForSchedule($car, $rental->start_date, $rental->end_date)
+                );
             });
         });
     }
@@ -131,14 +134,14 @@ class RentalAutoAcceptService
         return ! $this->hasAcceptedConflict($car, $start, $end, $ignoreRentalId);
     }
 
-    private function pendingDenialReason(Car $car, Rental $rental): ?string
+    public function denialReasonForSchedule(Car $car, $startDate, $endDate, ?int $ignoreRentalId = null): string
     {
-        if (! $rental->start_date || ! $rental->end_date) {
+        if (! $startDate || ! $endDate) {
             return 'The schedule is unavailable.';
         }
 
-        $start = Carbon::parse($rental->start_date);
-        $end = Carbon::parse($rental->end_date);
+        $start = Carbon::parse($startDate);
+        $end = Carbon::parse($endDate);
 
         if ($start->lte(now())) {
             return 'The requested start time has already passed.';
@@ -148,8 +151,25 @@ class RentalAutoAcceptService
             return 'The requested schedule is invalid.';
         }
 
-        if ($this->hasAcceptedConflict($car, $start, $end)) {
-            return 'The requested schedule now conflicts with an accepted rental.';
+        $conflict = $this->acceptedConflict($car, $start, $end, $ignoreRentalId);
+
+        if ($conflict) {
+            return 'The requested schedule conflicts with an accepted rental from '
+                . $this->formatScheduleDate($conflict->start_date)
+                . ' to '
+                . $this->formatScheduleDate($conflict->end_date)
+                . '.';
+        }
+
+        return 'The schedule is unavailable or already expired.';
+    }
+
+    private function pendingDenialReason(Car $car, Rental $rental): ?string
+    {
+        $reason = $this->denialReasonForSchedule($car, $rental->start_date, $rental->end_date);
+
+        if ($reason !== 'The schedule is unavailable or already expired.') {
+            return $reason;
         }
 
         return null;
@@ -157,12 +177,23 @@ class RentalAutoAcceptService
 
     private function hasAcceptedConflict(Car $car, Carbon $start, Carbon $end, ?int $ignoreRentalId = null): bool
     {
+        return (bool) $this->acceptedConflict($car, $start, $end, $ignoreRentalId);
+    }
+
+    private function acceptedConflict(Car $car, Carbon $start, Carbon $end, ?int $ignoreRentalId = null): ?Rental
+    {
         return Rental::where('car_id', $car->id)
             ->where('status', 'accepted')
             ->when($ignoreRentalId, fn ($query) => $query->where('id', '!=', $ignoreRentalId))
             ->where('start_date', '<', $end)
             ->where('end_date', '>', $start)
-            ->exists();
+            ->orderBy('start_date')
+            ->first();
+    }
+
+    private function formatScheduleDate($date): string
+    {
+        return Carbon::parse($date)->format('M j, Y g:i A');
     }
 
     public function normalizePriority(?string $priority): string

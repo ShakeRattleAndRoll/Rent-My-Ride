@@ -65,6 +65,9 @@ class AuthController extends Controller
             'email'          => 'required|email|regex:/^[^@]+@[^@]+\.[a-zA-Z]{2,}$/|unique:users',
             'contact_number' => 'required|regex:/^09[0-9]{9}$/',
             'password'       => 'required|min:6|confirmed',
+        ], [
+            'username.unique' => 'This username is already taken.',
+            'email.unique' => 'This email is already taken.',
         ]);
 
         $code = (string) random_int(100000, 999999);

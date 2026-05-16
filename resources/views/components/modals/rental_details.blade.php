@@ -170,7 +170,40 @@
                     </div>
 
                 </div>
-
+                
+                {{-- Info row --}}
+                <div class="flex w-full items-center gap-2">
+                    
+                    @if ($isUpcoming)
+                        <span class="w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-full border border-blue-500/40 text-blue-400">
+                            <i class="fa-regular fa-calendar-check text-[11px]"></i>
+                        </span>
+                        <p class="text-gray-500 text-[10px] italic leading-tight">
+                            Rental approved. Check the details before the scheduled pickup.
+                        </p>
+                    @elseif ($isActive)
+                        <span class="w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-full border border-lime-400/40 text-lime-400">
+                            <i class="fa-solid fa-key text-[11px]"></i>
+                        </span>
+                        <p class="text-gray-500 text-[10px] italic leading-tight">
+                            Rental is currently active. View details for the return schedule.
+                        </p>
+                    @elseif ($isFinished)
+                        <span class="w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-full border border-gray-600/40 text-gray-400">
+                            <i class="fa-solid fa-trash text-[11px]"></i>
+                        </span>
+                        <p class="text-gray-500 text-[10px] italic leading-tight">
+                            Rental completed. You can keep this record or remove it from your history.
+                        </p>
+                    @elseif ($isDeclined)
+                        <span class="w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-full border border-gray-600/40 text-gray-400">
+                            <i class="fa-solid fa-trash text-[11px]"></i>
+                        </span>
+                        <p class="text-gray-500 text-[10px] italic leading-tight">
+                            Rental request declined due to availability or updated rental details.
+                        </p>
+                    @endif
+                </div>
             </div>
         </div>
     </div>

@@ -67,7 +67,7 @@
 
                 <div class="flex items-center gap-2 mt-4">
                     @if ($notification->url)
-                        <form action="{{ route('notifications.read', $notification->id) }}" method="POST" data-livewire-form>
+                        <form action="{{ route('notifications.read', $notification->id) }}" method="POST" data-livewire-form data-replace-on-submit>
                             @csrf
                             @method('PATCH')
                             <input type="hidden" name="open" value="1">
@@ -79,7 +79,7 @@
                     @endif
 
                     @if ($isUnread)
-                        <form action="{{ route('notifications.read', $notification->id) }}" method="POST" data-livewire-form data-preserve-scroll>
+                        <form action="{{ route('notifications.read', $notification->id) }}" method="POST" data-livewire-form data-preserve-scroll data-replace-on-submit>
                             @csrf
                             @method('PATCH')
                             <button type="submit"

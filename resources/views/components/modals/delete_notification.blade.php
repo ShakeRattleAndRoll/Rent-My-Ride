@@ -27,7 +27,7 @@
                 class="flex-1 py-2.5 rounded-full border border-gray-700 text-gray-400 hover:text-white hover:border-gray-500 text-[10px] font-black uppercase tracking-widest transition-all">
                 Cancel
             </button>
-            <form id="delete-notification-form" method="POST" data-livewire-form class="flex-1">
+            <form id="delete-notification-form" method="POST" data-livewire-form data-replace-on-submit class="flex-1">
                 @csrf
                 @method('DELETE')
                 <button id="delete-notification-submit" type="submit"

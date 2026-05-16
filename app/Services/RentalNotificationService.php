@@ -14,9 +14,12 @@ class RentalNotificationService
     {
         $rental->loadMissing('car', 'user');
 
+        $start = Carbon::parse($rental->start_date)->format('F j, Y g:i A');
+        $end   = Carbon::parse($rental->end_date)->format('F j, Y g:i A');
+
         $this->create($rental->car->user_id, $rental, 'rental_requested',
             'New rental request',
-            "{$rental->user->username} wants to rent your {$rental->car->brand} {$rental->car->model}.",
+            "{$rental->user->username} wants to rent your {$rental->car->brand} {$rental->car->model} from {$start} to {$end}.",
             "/car/pre-order/{$rental->car_id}"
         );
     }
@@ -25,17 +28,19 @@ class RentalNotificationService
     {
         $rental->loadMissing('car');
 
+        $start = Carbon::parse($rental->start_date)->format('F j, Y g:i A');
+        $end   = Carbon::parse($rental->end_date)->format('F j, Y g:i A');
         $title = $automatic ? 'Request auto-accepted' : 'Request accepted';
 
         $this->create($rental->user_id, $rental, 'rental_accepted',
             $title,
-            "Your request for {$rental->car->brand} {$rental->car->model} was accepted.",
+            "Your request for {$rental->car->brand} {$rental->car->model} was accepted. Rental period: {$start} to {$end}.",
             "/garage/my-rental?rental={$rental->id}"
         );
 
         $this->create($rental->car->user_id, $rental, 'owner_rental_accepted',
             $title,
-            "{$rental->car->brand} {$rental->car->model} has a confirmed rental.",
+            "{$rental->car->brand} {$rental->car->model} has a confirmed rental. Rental period: {$start} to {$end}.",
             "/garage/details/{$rental->car_id}"
         );
     }
@@ -44,9 +49,12 @@ class RentalNotificationService
     {
         $rental->loadMissing('car');
 
+        $start = Carbon::parse($rental->start_date)->format('F j, Y g:i A');
+        $end   = Carbon::parse($rental->end_date)->format('F j, Y g:i A');
+
         $this->create($rental->user_id, $rental, 'rental_denied',
             'Request denied',
-            "Your request for {$rental->car->brand} {$rental->car->model} was denied. {$reason}",
+            "Your request for {$rental->car->brand} {$rental->car->model} was denied. Rental period: {$start} to {$end}. {$reason}",
             "/garage/my-rental?rental={$rental->id}"
         );
     }
@@ -55,9 +63,12 @@ class RentalNotificationService
     {
         $rental->loadMissing('car', 'user');
 
+        $start = Carbon::parse($rental->start_date)->format('F j, Y g:i A');
+        $end   = Carbon::parse($rental->end_date)->format('F j, Y g:i A');
+
         $this->create($rental->car->user_id, $rental, 'rental_cancelled',
             'Request cancelled',
-            "{$rental->user->username} cancelled their request for {$rental->car->brand} {$rental->car->model}.",
+            "{$rental->user->username} cancelled their request for {$rental->car->brand} {$rental->car->model}. Rental period: {$start} to {$end}.",
             "/car/pre-order/{$rental->car_id}"
         );
     }
@@ -93,12 +104,12 @@ class RentalNotificationService
                 continue;
             }
 
-            $end     = Carbon::parse($rental->end_date);
-            $start   = Carbon::parse($rental->start_date);
-            $now     = now();
-
-            // Total rental duration in hours
+            $end           = Carbon::parse($rental->end_date);
+            $start         = Carbon::parse($rental->start_date);
+            $now           = now();
             $durationHours = $start->diffInHours($end);
+            $endFormatted  = $end->format('F j, Y g:i A');
+
             $recipients = collect([$rental->user_id, $rental->car->user_id])
                 ->unique()
                 ->values();
@@ -111,29 +122,26 @@ class RentalNotificationService
 
                 if ($end->gt($now)) {
 
-                    // Always: alert within 15 minutes regardless of duration
                     if ($end->lte($now->copy()->addMinutes(15))) {
                         $this->createOnce($recipientId, $rental, 'rental_ending_15min',
                             'Rental ends within 15 minutes',
-                            "{$rental->car->brand} {$rental->car->model} ends on {$end->format('M j, Y g:i A')}.",
+                            "{$rental->car->brand} {$rental->car->model} ends on {$endFormatted}.",
                             $url
                         );
                     }
 
-                    // Only if duration > 1 hour: also alert within 1 hour
                     if ($durationHours > 1 && $end->lte($now->copy()->addHour())) {
                         $this->createOnce($recipientId, $rental, 'rental_ending_1hour',
                             'Rental ends within 1 hour',
-                            "{$rental->car->brand} {$rental->car->model} ends on {$end->format('M j, Y g:i A')}.",
+                            "{$rental->car->brand} {$rental->car->model} ends on {$endFormatted}.",
                             $url
                         );
                     }
 
-                    // Only if duration > 1 day (24 hours): also alert within 1 day
                     if ($durationHours > 24 && $end->lte($now->copy()->addDay())) {
                         $this->createOnce($recipientId, $rental, 'rental_ending_1day',
                             'Rental ends within 1 day',
-                            "{$rental->car->brand} {$rental->car->model} ends on {$end->format('M j, Y g:i A')}.",
+                            "{$rental->car->brand} {$rental->car->model} ends on {$endFormatted}.",
                             $url
                         );
                     }
@@ -142,7 +150,7 @@ class RentalNotificationService
                 if ($end->lte($now)) {
                     $this->createOnce($recipientId, $rental, 'rental_expired',
                         'Rental expired',
-                        "{$rental->car->brand} {$rental->car->model} ended on {$end->format('M j, Y g:i A')}.",
+                        "{$rental->car->brand} {$rental->car->model} ended on {$endFormatted}.",
                         $url
                     );
                 }
@@ -176,13 +184,13 @@ class RentalNotificationService
         }
 
         RentalNotification::create([
-            'user_id' => $userId,
+            'user_id'   => $userId,
             'rental_id' => $rental->id,
-            'type' => $type,
-            'car_id' => $rental->car_id,
-            'title'  => $title,
-            'body'   => $body,
-            'url'    => $url,
+            'type'      => $type,
+            'car_id'    => $rental->car_id,
+            'title'     => $title,
+            'body'      => $body,
+            'url'       => $url,
         ]);
     }
 
@@ -190,11 +198,11 @@ class RentalNotificationService
     {
         RentalNotification::create([
             'user_id' => $userId,
-            'car_id' => $car->id,
-            'type' => $type,
-            'title' => $title,
-            'body' => $body,
-            'url' => $url,
+            'car_id'  => $car->id,
+            'type'    => $type,
+            'title'   => $title,
+            'body'    => $body,
+            'url'     => $url,
         ]);
     }
 }

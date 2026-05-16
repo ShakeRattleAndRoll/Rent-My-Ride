@@ -30,6 +30,118 @@ function setBadgeCount(badge, count) {
 
 window.setRentRideBadgeCount = setBadgeCount;
 
+const rentRideFlashKey = 'rentRidePendingFlashes';
+
+function rentRideFlashClasses(type) {
+    if (type === 'error') {
+        return {
+            box: 'bg-red-600 text-white border-red-500',
+            close: 'text-white/40 hover:text-white',
+            icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>',
+        };
+    }
+
+    if (type === 'status') {
+        return {
+            box: 'bg-blue-500 text-white border-blue-400',
+            close: 'text-white/40 hover:text-white',
+            icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 20a8 8 0 100-16 8 8 0 000 16z"></path>',
+        };
+    }
+
+    return {
+        box: 'bg-lime-500 text-black border-lime-400',
+        close: 'text-black/40 hover:text-black',
+        icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>',
+    };
+}
+
+function ensureRentRideFlashContainer() {
+    let container = document.getElementById('rentride-client-flashes');
+
+    if (container) return container;
+
+    container = document.createElement('div');
+    container.id = 'rentride-client-flashes';
+    container.className = 'fixed-center-x fixed top-5 z-[140] w-full max-w-md px-4 pointer-events-none';
+    document.body.appendChild(container);
+
+    return container;
+}
+
+function showRentRideFlash(type, message) {
+    if (!message) return;
+
+    const container = ensureRentRideFlashContainer();
+    const classes = rentRideFlashClasses(type);
+    const alert = document.createElement('div');
+
+    alert.className = `pointer-events-auto ${classes.box} px-6 py-4 rounded-2xl shadow-2xl flex items-center justify-between border mb-3 transition duration-300`;
+    alert.innerHTML = `
+        <div class="flex items-center gap-3">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                ${classes.icon}
+            </svg>
+            <span class="font-['Montserrat'] font-semibold uppercase text-[11px] tracking-widest leading-none pt-[1px]"></span>
+        </div>
+        <button type="button" class="${classes.close} transition-colors ml-4">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"/>
+            </svg>
+        </button>
+    `;
+
+    alert.querySelector('span').textContent = message;
+    alert.querySelector('button').addEventListener('click', () => alert.remove());
+    container.appendChild(alert);
+
+    window.setTimeout(() => {
+        alert.classList.add('opacity-0', '-translate-y-4');
+        window.setTimeout(() => alert.remove(), 300);
+    }, 3000);
+}
+
+function storeRentRideFlash(type, message) {
+    if (!message) return;
+
+    let flashes = [];
+
+    try {
+        flashes = JSON.parse(sessionStorage.getItem(rentRideFlashKey) || '[]');
+    } catch (error) {
+        flashes = [];
+    }
+
+    flashes.push({ type, message });
+    sessionStorage.setItem(rentRideFlashKey, JSON.stringify(flashes));
+}
+
+function storeRentRideFlashesFromHtml(html) {
+    if (!html) return;
+
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+
+    doc.querySelectorAll('[data-rentride-flash]').forEach((flash) => {
+        storeRentRideFlash(
+            flash.dataset.flashType || 'success',
+            flash.dataset.flashMessage || flash.textContent.trim()
+        );
+    });
+}
+
+function showStoredRentRideFlashes() {
+    let flashes = [];
+
+    try {
+        flashes = JSON.parse(sessionStorage.getItem(rentRideFlashKey) || '[]');
+    } catch (error) {
+        flashes = [];
+    }
+
+    sessionStorage.removeItem(rentRideFlashKey);
+    flashes.forEach((flash) => showRentRideFlash(flash.type, flash.message));
+}
+
 function restoreRentRideSubmitScroll() {
     let saved = null;
 
@@ -57,14 +169,39 @@ function updateAutoAcceptCard(form, enabled) {
     [title, toggleLabel].forEach((element) => {
         if (!element) return;
 
-        element.classList.toggle('text-lime-400', enabled);
-        element.classList.toggle('text-gray-500', !enabled);
+        element.classList.remove('text-lime-400', 'text-white', 'text-gray-500');
+        element.classList.add(enabled ? 'text-lime-400' : 'text-white');
     });
 
     if (status) {
         status.textContent = enabled ? 'On' : 'Off';
-        status.classList.toggle('text-lime-300', enabled);
-        status.classList.toggle('text-gray-500', !enabled);
+        status.classList.remove('text-lime-300', 'text-gray-500');
+        status.classList.add(enabled ? 'text-lime-300' : 'text-gray-500');
+    }
+}
+
+function updateAvailabilityCard(form, enabled) {
+    const panel = form.closest('[data-availability-panel]');
+    const card = form.closest('.group') || form.closest('[data-listing-card]');
+    const title = panel?.querySelector('[data-availability-title]');
+    const status = panel?.querySelector('[data-availability-status]');
+    const badge = card?.querySelector('[data-availability-badge]');
+
+    if (title) {
+        title.classList.remove('text-lime-400', 'text-white', 'text-gray-500');
+        title.classList.add(enabled ? 'text-lime-400' : 'text-white');
+    }
+
+    if (status) {
+        status.textContent = enabled ? 'On' : 'Off';
+        status.classList.remove('text-lime-300', 'text-gray-500');
+        status.classList.add(enabled ? 'text-lime-300' : 'text-gray-500');
+    }
+
+    if (badge) {
+        badge.textContent = enabled ? 'Visible' : 'Hidden';
+        badge.classList.remove('bg-lime-400', 'bg-red-500', 'text-black', 'text-white');
+        badge.classList.add(enabled ? 'bg-lime-400' : 'bg-red-500', enabled ? 'text-black' : 'text-white');
     }
 }
 
@@ -219,6 +356,7 @@ function initRentRideNavbar() {
     }
 
     restoreRentRideSubmitScroll();
+    showStoredRentRideFlashes();
     refreshRentRideNotifications();
     rentRideNavbar.notificationTimer = setInterval(refreshRentRideNotifications, 2000);
 }
@@ -289,6 +427,7 @@ if (!rentRideNavbar.bound) {
         const submitButton = event.submitter || form.querySelector('button[type="submit"]');
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
         const preserveScroll = form.hasAttribute('data-preserve-scroll');
+        const replaceOnSubmit = form.hasAttribute('data-replace-on-submit');
         const scrollPosition = {
             x: window.scrollX,
             y: window.scrollY,
@@ -307,6 +446,11 @@ if (!rentRideNavbar.bound) {
                 } catch (error) {
                     // Ignore storage failures; the redirect still needs to happen.
                 }
+            }
+
+            if (replaceOnSubmit) {
+                window.location.replace(targetUrl);
+                return;
             }
 
             window.Livewire.navigate(targetUrl, { scroll: false });
@@ -341,6 +485,14 @@ if (!rentRideNavbar.bound) {
                         updateAutoAcceptCard(form, Boolean(data.auto_accept));
                     }
 
+                    if (form.hasAttribute('data-availability-form')) {
+                        updateAvailabilityCard(form, Boolean(data.is_available));
+                    }
+
+                    if (data.flash?.message) {
+                        showRentRideFlash(data.flash.type || 'success', data.flash.message);
+                    }
+
                     window.refreshRentRideNotifications?.();
                     return;
                 }
@@ -355,6 +507,10 @@ if (!rentRideNavbar.bound) {
             }
 
             if (response.redirected) {
+                if (contentType.includes('text/html')) {
+                    storeRentRideFlashesFromHtml(await response.text());
+                }
+
                 document.dispatchEvent(new CustomEvent('rentride:form-submitted', { detail: { form } }));
                 navigateAfterSubmit(response.url);
                 return;

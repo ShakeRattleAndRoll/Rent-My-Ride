@@ -18,7 +18,7 @@
                 class="flex-1 border border-white/10 text-gray-400 hover:text-white hover:border-white/30 text-xs font-bold py-2.5 rounded-full transition-all duration-200 uppercase tracking-widest">
                 No
             </button>
-            <form action="{{ $route }}" method="POST" class="flex-1">
+            <form action="{{ $route }}" method="POST" class="flex-1 data-livewire-form">
                 @csrf
                 @method('PATCH')
                 <button type="submit"

@@ -158,6 +158,19 @@ class CarController extends Controller
             ? 'Your car is now visible on the website.'
             : 'Your car is now hidden from the website.';
 
+        if ($request->expectsJson()) {
+            session()->flash('success', $message);
+
+            return response()->json([
+                'redirect' => url()->previous(),
+                'is_available' => $car->fresh()->is_available,
+                'flash' => [
+                    'type' => 'success',
+                    'message' => $message,
+                ],
+            ]);
+        }
+
         return redirect()->back()->with('success', $message);
     }
 

@@ -136,7 +136,10 @@ class RentalController extends Controller
                 'status' => 'denied',
             ], $autoAccept->snapshot($rental->car)));
 
-            app(RentalNotificationService::class)->denied($rental, 'The schedule is unavailable or already expired.');
+            app(RentalNotificationService::class)->denied(
+                $rental,
+                $autoAccept->denialReasonForSchedule($rental->car, $rental->start_date, $rental->end_date, $rental->id)
+            );
 
             $message = 'Rental request denied because the schedule is unavailable.';
 
@@ -328,11 +331,16 @@ class RentalController extends Controller
         }
 
         if (request()->expectsJson()) {
-            session()->flash('success', 'Auto-accept setting updated!');
+            $message = 'Auto-accept setting updated!';
+            session()->flash('success', $message);
 
             return response()->json([
                 'redirect' => url()->previous(),
-                'auto_accept' => $car->fresh()->auto_accept
+                'auto_accept' => $car->fresh()->auto_accept,
+                'flash' => [
+                    'type' => 'success',
+                    'message' => $message,
+                ],
             ]);
         }
 
