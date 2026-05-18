@@ -1,7 +1,8 @@
 <div class="{{ $activeContact ? 'flex' : 'hidden lg:flex' }} min-w-0 flex-1 rounded-2xl bg-[#1a1a1a] border-white/5 shadow-2xl flex-col overflow-hidden relative lg:rounded-3xl lg:border">
-    
+
     @if($activeContact)
 
+        {{-- Active chat header --}}
         <div class="message-chat-header p-3 lg:p-6 border-b border-white/5 bg-[#1a1a1a]/80 backdrop-blur-md flex items-center justify-between gap-2 lg:gap-3">
             <a href="{{ route('messages.index') }}" wire:navigate data-message-navigate
                 class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-lime-400 transition hover:bg-white/10 lg:hidden"
@@ -22,6 +23,7 @@
             <p class="text-[10px] text-lime-400 font-bold uppercase tracking-widest">● Active Conversation</p>
         </div>
 
+        {{-- Message thread --}}
         <div
             id="chat-container"
             data-auth-id="{{ auth()->id() }}"
@@ -44,6 +46,7 @@
             @endforelse
         </div>
 
+        {{-- Message composer or blocked notice --}}
         <div
             id="chat-composer"
             data-blocked="{{ $chatBlocked ? '1' : '0' }}"
@@ -71,6 +74,7 @@
 
     @else
 
+        {{-- Empty chat state --}}
         <div class="flex-1 flex flex-col items-center justify-center p-8 text-center">
             <div class="w-20 h-20 bg-[#242424] rounded-full flex items-center justify-center mb-4 border border-white/5">
                 <i class="fa-regular fa-comments text-3xl text-lime-400"></i>

@@ -1,3 +1,4 @@
+{{-- Listing pre-orders page --}}
 <x-layout>
     <div class="bg-[#121212] min-h-screen font-['Montserrat']">
         

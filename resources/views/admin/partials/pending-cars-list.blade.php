@@ -1,11 +1,16 @@
 @forelse ($pendingCars as $car)
-    <div class="mb-3 grid overflow-hidden rounded-lg border border-white/10 bg-[#1a1a1a] lg:grid-cols-[170px_1fr_150px]" data-admin-pending-car="{{ $car->id }}">
+    {{-- Pending car row --}}
+    <div
+        class="mb-3 grid overflow-hidden rounded-lg border border-white/10 bg-[#1a1a1a] lg:grid-cols-[170px_1fr_170px]"
+        data-admin-pending-car="{{ $car->id }}">
         <div class="aspect-[16/9] bg-gray-900 lg:aspect-auto">
-            <img src="{{ asset('storage/' . $car->car_image) }}"
-                 alt="{{ $car->brand }} {{ $car->model }}"
-                 class="h-full w-full object-cover">
+            <img
+                src="{{ asset('storage/' . $car->car_image) }}"
+                alt="{{ $car->brand }} {{ $car->model }}"
+                class="h-full w-full object-cover">
         </div>
 
+        {{-- Car and owner details --}}
         <div class="p-4">
             <div class="mb-2 flex flex-wrap items-center gap-2">
                 <span class="rounded-full bg-yellow-400 px-2.5 py-0.5 text-[9px] font-black uppercase tracking-widest text-black">Pending</span>
@@ -43,16 +48,36 @@
             @endif
         </div>
 
-        <div class="flex items-center border-t border-white/10 p-4 lg:border-l lg:border-t-0">
-            <form action="{{ route('admin.cars.approve', $car) }}" method="POST" class="w-full" data-livewire-form data-preserve-scroll>
+        {{-- Approval actions --}}
+        <div class="flex flex-col justify-center gap-2 border-t border-white/10 p-4 lg:border-l lg:border-t-0">
+            <form
+                action="{{ route('admin.cars.approve', $car) }}"
+                method="POST"
+                class="w-full"
+                data-livewire-form
+                data-preserve-scroll>
                 @csrf
                 @method('PATCH')
                 <button type="submit" class="w-full rounded-lg bg-lime-400 px-4 py-2.5 text-[11px] font-black uppercase tracking-widest text-black transition hover:bg-lime-300">
                     Accept Post
                 </button>
             </form>
+            <button type="button"
+                    onclick="document.getElementById('delete-modal-deny-car-{{ $car->id }}').classList.remove('hidden')"
+                    class="w-full rounded-lg border border-red-500/30 px-4 py-2.5 text-[11px] font-black uppercase tracking-widest text-red-300 transition hover:bg-red-500 hover:text-white">
+                Deny
+            </button>
         </div>
     </div>
+
+    {{-- Denial confirmation for this car --}}
+    <x-modals.delete_confirmation
+        rentalId="deny-car-{{ $car->id }}"
+        :route="route('admin.cars.deny', $car)"
+        method="DELETE"
+        title="Deny Car Post"
+        message="Are you sure you want to deny and remove this car post?"
+        confirmText="Yes, Deny" />
 @empty
     <div class="rounded-lg border border-white/10 bg-[#1a1a1a] py-20 text-center">
         <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-lg bg-lime-400/10 text-lime-400">

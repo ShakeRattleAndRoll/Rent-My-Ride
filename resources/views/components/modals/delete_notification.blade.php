@@ -1,4 +1,5 @@
 {{-- Delete Notification Modal --}}
+{{-- Confirms removal before deleting a notification. --}}
 <div id="delete-notification-modal"
      class="fixed inset-0 z-50 hidden items-center justify-center p-4"
      style="font-family: 'Montserrat', sans-serif;">

@@ -1,3 +1,4 @@
+{{-- Site footer --}}
 <footer class="bg-[#0a0a0a] text-gray-400 py-6 border-t border-white/5" style="font-family: 'Montserrat', sans-serif;">
     <div class="max-w-7xl mx-auto px-6 flex flex-col items-center text-center gap-2">
 

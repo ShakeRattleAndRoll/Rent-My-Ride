@@ -1,12 +1,14 @@
 <x-layout>
 <div class="bg-[#121212] min-h-screen" style="font-family: 'Montserrat', sans-serif;">
 
+    {{-- Garage page header --}}
     <x-garage_header
         active="cart"
         title="My Cart"
         subtitle="Cars you have saved for renting"
     />
 
+    {{-- Renter reminder --}}
     @if ($carts->isNotEmpty())
         <div class="mx-10 mb-6 flex items-center justify-center gap-2 text-gray-500 text-xs font-medium tracking-wide">
 
@@ -21,6 +23,7 @@
         </div>
     @endif
 
+    {{-- Saved cart items --}}
     <div class="grid grid-cols-1 gap-4 px-4 pb-10 sm:grid-cols-2 sm:px-6 lg:grid-cols-3 xl:grid-cols-4 lg:px-10">
 
         @forelse ($carts as $cart)
@@ -42,5 +45,7 @@
 
     </div>
 </div>
+
+{{-- Shared rental request form --}}
 @include('garage.my_cart.form')
 </x-layout>

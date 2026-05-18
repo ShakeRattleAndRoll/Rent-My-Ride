@@ -1,3 +1,4 @@
+{{-- Login page --}}
 <x-layout>
 
 <div class="bg-black min-h-screen">

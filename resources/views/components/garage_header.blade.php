@@ -1,3 +1,4 @@
+{{-- Garage section header and tabs --}}
 @props(['active' => 'listing', 'title', 'subtitle'])
 
 <div class="px-10 pt-10 pb-6">

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
 {
+    // Notification types that should open into rental timelines.
     private const TIMELINE_TYPES = [
         'rental_ending_soon',
         'rental_ending_15min',
@@ -17,6 +18,7 @@ class NotificationController extends Controller
         'rental_expired',
     ];
 
+    // Notification pages and live refresh endpoints
     public function index(RentalNotificationService $notifications)
     {
         $notifications->generateTimelineNotifications(Auth::user());
@@ -51,6 +53,7 @@ class NotificationController extends Controller
         ]);
     }
 
+    // Read state actions
     public function markAsRead(Request $request, $id)
     {
         $notification = RentalNotification::where('user_id', Auth::id())->findOrFail($id);
@@ -80,6 +83,7 @@ class NotificationController extends Controller
         return redirect()->back()->with('success', 'Notifications marked as read.');
     }
 
+    // Notification destination routing
     private function openUrl(RentalNotification $notification): string
     {
         $notification->loadMissing('car');
@@ -116,6 +120,7 @@ class NotificationController extends Controller
         return $notification->url ?: route('notifications.index');
     }
 
+    // Delete actions
     public function destroy(Request $request, $id)
     {
         RentalNotification::where('user_id', Auth::id())->findOrFail($id)->delete();
@@ -148,6 +153,7 @@ class NotificationController extends Controller
         return redirect()->back()->with('success', 'All notifications deleted.');
     }
 
+    // Shared notification query
     private function notificationItems()
     {
         return RentalNotification::where('user_id', Auth::id())

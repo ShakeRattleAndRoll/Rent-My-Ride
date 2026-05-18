@@ -72,7 +72,14 @@
                     <div class="mt-5 flex gap-3">
 
                         {{-- MESSAGE BUTTON --}}
-                        @if(auth()->id() !== $car->user_id)
+                        @if(auth()->check() && auth()->user()->is_admin)
+                            <button type="button"
+                                    onclick="document.getElementById('delete-modal-admin-detail-car-{{ $car->id }}').classList.remove('hidden')"
+                                    class="flex-1 flex items-center justify-center gap-2 py-2.5 bg-red-500 hover:bg-red-400 text-white text-xs font-bold rounded-full transition">
+                                <i class="fa-solid fa-trash"></i>
+                                Delete Post
+                            </button>
+                        @elseif(auth()->id() !== $car->user_id)
                             <a href="{{ route('messages.index', $car->user->id) }}" wire:navigate data-message-navigate @guest data-auth-required @endguest
                             class="flex-1 flex items-center justify-center gap-2 py-2.5 bg-lime-400 hover:bg-lime-300 text-black text-xs font-bold rounded-full transition">
                                 <i class="fa-solid fa-message"></i>
@@ -84,18 +91,20 @@
                             </div>
                         @endif
 
-                        {{-- ADD TO CART --}}
-                        <form method="POST" action="/cart/add" class="flex-1" data-livewire-form @guest data-auth-required @endguest>
-                            @csrf
-                            <input type="hidden" name="car_id" value="{{ $car->id }}">
+                        @unless(auth()->check() && auth()->user()->is_admin)
+                            {{-- ADD TO CART --}}
+                            <form method="POST" action="/cart/add" class="flex-1" data-livewire-form @guest data-auth-required @endguest>
+                                @csrf
+                                <input type="hidden" name="car_id" value="{{ $car->id }}">
 
-                            <button type="submit"
-                                class="w-full flex items-center justify-center gap-2 py-2.5 bg-lime-400 hover:bg-lime-300 text-black text-xs font-bold rounded-full transition">
+                                <button type="submit"
+                                    class="w-full flex items-center justify-center gap-2 py-2.5 bg-lime-400 hover:bg-lime-300 text-black text-xs font-bold rounded-full transition">
 
-                                <i class="fa-solid fa-cart-plus"></i>
-                                Add to Cart
-                            </button>
-                        </form>
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    Add to Cart
+                                </button>
+                            </form>
+                        @endunless
 
                     </div>
 
@@ -161,4 +170,14 @@
 
         </div>
     </div>
+
+    @if(auth()->check() && auth()->user()->is_admin)
+        <x-modals.delete_confirmation
+            rentalId="admin-detail-car-{{ $car->id }}"
+            :route="route('admin.cars.destroy', $car)"
+            method="DELETE"
+            title="Delete Post"
+            message="Are you sure you want to delete this posted car?"
+            confirmText="Yes, Delete" />
+    @endif
 </x-layout>

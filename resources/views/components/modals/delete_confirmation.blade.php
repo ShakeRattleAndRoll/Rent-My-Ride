@@ -4,6 +4,7 @@
     'title' => 'Remove Record',
     'message' => 'Are you sure you want to delete this rental record?',
     'confirmText' => 'Yes, Delete',
+    'method' => 'PATCH',
 ])
 
 <div id="delete-modal-{{ $rentalId }}" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
@@ -18,9 +19,9 @@
                 class="flex-1 border border-white/10 text-gray-400 hover:text-white hover:border-white/30 text-xs font-bold py-2.5 rounded-full transition-all duration-200 uppercase tracking-widest">
                 No
             </button>
-            <form action="{{ $route }}" method="POST" class="flex-1 data-livewire-form">
+            <form action="{{ $route }}" method="POST" class="flex-1" data-livewire-form>
                 @csrf
-                @method('PATCH')
+                @method($method)
                 <button type="submit"
                     class="w-full bg-red-600 hover:bg-red-500 text-white text-xs font-bold py-2.5 rounded-full transition-all duration-200 uppercase tracking-widest">
                     {{ $confirmText }}

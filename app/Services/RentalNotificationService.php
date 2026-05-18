@@ -82,6 +82,24 @@ class RentalNotificationService
         );
     }
 
+    public function carDenied(Car $car): void
+    {
+        $this->createCarNotification($car->user_id, $car, 'car_post_denied',
+            'Car post denied',
+            "Your {$car->brand} {$car->model} post was denied by an admin.",
+            "/garage/my-listing"
+        );
+    }
+
+    public function carDeletedByAdmin(Car $car): void
+    {
+        $this->createCarNotification($car->user_id, $car, 'car_post_deleted',
+            'Car post deleted',
+            "Your {$car->brand} {$car->model} post was deleted by an admin.",
+            "/garage/my-listing"
+        );
+    }
+
     public function generateTimelineNotification(User $user): void
     {
         $this->generateTimelineNotifications($user);

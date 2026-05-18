@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 
 class RentalController extends Controller
 {
-    // CREATE RENTAL (USER REQUEST)
+    // Rental requests
     public function store(Request $request)
     {
         $request->validate([
@@ -50,12 +50,12 @@ class RentalController extends Controller
             'denied' => 'Rental request denied because the schedule is unavailable.',
             default => 'Rental request sent!',
         };
-        
+
         return redirect('/garage/my-rental')
             ->with($rental->status === 'denied' ? 'error' : 'success', $message);
     }
 
-    // SHOW PRE-ORDERS (OWNER VIEW)
+    // Owner pre-orders
     public function showPreOrders($id)
     {
         $car = Car::findOrFail($id);
@@ -95,6 +95,7 @@ class RentalController extends Controller
             ->get();
     }
 
+    // Owner notification counts
     public function notifications()
     {
         Car::where('user_id', Auth::id())
@@ -120,7 +121,7 @@ class RentalController extends Controller
         ]);
     }
 
-    // ACCEPT RENTAL
+    // Owner rental decisions
     public function accept(Request $request, $id)
     {
         $rental = Rental::with('car')->findOrFail($id);
@@ -152,7 +153,6 @@ class RentalController extends Controller
             return redirect()->back()->with('error', $message);
         }
 
-        // start_date and end_date are already stored from the renter's form; just flip the status
         $rental->update(array_merge([
             'status'            => 'accepted',
         ], $autoAccept->snapshot($rental->car)));
@@ -168,7 +168,6 @@ class RentalController extends Controller
         return redirect()->route('garage.my-listing')->with('success', 'Rental accepted successfully.');
     }
 
-    // DENY RENTAL
     public function deny(Request $request, $id)
     {
         $rental = Rental::with('car')->findOrFail($id);
@@ -200,7 +199,7 @@ class RentalController extends Controller
         return redirect()->back()->with('success', 'Rental request denied.');
     }
 
-    // USER RENTALS
+    // Renter views
     public function index()
     {
         $rentals = Rental::with('car')
@@ -270,7 +269,7 @@ class RentalController extends Controller
         return $rental->status;
     }
 
-    // CANCEL RENTAL
+    // Renter and owner cleanup actions
     public function cancel($id)
     {
         $rental = Rental::findOrFail($id);
@@ -314,7 +313,7 @@ class RentalController extends Controller
         $car = Car::where('id', $id)
             ->where('user_id', Auth::id())
             ->firstOrFail();
-    
+
         $autoAccept = app(RentalAutoAcceptService::class);
         $priority = $autoAccept->normalizePriority(request('auto_accept_priority', $car->auto_accept_priority));
         $enabled = request()->has('auto_accept')
@@ -346,5 +345,4 @@ class RentalController extends Controller
 
         return redirect()->back()->with('success', 'Auto-accept setting updated!');
     }
-
 }

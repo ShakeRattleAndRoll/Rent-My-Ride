@@ -1,3 +1,4 @@
+{{-- Rental history page --}}
 <x-layout>
 <div class="bg-[#121212] min-h-screen" style="font-family: 'Montserrat', sans-serif;">
 

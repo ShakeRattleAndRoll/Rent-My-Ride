@@ -1,15 +1,18 @@
 <div x-data="{ menuOpen: false, blockModalOpen: false }" class="relative group">
-    <a href="{{ route('messages.index', $contact->id) }}" wire:navigate data-message-navigate
-    class="flex items-center gap-3 p-4 rounded-2xl transition {{ isset($activeContact) && $activeContact->id == $contact->id ? 'bg-lime-400 text-black' : 'hover:bg-[#242424]' }}">
-        
-        {{-- Avatar wrapper needs position:relative for the badge --}}
+    {{-- Contact link --}}
+    <a
+        href="{{ route('messages.index', $contact->id) }}"
+        wire:navigate
+        data-message-navigate
+        class="flex items-center gap-3 p-4 rounded-2xl transition {{ isset($activeContact) && $activeContact->id == $contact->id ? 'bg-lime-400 text-black' : 'hover:bg-[#242424]' }}">
+
         <div class="relative w-10 h-10 flex-shrink-0">
             <div class="w-10 h-10 rounded-full bg-gray-700 overflow-hidden border border-white/10">
-                <img src="{{ $contact->profile_picture ? asset('storage/' . $contact->profile_picture) : 'https://ui-avatars.com/api/?name=' . urlencode($contact->username) . '&background=random' }}" 
+                <img src="{{ $contact->profile_picture ? asset('storage/' . $contact->profile_picture) : 'https://ui-avatars.com/api/?name=' . urlencode($contact->username) . '&background=random' }}"
                     class="w-full h-full object-cover">
             </div>
 
-            {{-- Badge is now OUTSIDE the img container, correctly anchored --}}
+            {{-- Unread badge --}}
             @if(!$contact->is_muted)
                 <span
                     data-contact-unread-badge="{{ $contact->id }}"
@@ -30,29 +33,30 @@
             <span class="text-xs {{ isset($activeContact) && $activeContact->id == $contact->id ? 'text-black/70' : 'text-gray-500' }} truncate block">{{ $contact->full_name }}</span>
         </div>
     </a>
-    
-    <button 
+
+    {{-- Contact actions menu --}}
+    <button
         @click.stop.prevent="menuOpen = !menuOpen"
         class="input-action-button right-3 p-2 rounded-full hover:bg-white/10 transition {{ isset($activeContact) && $activeContact->id == $contact->id ? 'text-black hover:bg-black/10' : 'text-gray-500' }}">
         <i class="fa-solid fa-ellipsis-vertical"></i>
     </button>
 
-    <div 
-        x-show="menuOpen" 
+    <div
+        x-show="menuOpen"
         @click.away="menuOpen = false"
         x-transition
         x-cloak
         class="absolute right-2 top-12 w-40 bg-[#242424] border border-white/10 rounded-xl shadow-2xl z-[100] overflow-hidden">
-        
+
         <a href="{{ route('user.profile', $contact->id) }}" wire:navigate data-nav-navigate class="flex items-center gap-2 px-4 py-3 text-[10px] uppercase font-bold text-gray-300 hover:bg-lime-400 hover:text-black transition">
             <i class="fa-solid fa-user w-4"></i> View Profile
         </a>
-        
+
         <form action="{{ route('messages.mute', $contact->id) }}" method="POST" data-livewire-form>
             @csrf
-            <button type="submit" 
+            <button type="submit"
                     class="w-full flex items-center gap-2 px-4 py-3 text-[10px] uppercase font-bold transition text-left border-t border-white/5 text-gray-300 hover:bg-lime-400 hover:text-black">
-                <i class="fa-solid {{ $contact->is_muted ? 'fa-bell text-lime-500' : 'fa-bell-slash' }} w-4"></i> 
+                <i class="fa-solid {{ $contact->is_muted ? 'fa-bell text-lime-500' : 'fa-bell-slash' }} w-4"></i>
                 {{ $contact->is_muted ? 'Unmute User' : 'Mute User' }}
             </button>
         </form>
@@ -61,11 +65,12 @@
             type="button"
             @click.stop="menuOpen = false; blockModalOpen = true"
             class="w-full flex items-center gap-2 px-4 py-3 text-[10px] uppercase font-bold transition text-left border-t border-white/5 text-gray-300 hover:bg-lime-400 hover:text-black">
-            <i class="fa-solid {{ $contact->is_blocked_by_me ? 'fa-circle-check text-green-500' : 'fa-ban text-red-500' }} w-4"></i> 
+            <i class="fa-solid {{ $contact->is_blocked_by_me ? 'fa-circle-check text-green-500' : 'fa-ban text-red-500' }} w-4"></i>
             {{ $contact->is_blocked_by_me ? 'Unblock User' : 'Block User' }}
         </button>
     </div>
 
+    {{-- Block or unblock confirmation --}}
     <div
         x-show="blockModalOpen"
         x-cloak

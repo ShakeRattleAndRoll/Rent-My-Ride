@@ -1,5 +1,6 @@
 <x-layout>
     <div class="min-h-screen bg-[#121212] text-white" style="font-family: 'Montserrat', sans-serif;">
+        {{-- Garage page header --}}
         <x-garage_header
             active="post_car"
             title="Post a Car"
@@ -7,10 +8,15 @@
         />
 
         <div class="px-4 sm:px-8 lg:px-10 pb-12">
-            <form action="/cars" method="POST" enctype="multipart/form-data"
-                  class="mx-auto grid max-w-6xl grid-cols-1 gap-6 lg:grid-cols-[340px_1fr]">
+            {{-- Car listing form --}}
+            <form
+                action="/cars"
+                method="POST"
+                enctype="multipart/form-data"
+                class="mx-auto grid max-w-6xl grid-cols-1 gap-6 lg:grid-cols-[340px_1fr]">
                 @csrf
 
+                {{-- Feedback and validation errors --}}
                 @if(session('feedback'))
                     <div class="lg:col-span-2 rounded-lg border border-lime-400/30 bg-lime-400/10 px-4 py-3 text-sm font-bold text-lime-300">
                         {{ session('feedback') }}
@@ -28,11 +34,11 @@
                     </div>
                 @endif
 
-                {{-- SIDEBAR PREVIEW --}}
+                {{-- Sidebar preview --}}
                 <aside class="lg:sticky lg:top-24 lg:self-start">
                     <div class="overflow-hidden rounded-2xl border border-white/5 bg-[#1e1e1e] shadow-lg">
 
-                        {{-- Image Preview Area --}}
+                        {{-- Image preview area --}}
                         <label for="car_image" class="group relative block h-48 cursor-pointer overflow-hidden bg-[#2a2a2a]">
                             <div id="car-image-preview" class="flex h-full w-full items-center justify-center text-gray-600">
                                 <i class="fa-solid fa-car-side text-5xl"></i>
@@ -45,7 +51,7 @@
                         </label>
                         <input class="sr-only" type="file" name="car_image" id="car_image" accept="image/*" required>
 
-                        {{-- Preview Details --}}
+                        {{-- Preview details --}}
                         <div class="p-4">
                             <div class="mb-1 flex items-start justify-between gap-3">
                                 <div class="min-w-0">
@@ -86,7 +92,7 @@
                     </div>
                 </aside>
 
-                {{-- MAIN FORM --}}
+                {{-- Main form --}}
                 <section class="rounded-lg border border-white/10 bg-[#1a1a1a] shadow-2xl">
 
                     {{-- Header (no cancel button here — removed duplicate) --}}
@@ -95,7 +101,7 @@
                         <h1 class="mt-1 text-2xl font-black uppercase tracking-tight">Add New Listing</h1>
                     </div>
 
-                    {{-- Fields --}}
+                    {{-- Vehicle fields --}}
                     <div class="grid grid-cols-1 gap-5 p-5 md:grid-cols-2">
 
                         {{-- Brand --}}
@@ -186,7 +192,7 @@
                         </div>
                     </div>
 
-                    {{-- Footer Actions --}}
+                    {{-- Footer actions --}}
                     <div class="flex flex-col-reverse gap-3 border-t border-white/10 px-5 py-5 sm:flex-row sm:items-center sm:justify-end">
                         <a href="/garage/my-listing" wire:navigate data-nav-navigate
                            class="inline-flex items-center justify-center rounded-lg px-5 py-3 text-[11px] font-black uppercase tracking-widest text-gray-400 transition hover:text-white">
@@ -204,5 +210,6 @@
         </div>
     </div>
 
+    {{-- Preview updater --}}
     <script src="{{ asset('js/post-car-preview.js') }}"></script>
 </x-layout>

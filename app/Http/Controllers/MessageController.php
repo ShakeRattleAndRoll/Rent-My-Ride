@@ -2,44 +2,52 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Models\UserRelation;
 use App\Models\Message;
 use App\Models\User;
-
+use App\Models\UserRelation;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class MessageController extends Controller
 {
+    // Message inbox and active conversation view
     public function index($receiverId = null)
     {
         $authId = Auth::id();
-
-        $myRelations = \App\Models\UserRelation::where('user_id', $authId)->get();
+        $myRelations = UserRelation::where('user_id', $authId)->get();
 
         $contacts = Message::where('sender_id', $authId)
-        ->orWhere('receiver_id', $authId)
-        ->get()
-        ->map(function ($message) use ($authId) {
-            return $message->sender_id == $authId ? $message->receiver : $message->sender;
-        })->unique('id')->map(function ($contact) use ($authId, $myRelations, $receiverId) { // 👈 add $receiverId
-            $contact->is_muted = $myRelations->where('target_id', $contact->id)->where('type', 'mute')->first();
-            $contact->is_blocked_by_me = $myRelations->where('target_id', $contact->id)->where('type', 'block')->first();
-            
-            $contact->unread_count = ($receiverId && $contact->id == $receiverId)
-                ? 0
-                : Message::where('sender_id', $contact->id)
-                    ->where('receiver_id', $authId)
-                    ->where('is_read', false)
-                    ->count();
+            ->orWhere('receiver_id', $authId)
+            ->get()
+            ->map(function ($message) use ($authId) {
+                return $message->sender_id == $authId ? $message->receiver : $message->sender;
+            })
+            ->unique('id')
+            ->map(function ($contact) use ($authId, $myRelations, $receiverId) {
+                $contact->is_muted = $myRelations
+                    ->where('target_id', $contact->id)
+                    ->where('type', 'mute')
+                    ->first();
 
-            return $contact;
-        });
+                $contact->is_blocked_by_me = $myRelations
+                    ->where('target_id', $contact->id)
+                    ->where('type', 'block')
+                    ->first();
+
+                $contact->unread_count = ($receiverId && $contact->id == $receiverId)
+                    ? 0
+                    : Message::where('sender_id', $contact->id)
+                        ->where('receiver_id', $authId)
+                        ->where('is_read', false)
+                        ->count();
+
+                return $contact;
+            });
 
         $messages = [];
         $activeContact = null;
         $chatBlocked = false;
-        
+
         if ($receiverId) {
             $activeContact = User::findOrFail($receiverId);
 
@@ -48,28 +56,32 @@ class MessageController extends Controller
                 ->where('is_read', false)
                 ->update(['is_read' => true]);
 
-            $chatBlocked = \App\Models\UserRelation::where('type', 'block')
-            ->where(function($q) use ($authId, $receiverId) {
-                $q->where(function($inner) use ($authId, $receiverId) {
-                    $inner->where('user_id', $authId)->where('target_id', $receiverId);
-                })->orWhere(function($inner) use ($authId, $receiverId) {
-                    $inner->where('user_id', $receiverId)->where('target_id', $authId);
-                });
-            })->exists();
+            $chatBlocked = UserRelation::where('type', 'block')
+                ->where(function ($query) use ($authId, $receiverId) {
+                    $query->where(function ($inner) use ($authId, $receiverId) {
+                        $inner->where('user_id', $authId)->where('target_id', $receiverId);
+                    })->orWhere(function ($inner) use ($authId, $receiverId) {
+                        $inner->where('user_id', $receiverId)->where('target_id', $authId);
+                    });
+                })
+                ->exists();
 
-            $messages = Message::where(function($query) use ($receiverId) {
+            $messages = Message::where(function ($query) use ($receiverId) {
                 $query->where('sender_id', Auth::id())
                     ->where('receiver_id', $receiverId);
-            })->orWhere(function($query) use ($receiverId) {
-                $query->where('sender_id', $receiverId)
-                    ->where('receiver_id', Auth::id());
-            })->orderBy('created_at', 'asc')->get();
-    
+            })
+                ->orWhere(function ($query) use ($receiverId) {
+                    $query->where('sender_id', $receiverId)
+                        ->where('receiver_id', Auth::id());
+                })
+                ->orderBy('created_at', 'asc')
+                ->get();
         }
 
         return view('message.message', compact('contacts', 'messages', 'activeContact', 'chatBlocked'));
     }
 
+    // Send a message
     public function store(Request $request)
     {
         $request->validate([
@@ -80,21 +92,22 @@ class MessageController extends Controller
         $authId = Auth::id();
         $receiverId = $request->receiver_id;
 
-        $isBlocked = \App\Models\UserRelation::where('type', 'block')
-        ->where(function($query) use ($authId, $receiverId) {
-            $query->where(function($q) use ($authId, $receiverId) {
-                $q->where('user_id', $authId)->where('target_id', $receiverId);
-            })->orWhere(function($q) use ($authId, $receiverId) {
-                $q->where('user_id', $receiverId)->where('target_id', $authId);
-            });
-        })->exists();
+        $isBlocked = UserRelation::where('type', 'block')
+            ->where(function ($query) use ($authId, $receiverId) {
+                $query->where(function ($inner) use ($authId, $receiverId) {
+                    $inner->where('user_id', $authId)->where('target_id', $receiverId);
+                })->orWhere(function ($inner) use ($authId, $receiverId) {
+                    $inner->where('user_id', $receiverId)->where('target_id', $authId);
+                });
+            })
+            ->exists();
 
         if ($isBlocked) {
             if ($request->expectsJson()) {
                 return response()->json(['message' => 'Message could not be sent.'], 403);
             }
 
-            return back()->with('error', 'Message could not be sent.'); 
+            return back()->with('error', 'Message could not be sent.');
         }
 
         $message = Message::create([
@@ -112,39 +125,45 @@ class MessageController extends Controller
         return back();
     }
 
+    // Live thread refresh
     public function thread($receiverId)
     {
         $authId = Auth::id();
         User::findOrFail($receiverId);
 
-        $chatBlocked = \App\Models\UserRelation::where('type', 'block')
-            ->where(function($q) use ($authId, $receiverId) {
-                $q->where(function($inner) use ($authId, $receiverId) {
+        $chatBlocked = UserRelation::where('type', 'block')
+            ->where(function ($query) use ($authId, $receiverId) {
+                $query->where(function ($inner) use ($authId, $receiverId) {
                     $inner->where('user_id', $authId)->where('target_id', $receiverId);
-                })->orWhere(function($inner) use ($authId, $receiverId) {
+                })->orWhere(function ($inner) use ($authId, $receiverId) {
                     $inner->where('user_id', $receiverId)->where('target_id', $authId);
                 });
-            })->exists();
+            })
+            ->exists();
 
         Message::where('sender_id', $receiverId)
             ->where('receiver_id', $authId)
             ->where('is_read', false)
             ->update(['is_read' => true]);
 
-        $messages = Message::where(function($query) use ($authId, $receiverId) {
+        $messages = Message::where(function ($query) use ($authId, $receiverId) {
             $query->where('sender_id', $authId)
                 ->where('receiver_id', $receiverId);
-        })->orWhere(function($query) use ($authId, $receiverId) {
-            $query->where('sender_id', $receiverId)
-                ->where('receiver_id', $authId);
-        })->orderBy('created_at', 'asc')->get();
+        })
+            ->orWhere(function ($query) use ($authId, $receiverId) {
+                $query->where('sender_id', $receiverId)
+                    ->where('receiver_id', $authId);
+            })
+            ->orderBy('created_at', 'asc')
+            ->get();
 
         return response()->json([
-            'messages' => $messages->map(fn($message) => $this->formatMessage($message)),
+            'messages' => $messages->map(fn ($message) => $this->formatMessage($message)),
             'chat_blocked' => $chatBlocked,
         ]);
     }
 
+    // Unread message counters
     public function notifications()
     {
         $authId = Auth::id();
@@ -164,7 +183,7 @@ class MessageController extends Controller
             ->selectRaw('sender_id, COUNT(*) as unread_count')
             ->groupBy('sender_id')
             ->get()
-            ->map(fn($message) => [
+            ->map(fn ($message) => [
                 'id' => $message->sender_id,
                 'unread_count' => $message->unread_count,
             ]);
@@ -175,16 +194,21 @@ class MessageController extends Controller
         ]);
     }
 
+    // Mute and block controls
     public function toggleMute($targetId)
-    { return $this->toggleRelation($targetId, 'mute');}
+    {
+        return $this->toggleRelation($targetId, 'mute');
+    }
 
     public function toggleBlock($targetId)
-    { return $this->toggleRelation($targetId, 'block');}
+    {
+        return $this->toggleRelation($targetId, 'block');
+    }
 
     private function toggleRelation($targetId, $type)
     {
         $authId = Auth::id();
-        
+
         $relation = UserRelation::where('user_id', $authId)
             ->where('target_id', $targetId)
             ->where('type', $type)
@@ -199,6 +223,7 @@ class MessageController extends Controller
                 'target_id' => $targetId,
                 'type' => $type,
             ]);
+
             $status = "{$type}d";
         }
 
@@ -213,7 +238,7 @@ class MessageController extends Controller
         return back()->with('status', "User successfully $status");
     }
 
-    // MessageController.php
+    // User search for starting conversations
     public function searchUsers(Request $request)
     {
         $q = $request->query('q', '');
@@ -228,18 +253,19 @@ class MessageController extends Controller
             ->select('id', 'username', 'first_name', 'last_name', 'profile_picture')
             ->limit(8)
             ->get()
-            ->map(fn($u) => [   
-                'id'       => $u->id,
-                'username' => $u->username,
-                'name'     => trim("{$u->first_name} {$u->last_name}"),
-                'avatar'   => $u->profile_picture 
-                                ? asset('storage/' . $u->profile_picture) 
-                                : 'https://ui-avatars.com/api/?name=' . urlencode($u->username),
+            ->map(fn ($user) => [
+                'id' => $user->id,
+                'username' => $user->username,
+                'name' => trim("{$user->first_name} {$user->last_name}"),
+                'avatar' => $user->profile_picture
+                    ? asset('storage/' . $user->profile_picture)
+                    : 'https://ui-avatars.com/api/?name=' . urlencode($user->username),
             ]);
 
         return response()->json($users);
     }
 
+    // Shared message response format
     private function formatMessage(Message $message)
     {
         return [
@@ -250,5 +276,4 @@ class MessageController extends Controller
             'time' => $message->created_at->timezone('Asia/Manila')->format('g:i A'),
         ];
     }
-
 }

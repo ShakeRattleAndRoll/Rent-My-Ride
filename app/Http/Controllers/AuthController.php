@@ -44,6 +44,11 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+
+            if (Auth::user()->is_admin) {
+                return redirect()->route('admin.cars.posted');
+            }
+
             return redirect('/');
         }
 

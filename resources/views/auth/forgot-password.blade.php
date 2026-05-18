@@ -1,3 +1,4 @@
+{{-- Forgot password request page --}}
 <x-layout>
 
 <div class="bg-black min-h-screen">

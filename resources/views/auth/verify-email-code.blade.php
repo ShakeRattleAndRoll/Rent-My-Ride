@@ -1,3 +1,4 @@
+{{-- Registration email verification page --}}
 <x-layout>
 
 <div class="bg-black min-h-screen">

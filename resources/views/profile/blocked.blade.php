@@ -1,3 +1,4 @@
+{{-- Blocked account notice page --}}
 <x-layout title="Profile Unavailable">
     <div class="bg-[#121212] min-h-screen text-white px-6 py-16" style="font-family: 'Montserrat', sans-serif;">
         <div class="max-w-xl mx-auto text-center">

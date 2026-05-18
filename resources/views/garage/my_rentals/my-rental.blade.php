@@ -1,12 +1,14 @@
 <x-layout>
 <div class="bg-[#121212] min-h-screen" style="font-family: 'Montserrat', sans-serif;">
 
+    {{-- Garage page header --}}
     <x-garage_header
         active="rental"
         title="My Rentals"
         subtitle="Pending, upcoming, and active rentals"
     />
 
+    {{-- Rental history link --}}
     <div class="px-4 pb-4 sm:px-6 lg:px-10">
         <div class="flex justify-end">
             <a href="/garage/my-rental/history" wire:navigate data-nav-navigate
@@ -17,6 +19,7 @@
         </div>
     </div>
 
+    {{-- Renter reminder --}}
     @if ($rentals->isNotEmpty())
         <div class="mx-10 mb-6 flex items-center justify-center gap-2 text-gray-500 text-xs font-medium tracking-wide">
             <i class="fa-solid fa-info text-lime-400"></i>
@@ -26,7 +29,7 @@
         </div>
     @endif
 
-    {{-- Rentals List --}}
+    {{-- Live rental cards --}}
     <div data-rentals-live-refresh class="grid grid-cols-1 gap-4 px-4 pb-10 sm:grid-cols-2 sm:px-6 lg:grid-cols-3 xl:grid-cols-4 lg:px-10">
 
         @forelse ($rentals as $rental)
@@ -55,5 +58,7 @@
 
     </div>
 </div>
+
+{{-- Live rental status refresh --}}
 <script src="{{ asset('js/rentals.js') }}"></script>
 </x-layout>

@@ -2,7 +2,7 @@
     <div class="bg-[#121212] min-h-screen text-white p-0 lg:p-10" style="font-family: 'Montserrat', sans-serif;">
         <div class="max-w-6xl mx-auto flex flex-col gap-0 lg:gap-6">
 
-            {{-- Search Bar --}}
+            {{-- User search --}}
             <div
                 x-data="{
                     query: '',
@@ -118,7 +118,7 @@
                 </div>
             </div>
 
-            {{-- Main Chat Area --}}
+            {{-- Main chat area --}}
             <div class="px-3 pb-3 lg:px-0 lg:pb-2">
                 <div class="flex {{ $activeContact ? 'h-[calc(100dvh-5.25rem)]' : 'h-[calc(100dvh-9.5rem)]' }} min-h-0 flex-row gap-0 lg:h-[85vh] lg:min-h-[620px] lg:gap-6">
                     @include('message.sidebar')
@@ -129,6 +129,7 @@
         </div>
     </div>
 
+    {{-- Mobile chat header behavior --}}
     <style>
         @media (max-width: 1023px) {
             .message-chat-header > p {
@@ -137,6 +138,7 @@
         }
     </style>
 
+    {{-- Message page scripts --}}
     <script src="{{ asset('js/user-search.js') }}"></script>
     <script src="{{ asset('js/messages.js') }}"></script>
 </x-layout>

@@ -1,3 +1,4 @@
+{{-- Guest password reset page --}}
 <x-layout>
 
 <div class="bg-black min-h-screen">

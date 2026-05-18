@@ -1,3 +1,4 @@
+{{-- Rental status card --}}
 <div class="group flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#121212] shadow-[0_0_0_1px_rgba(255,255,255,0.02)] transition-all duration-300 hover:-translate-y-1 hover:border-lime-400/40 hover:shadow-2xl"
      data-rental-card="{{ $rental->id }}">
 

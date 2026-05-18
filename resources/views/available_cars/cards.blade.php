@@ -1,5 +1,8 @@
 @php
     $isOccupied = (bool) ($car->is_occupied ?? false);
+    $isAdmin = Auth::check() && Auth::user()->is_admin;
+    $pendingRequests = $pendingRequests ?? [];
+    $carts = $carts ?? collect();
 @endphp
 
 <div
@@ -63,7 +66,14 @@
     </div>
 
     <div class="mt-auto p-4 pt-0 relative z-20" style="font-family: 'Montserrat', sans-serif;">
-        @if(Auth::check() && $car->user_id === Auth::id())
+        @if($isAdmin)
+            <button type="button"
+                    onclick="document.getElementById('delete-modal-admin-card-car-{{ $car->id }}').classList.remove('hidden')"
+                    class="w-full py-3 bg-red-500 hover:bg-red-400 text-white text-[10px] font-bold uppercase tracking-widest rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-trash"></i>
+                Delete Post
+            </button>
+        @elseif(Auth::check() && $car->user_id === Auth::id())
             <a href="/garage/my-listing" wire:navigate data-nav-navigate
             class="w-full block py-3 bg-gray-800 border border-white/5 text-gray-400 text-[10px] font-bold uppercase tracking-widest rounded-xl text-center">
                 You Own This
@@ -95,5 +105,15 @@
     </div>
 
     <x-modals.car_modal :car="$car" />
+
+    @if($isAdmin)
+        <x-modals.delete_confirmation
+            rentalId="admin-card-car-{{ $car->id }}"
+            :route="route('admin.cars.destroy', $car)"
+            method="DELETE"
+            title="Delete Post"
+            message="Are you sure you want to delete this posted car?"
+            confirmText="Yes, Delete" />
+    @endif
 
 </div>

@@ -1,3 +1,4 @@
+{{-- Homepage featured cars section --}}
 <section class="py-20 bg-black">
     <div class="max-w-7xl mx-auto px-6" style="font-family: 'Montserrat', sans-serif;">
         <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">

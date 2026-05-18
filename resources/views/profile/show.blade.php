@@ -1,3 +1,4 @@
+{{-- Public user profile page --}}
 <x-layout>
     <div class="min-h-screen bg-[#121212] px-4 py-8 text-white sm:px-6 lg:px-10" style="font-family: 'Montserrat', sans-serif;">
         <div class="mx-auto max-w-7xl">

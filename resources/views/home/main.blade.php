@@ -1,5 +1,6 @@
 <x-layout>
 
+    {{-- Hero background --}}
     @include('home.background')
 
     @php
@@ -8,6 +9,7 @@
         $totalOwners = $homeStats['owners'] ?? 0;
     @endphp
 
+    {{-- Homepage stats --}}
     <section class="bg-black border-y border-white/10 py-8">
         <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-4" style="font-family: 'Montserrat', sans-serif;">
             <div class="group rounded-lg border border-white/10 bg-[#111] p-5 transition hover:border-lime-400/40">
@@ -51,8 +53,10 @@
         </div>
     </section>
 
+    {{-- Featured vehicles --}}
     @include('home.featured_rides')
 
+    {{-- Renter and owner entry points --}}
     <section class="bg-[#050505] py-20 border-y border-white/10">
         <div class="max-w-7xl mx-auto px-6" style="font-family: 'Montserrat', sans-serif;">
             <div class="max-w-3xl mb-10">
@@ -87,8 +91,10 @@
         </div>
     </section>
 
+    {{-- How it works --}}
     @include('home.how_it_works')
 
+    {{-- Final call to action --}}
     <section class="py-20 bg-black">
         <div class="max-w-7xl mx-auto px-6" style="font-family: 'Montserrat', sans-serif;">
             <div class="rounded-lg border border-white/10 bg-[#111] px-6 py-12 md:px-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">

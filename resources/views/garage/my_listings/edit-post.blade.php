@@ -1,3 +1,4 @@
+{{-- Garage listing edit page --}}
 <x-layout>
     <div class="min-h-screen bg-[#121212] text-white" style="font-family: 'Montserrat', sans-serif;">
         <x-garage_header

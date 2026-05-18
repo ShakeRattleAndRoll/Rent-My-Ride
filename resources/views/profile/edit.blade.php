@@ -1,3 +1,4 @@
+{{-- Profile edit page --}}
 <x-layout>
 <div class="bg-[#121212] min-h-screen text-white p-6 md:p-12" style="font-family: 'Montserrat', sans-serif;">
     <div class="max-w-4xl mx-auto">

@@ -1,11 +1,12 @@
 <x-layout>
     <div class="bg-[#121212] min-h-screen">
 
-        {{-- HERO SECTION --}}
+        {{-- Hero and search filters --}}
         <div class="relative w-full h-[300px] flex items-center justify-center">
-            <img src="{{ asset('images/bg-picture-availablecars.jpg') }}" 
-                 class="absolute inset-0 w-full h-full object-cover object-center"
-                 alt="Rent My Ride Hero">
+            <img
+                src="{{ asset('images/bg-picture-availablecars.jpg') }}"
+                class="absolute inset-0 w-full h-full object-cover object-center"
+                alt="Rent My Ride Hero">
 
             <div class="absolute inset-0 bg-gradient-to-t from-[#121212] via-black/40 to-black/60"></div>
 
@@ -26,14 +27,14 @@
                                 class="w-full bg-[#1a1a1a] border border-gray-800 text-white text-sm rounded-2xl py-4 px-6 pr-24 focus:ring-2 focus:ring-lime-400 focus:border-transparent outline-none transition-all"
                             >
                             
-                            {{-- Filter Toggle --}}
+                            {{-- Filter toggle --}}
                             <button title="Filters" type="button" @click="open = !open" class="input-action-button right-14 h-9 w-9 rounded-xl text-gray-500 transition-colors hover:text-lime-400">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
                                 </svg>
                             </button>
 
-                            {{-- Search Submit --}}
+                            {{-- Search submit --}}
                             <button type="submit" class="input-action-button right-3 h-9 w-9 rounded-xl bg-lime-400 text-black transition-colors hover:bg-lime-300">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -105,7 +106,7 @@
                                 </div>
                             </div>
 
-                            {{-- SUBMIT & RESET --}}
+                            {{-- Submit and reset --}}
                             <div class="flex gap-3 pt-2">
                                 <a href="{{ route('cars.index') }}" class="flex-1 text-center py-3 rounded-xl border border-gray-800 text-gray-400 hover:bg-white/5 transition-all text-xs font-bold uppercase tracking-widest leading-loose">
                                     Reset
@@ -121,6 +122,7 @@
         </div>
 
 
+        {{-- Results and pagination --}}
         <div class="relative max-w-7xl mx-auto px-6 py-20">
             
             <div class="flex items-center justify-between mb-10">
@@ -130,7 +132,7 @@
                 <div class="h-px flex-grow mx-6 bg-white/5"></div>
             </div>
 
-            {{-- Car --}}
+            {{-- Car cards --}}
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                 @forelse ($cars as $car)
                     @include('available_cars.cards', ['car' => $car, 'carts' => $carts])

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
+    // Add a car to the renter's cart
     public function store(Request $request)
     {
         $car = Car::findOrFail($request->car_id);
@@ -30,7 +31,7 @@ class CartController extends Controller
         }
 
         $exists = Cart::where('user_id', Auth::id())->where('car_id', $car->id)->exists();
-        
+
         if ($exists) {
             if ($request->expectsJson()) {
                 session()->flash('error', 'This car is already in your cart!');
@@ -43,7 +44,7 @@ class CartController extends Controller
 
         Cart::create([
             'user_id' => Auth::id(),
-            'car_id' => $car->id
+            'car_id' => $car->id,
         ]);
 
         if ($request->expectsJson()) {
@@ -54,7 +55,8 @@ class CartController extends Controller
 
         return redirect('/garage/my-cart')->with('success', 'Car added to your cart!');
     }
-    
+
+    // Convert a cart item into a rental request
     public function checkout(Request $request, $id)
     {
         $cartItem = Cart::with('car')
@@ -86,12 +88,14 @@ class CartController extends Controller
 
         if ($request->expectsJson()) {
             session()->flash($rental->status === 'denied' ? 'error' : 'success', $message);
+
             return response()->json(['redirect' => url('/garage/my-rental')]);
         }
 
         return redirect('/garage/my-rental')->with($rental->status === 'denied' ? 'error' : 'success', $message);
     }
 
+    // Remove a saved cart item
     public function destroy(Request $request, $id)
     {
         $cartItem = Cart::where('id', $id)->where('user_id', Auth::id())->firstOrFail();

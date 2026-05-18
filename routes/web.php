@@ -1,23 +1,22 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CarController;
-use App\Models\Car;
-use App\Http\Controllers\RentalController;
 use App\Http\Controllers\CartController;
-use App\Http\Controllers\AdminCarApprovalController;
-use App\Models\Cart;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\CarController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationController;
-use App\Livewire\Message\ChatManager;
+use App\Http\Controllers\RentalController;
+use App\Models\Car;
+use App\Models\Cart;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
-// Download og livewire para walay loading copy ning nasa baba sa terminal [ctrl + `]
+// Local setup notes:
 // composer require livewire/livewire
+// cloudflared tunnel --url http://localhost:8000
 
-// cloudflared tunnel --url http://localhost:8000 
-
+// Home page
 Route::get('/', function () {
     $featuredCars = Car::publiclyVisible()->with('user')->latest()->take(3)->get();
     $homeStats = [
@@ -28,7 +27,7 @@ Route::get('/', function () {
     return view('home.main', compact('featuredCars', 'homeStats'));
 });
 
-// Route for login
+// Authentication: login and password reset
 Route::get('/login', [AuthController::class, 'login'])->name('login')->middleware('guest');
 Route::post('/login', [AuthController::class, 'authenticate']);
 Route::get('/forgot-password', [AuthController::class, 'forgotPassword'])->name('password.request')->middleware('guest');
@@ -38,7 +37,7 @@ Route::post('/forgot-password/verify-code', [AuthController::class, 'verifyPassw
 Route::get('/reset-password', [AuthController::class, 'resetPassword'])->name('password.reset')->middleware('guest');
 Route::post('/reset-password', [AuthController::class, 'updatePassword'])->name('password.update')->middleware('guest');
 
-// Route for register
+// Authentication: registration and email verification
 Route::get('/register', [AuthController::class, 'register'])->name('register')->middleware('guest');
 Route::post('/register', [AuthController::class, 'store']);
 Route::get('/register/verify-email', [AuthController::class, 'showEmailCodeForm'])->name('register.verify-email')->middleware('guest');
@@ -48,21 +47,17 @@ Route::post('/register/resend-code', [AuthController::class, 'resendEmailCode'])
 // Logout
 Route::post('/logout', [AuthController::class, 'logout']);
 
-// Post a car route
-Route::get('/garage/post-car', [CarController::class, 'create'])->middleware('auth');
-Route::post('/cars', [CarController::class, 'store'])->middleware('auth');
-
-// Route for available cars page
+// Public car browsing
 Route::get('/available', [CarController::class, 'index'])->name('cars.index');
 Route::get('/cars/{car}', [CarController::class, 'show'])->name('cars.show');
 
-// Route for profile page
+// Car posting
+Route::get('/garage/post-car', [CarController::class, 'create'])->middleware('auth');
+Route::post('/cars', [CarController::class, 'store'])->middleware('auth');
+
+// Profile pages and account updates
 Route::get('/profile', [AuthController::class, 'profile'])->name('profile.main')->middleware('auth');
-
-// Route for edit profile page
 Route::get('/profile/edit', [AuthController::class, 'edit'])->name('profile.edit')->middleware('auth');
-
-// Route for update profile
 Route::patch('/profile/update', [AuthController::class, 'update'])->name('profile.update')->middleware('auth');
 Route::patch('/profile/password/send-code', [AuthController::class, 'sendProfilePasswordCode'])->name('profile.password.send-code')->middleware('auth');
 Route::get('/profile/password/verify-code', [AuthController::class, 'showProfilePasswordCodeForm'])->name('profile.password.verify-code')->middleware('auth');
@@ -75,55 +70,63 @@ Route::post('/profile/email/verify-code', [AuthController::class, 'verifyProfile
 // Route for user profile view
 Route::get('/profile/{id}', [AuthController::class, 'show'])->name('user.profile');
 
-// Message search users
+// Messaging
 Route::get('/messages/search-users', [MessageController::class, 'searchUsers'])->middleware('auth');
 Route::get('/messages/notifications', [MessageController::class, 'notifications'])->name('messages.notifications')->middleware('auth');
 Route::get('/messages/thread/{receiverId}', [MessageController::class, 'thread'])->name('messages.thread')->middleware('auth');
-// Route for message page
 Route::get('/messages/{receiverId?}', [MessageController::class, 'index'])->name('messages.index')->middleware('auth');
 Route::post('/messages', [MessageController::class, 'store'])->name('messages.store')->middleware('auth');
-    // Mute or Block Message
+
+// Message privacy controls
 Route::post('/messages/mute/{targetId}', [MessageController::class, 'toggleMute'])->name('messages.mute')->middleware('auth');
 Route::post('/messages/block/{targetId}', [MessageController::class, 'toggleBlock'])->name('messages.block')->middleware('auth');
 
+// Admin dashboard and notifications
 Route::middleware('auth')->group(function () {
-    Route::get('/admin/cars/pending', [AdminCarApprovalController::class, 'index'])->name('admin.cars.pending');
-    Route::get('/admin/cars/pending/items', [AdminCarApprovalController::class, 'items'])->name('admin.cars.pending.items');
-    Route::patch('/admin/cars/{car}/approve', [AdminCarApprovalController::class, 'approve'])->name('admin.cars.approve');
+    // Admin car review
+    Route::get('/admin/cars/pending', [AdminController::class, 'pendingCars'])->name('admin.cars.pending');
+    Route::get('/admin/cars/pending/items', [AdminController::class, 'pendingCarItems'])->name('admin.cars.pending.items');
+    Route::patch('/admin/cars/{car}/approve', [AdminController::class, 'approveCar'])->name('admin.cars.approve');
+    Route::delete('/admin/cars/{car}/deny', [AdminController::class, 'denyCar'])->name('admin.cars.deny');
+    Route::get('/admin/cars/posted', [AdminController::class, 'postedCars'])->name('admin.cars.posted');
+    Route::delete('/admin/cars/{car}', [AdminController::class, 'destroyCar'])->name('admin.cars.destroy');
 
+    // Admin user management
+    Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
+    Route::delete('/admin/users/{user}', [AdminController::class, 'destroyUser'])->name('admin.users.destroy');
+
+    // User notifications
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::get('/notifications/count', [NotificationController::class, 'count'])->name('notifications.count');
     Route::get('/notifications/items', [NotificationController::class, 'items'])->name('notifications.items');
     Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
     Route::patch('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
     Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.delete');
-    Route::delete('/notifications-delete-all', [NotificationController::class, 'destroyAll'])->name('notifications.delete-all');   
+    Route::delete('/notifications-delete-all', [NotificationController::class, 'destroyAll'])->name('notifications.delete-all');
 });
 
-// Routes for garage listing
+// Garage landing
 Route::get('/garage', function () {
     return redirect('/garage/my-listing');
 });
 
+// Garage listings
 Route::middleware('auth')->group(function () {
-
     Route::get('/garage/my-listing', [CarController::class, 'my_listings'])->name('garage.my-listing');
+    Route::get('/garage/my-listing/items', [CarController::class, 'myListingItems'])->name('garage.my-listing.items');
 
-    // Edit and update listing routes
+    // Edit and update listings
     Route::get('/garage/edit/{id}', [CarController::class, 'edit']);
     Route::patch('/garage/update/{id}', [CarController::class, 'update']);
     Route::patch('/garage/availability/{id}', [CarController::class, 'toggleAvailability'])->name('garage.availability');
     Route::patch('/car/{id}/toggle-auto-accept', [RentalController::class, 'toggleAutoAccept'])->name('car.toggle-auto-accept');
 
-    // Route for car details page
+    // Listing details and deletion
     Route::get('/garage/details/{id}', [CarController::class, 'details']);
-
-    // Route for delete listing
     Route::delete('/garage/delete/{id}', [CarController::class, 'destroy']);
-
 });
 
-//Route for garage rental
+// Rentals
 Route::post('/rent', [RentalController::class, 'store'])->middleware('auth');
 Route::get('/rentals/notifications', [RentalController::class, 'notifications'])->name('rentals.notifications')->middleware('auth');
 Route::get('/rentals/my-statuses', [RentalController::class, 'myStatuses'])->name('rentals.my-statuses')->middleware('auth');
@@ -137,14 +140,14 @@ Route::patch('/garage/rental/{id}/cancel', [RentalController::class, 'cancel'])-
 Route::patch('/garage/rental/{id}/hide', [RentalController::class, 'hideForRenter'])->middleware('auth');
 Route::patch('/garage/rental/{id}/hide-owner', [RentalController::class, 'hideForOwner'])->middleware('auth');
 
-//Route for garage cart
+// Garage cart
 Route::get('/garage/my-cart', function () {
     $cartItems = Cart::where('user_id', Auth::id())
         ->with('car')
         ->latest()
         ->get();
 
-    return view('garage.my_cart.my-cart', ['carts' => $cartItems]);  
+    return view('garage.my_cart.my-cart', ['carts' => $cartItems]);
 })->middleware('auth');
 
 Route::post('/cart/add', [CartController::class, 'store'])->name('cart.add')->middleware('auth');

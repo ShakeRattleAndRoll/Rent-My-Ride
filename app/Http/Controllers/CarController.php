@@ -131,15 +131,19 @@ class CarController extends Controller
     // MY LISTINGS
     public function my_listings()
     {
-        $myCars = Car::where('user_id', Auth::id())
-            ->with('rentals')
-            ->withCount(['rentals as pending_orders_count' => function($query) {
-                $query->where('status', 'pending');
-            }])
-            ->latest()
-            ->get();
+        $myCars = $this->myListingsQuery()->get();
 
         return view('garage.my_listings.my-listing', ['listings' => $myCars]);
+    }
+
+    public function myListingItems()
+    {
+        $myCars = $this->myListingsQuery()->get();
+
+        return response()->json([
+            'html' => view('garage.my_listings.partials.list', ['listings' => $myCars])->render(),
+            'count' => $myCars->count(),
+        ]);
     }
 
     public function toggleAvailability(Request $request, $id)
@@ -370,5 +374,15 @@ class CarController extends Controller
             ->where('status', 'accepted')
             ->where('end_date', '>=', now('Asia/Manila'))
             ->exists();
+    }
+
+    private function myListingsQuery()
+    {
+        return Car::where('user_id', Auth::id())
+            ->with('rentals')
+            ->withCount(['rentals as pending_orders_count' => function ($query) {
+                $query->where('status', 'pending');
+            }])
+            ->latest();
     }
 }

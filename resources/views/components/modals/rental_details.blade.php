@@ -1,3 +1,4 @@
+{{-- Rental details modal --}}
 @props(['rental'])
 
 @php

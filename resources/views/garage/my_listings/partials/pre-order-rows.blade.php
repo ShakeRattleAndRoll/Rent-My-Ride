@@ -1,3 +1,4 @@
+{{-- Live pre-order rows --}}
 @forelse($preOrders as $order)
     @php
         $startTimestamp = \Carbon\Carbon::parse($order->start_date)->timestamp;

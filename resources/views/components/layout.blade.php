@@ -6,6 +6,7 @@
 
     <title>{{ $title ?? 'Rent My Ride' }}</title>
 
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/png" href="{{ asset('images/Rent-My-Ride-Logo.png') }}" sizes="100x64">
     <script src="https://cdn.tailwindcss.com"></script>

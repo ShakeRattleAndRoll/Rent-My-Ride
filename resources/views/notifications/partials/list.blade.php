@@ -23,7 +23,7 @@
                     => 'text-lime-400 bg-lime-400/10 border-lime-400/30',
                 $isTimelineType
                     => 'text-yellow-300 bg-yellow-400/10 border-yellow-400/30',
-                in_array($notification->type, ['rental_denied', 'rental_expired'])
+                in_array($notification->type, ['rental_denied', 'rental_expired', 'car_post_denied', 'car_post_deleted'])
                     => 'text-red-400 bg-red-600/10 border-red-600/30',
                 default
                     => 'text-blue-400 bg-blue-500/10 border-blue-500/30',
@@ -31,7 +31,7 @@
 
             $icon = $isTimelineType
                 ? 'fa-bell'
-                : (in_array($notification->type, ['rental_denied', 'rental_expired'])
+                : (in_array($notification->type, ['rental_denied', 'rental_expired', 'car_post_denied', 'car_post_deleted'])
                     ? 'fa-circle-exclamation'
                     : ($notification->type === 'car_post_approved' ? 'fa-car-side' : 'fa-bell'));
         @endphp

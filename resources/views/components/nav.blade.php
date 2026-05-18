@@ -99,11 +99,17 @@
 
         @auth
             @if(auth()->user()->is_admin)
-                <a href="{{ route('admin.cars.pending') }}" wire:navigate data-nav-navigate class="relative px-4 py-2 rounded-full {{ request()->is('admin/cars*') ? 'bg-lime-400 text-black' : 'text-white hover:text-lime-400' }}">
+                <a href="{{ route('admin.cars.posted') }}" wire:navigate data-nav-navigate class="px-4 py-2 rounded-full {{ request()->is('admin/cars/posted*') ? 'bg-lime-400 text-black' : 'text-white hover:text-lime-400' }}">
+                    Posted Cars
+                </a>
+                <a href="{{ route('admin.cars.pending') }}" wire:navigate data-nav-navigate class="relative px-4 py-2 rounded-full {{ request()->is('admin/cars/pending*') ? 'bg-lime-400 text-black' : 'text-white hover:text-lime-400' }}">
                     Pending Approvals
                     <span data-admin-pending-approvals-badge class="absolute -top-1 -right-1 w-4 h-4 bg-red-600 rounded-full text-white text-[9px] {{ $totalPendingCarApprovals > 0 ? 'flex' : 'hidden' }} items-center justify-center font-black animate-pulse">
                         {{ $totalPendingCarApprovals > 99 ? '99+' : $totalPendingCarApprovals }}
                     </span>
+                </a>
+                <a href="{{ route('admin.users') }}" wire:navigate data-nav-navigate class="px-4 py-2 rounded-full {{ request()->is('admin/users*') ? 'bg-lime-400 text-black' : 'text-white hover:text-lime-400' }}">
+                    Users
                 </a>
             @endif
         @endauth
@@ -170,32 +176,25 @@
             </div>
         @endunless
 
-        {{-- Messages with unread badge --}}
-        <a href="/messages" wire:navigate data-nav-navigate @guest data-auth-required @endguest class="relative flex items-center justify-between px-2 py-1 rounded-lg {{ request()->is('messages*') ? 'bg-lime-400 text-black' : 'hover:text-lime-400' }}">
-            Messages
-            <span data-unread-messages-badge class="w-4 h-4 bg-red-600 rounded-full text-white text-[9px] {{ $totalUnreadMessages > 0 ? 'flex' : 'hidden' }} items-center justify-center font-black animate-pulse">
-                {{ $totalUnreadMessages > 99 ? '99+' : $totalUnreadMessages }}
-            </span>
-        </a>
-
         @auth
             @if(auth()->user()->is_admin)
-                <a href="{{ route('admin.cars.pending') }}" wire:navigate data-nav-navigate class="relative flex items-center justify-between px-2 py-1 rounded-lg {{ request()->is('admin/cars*') ? 'bg-lime-400 text-black' : 'hover:text-lime-400' }}">
-                    Admin
+                <a href="{{ route('admin.cars.posted') }}" wire:navigate data-nav-navigate class="px-2 py-1 rounded-lg {{ request()->is('admin/cars/posted*') ? 'bg-lime-400 text-black' : 'hover:text-lime-400' }}">Posted Cars</a>
+                <a href="{{ route('admin.cars.pending') }}" wire:navigate data-nav-navigate class="relative flex items-center justify-between px-2 py-1 rounded-lg {{ request()->is('admin/cars/pending*') ? 'bg-lime-400 text-black' : 'hover:text-lime-400' }}">
+                    Pending Approvals
                     <span data-admin-pending-approvals-badge class="w-4 h-4 bg-red-600 rounded-full text-white text-[9px] {{ $totalPendingCarApprovals > 0 ? 'flex' : 'hidden' }} items-center justify-center font-black animate-pulse">
                         {{ $totalPendingCarApprovals > 99 ? '99+' : $totalPendingCarApprovals }}
                     </span>
                 </a>
+                <a href="{{ route('admin.users') }}" wire:navigate data-nav-navigate class="px-2 py-1 rounded-lg {{ request()->is('admin/users*') ? 'bg-lime-400 text-black' : 'hover:text-lime-400' }}">Users</a>
             @endif
 
-            @unless($isAdmin)
-                <a href="/notifications" wire:navigate data-nav-navigate class="relative flex items-center justify-between px-2 py-1 rounded-lg {{ request()->is('notifications*') ? 'bg-lime-400 text-black' : 'hover:text-lime-400' }}">
-                    Notifications
-                    <span data-unread-notifications-badge class="w-4 h-4 bg-red-600 rounded-full text-white text-[9px] {{ $totalUnreadNotifications > 0 ? 'flex' : 'hidden' }} items-center justify-center font-black animate-pulse">
-                        {{ $totalUnreadNotifications > 99 ? '99+' : $totalUnreadNotifications }}
-                    </span>
-                </a>
-            @endunless
+            {{-- Messages with unread badge --}}
+            <a href="/messages" wire:navigate data-nav-navigate @guest data-auth-required @endguest class="relative flex items-center justify-between px-2 py-1 rounded-lg {{ request()->is('messages*') ? 'bg-lime-400 text-black' : 'hover:text-lime-400' }}">
+            Messages
+                <span data-unread-messages-badge class="w-4 h-4 bg-red-600 rounded-full text-white text-[9px] {{ $totalUnreadMessages > 0 ? 'flex' : 'hidden' }} items-center justify-center font-black animate-pulse">
+                    {{ $totalUnreadMessages > 99 ? '99+' : $totalUnreadMessages }}
+                </span>
+            </a> 
 
             <a href="/profile" wire:navigate data-nav-navigate class="px-2 py-1 rounded-lg {{ request()->is('profile*') ? 'bg-lime-400 text-black' : 'hover:text-lime-400' }}">Profile</a>
         @else

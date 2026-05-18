@@ -1,6 +1,7 @@
 <x-layout>
     <div class="min-h-screen bg-[#121212] px-4 py-12 sm:px-6 lg:px-10" style="font-family: 'Montserrat', sans-serif;">
         <div class="mx-auto max-w-7xl">
+            {{-- Page title and pending count --}}
             <div class="mb-8 flex flex-col gap-4 border-b border-white/10 pb-6 sm:flex-row sm:items-end sm:justify-between">
                 <div>
                     <p class="mb-2 text-[11px] font-black uppercase tracking-[0.22em] text-lime-400">Admin</p>
@@ -14,7 +15,10 @@
                 </div>
             </div>
 
-            <div data-admin-pending-cars data-refresh-url="{{ route('admin.cars.pending.items') }}">
+            {{-- Live-updating list of cars waiting for admin approval --}}
+            <div
+                data-admin-pending-cars
+                data-refresh-url="{{ route('admin.cars.pending.items') }}">
                 @include('admin.partials.pending-cars-list', ['pendingCars' => $pendingCars])
             </div>
         </div>

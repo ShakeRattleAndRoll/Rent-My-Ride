@@ -1,3 +1,4 @@
+{{-- Accept rental confirmation modal --}}
 <div id="acceptModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
     <div class="bg-[#1e1e1e] rounded-2xl w-full max-w-xl p-6 relative border border-white/10 shadow-2xl">
 

@@ -2,18 +2,20 @@
 <div class="bg-[#121212] min-h-screen text-white p-6 md:p-12" style="font-family: 'Montserrat', sans-serif;">
 
     <div class="max-w-5xl mx-auto flex flex-col md:flex-row gap-8">
-        
+
+        {{-- Profile summary card --}}
         <div class="w-full md:w-1/3 flex flex-col gap-6">
             <div class="bg-[#1a1a1a] p-8 rounded-3xl border border-white/5 shadow-2xl flex flex-col items-center text-center">
-                
-                {{-- Profile Picture --}}
+
+                {{-- Profile picture --}}
                 <div class="relative group">
                     <div class="absolute -inset-1 bg-gradient-to-r from-white to-white rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
                     <div class="relative w-40 h-40 rounded-full bg-[#2a2a2a] border-4 border-[#1a1a1a] overflow-hidden">
                         @if(auth()->user()->profile_picture)
-                            <img src="{{ asset('storage/' . auth()->user()->profile_picture) }}" 
-                                 alt="Profile" 
-                                 class="w-full h-full object-cover">
+                            <img
+                                src="{{ asset('storage/' . auth()->user()->profile_picture) }}"
+                                alt="Profile"
+                                class="w-full h-full object-cover">
                         @else
                             <div class="w-full h-full flex items-center justify-center bg-gray-800">
                                 <span class="text-4xl font-black text-gray-600">{{ substr(auth()->user()->username, 0, 1) }}</span>
@@ -54,7 +56,7 @@
             </div>
         </div>
 
-        {{-- Personal Details --}}
+        {{-- Personal details --}}
         <div class="flex-1">
             <div class="bg-[#1a1a1a] p-8 md:p-10 rounded-3xl border border-white/5 shadow-2xl h-full">
 
@@ -66,7 +68,7 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-12">
-                    
+
                     {{-- Full Name --}}
                     <div class="group">
                         <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1 group-hover:text-lime-400 transition">Full Name</p>
@@ -107,7 +109,7 @@
 
                 </div>
 
-                {{-- Security Note --}}
+                {{-- Security note --}}
                 <div class="mt-12 p-6 bg-[#242424] rounded-2xl border border-white/5 flex items-start gap-4">
                     <div class="p-3 bg-lime-400/10 rounded-xl text-lime-400">
                         <i class="fa-solid fa-shield-halved"></i>

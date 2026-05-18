@@ -1,3 +1,4 @@
+{{-- Shared car form fields --}}
 @props(['car' => null])
 
 <div class="col-span-1 space-y-6">

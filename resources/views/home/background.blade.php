@@ -1,3 +1,4 @@
+{{-- Homepage hero and 3D car showcase --}}
 <section class="relative flex h-[640px] w-full items-center justify-center overflow-hidden bg-[#070a10]">
 
     {{-- 3-D canvas --}}

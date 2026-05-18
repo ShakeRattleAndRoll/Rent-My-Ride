@@ -1,3 +1,4 @@
+{{-- Homepage process section --}}
 <section class="py-24 bg-black">
 
     <div class="max-w-7xl mx-auto px-6" style="font-family: 'Montserrat', sans-serif;">

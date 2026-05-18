@@ -1,3 +1,4 @@
+{{-- Reusable listing card --}}
 @props(['car'])
 
 @php
